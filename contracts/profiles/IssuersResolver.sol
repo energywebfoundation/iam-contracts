@@ -3,8 +3,11 @@ pragma experimental ABIEncoderV2;
 
 import "@ensdomains/resolver/contracts/ResolverBase.sol";
 
+/**
+ * Profile for resolving identities (by did or by role) which can issue a role definition
+ */
 contract IssuersResolver is ResolverBase {
-    bytes4 private constant NAME_INTERFACE_ID = 0xFFFFFFFF;
+    bytes4 private constant ISSUERS_INTERFACE_ID = 0xc53a4413;
 
     struct Issuers {
         address[] dids;
@@ -16,24 +19,41 @@ contract IssuersResolver is ResolverBase {
     mapping(bytes32 => Issuers) issuersMap;
 
     /**
-     * Sets the name associated with an ENS node, for reverse records.
+     * Sets the dids associated with a role.
+     * Clears the role associated with a role.
      * May only be called by the owner of that node in the ENS registry.
      * @param node The node to update.
-     * @param dids The name to set.
+     * @param dids The dids to set.
      */
     function setIssuerDids(bytes32 node, address[] calldata dids)
         external
         authorised(node)
     {
         issuersMap[node].dids = dids;
+        delete issuersMap[node].role;
         emit IssuersChanged(node, issuersMap[node]);
     }
 
     /**
-     * Returns the name associated with an ENS node, for reverse records.
-     * Defined in EIP181.
+     * Sets the dids associated with a role.
+     * Clears the role associated with a role.
+     * May only be called by the owner of that node in the ENS registry.
+     * @param node The node to update.
+     * @param role The role to set.
+     */
+    function setIssuerRole(bytes32 node, bytes32 role)
+        external
+        authorised(node)
+    {
+        issuersMap[node].role = role;
+        delete issuersMap[node].dids;
+        emit IssuersChanged(node, issuersMap[node]);
+    }
+
+    /**
+     * Returns the issuers associated with an ENS node.
      * @param node The ENS node to query.
-     * @return The associated name.
+     * @return The associated issuers.
      */
     function issuers(bytes32 node)
         external
@@ -45,7 +65,7 @@ contract IssuersResolver is ResolverBase {
 
     function supportsInterface(bytes4 interfaceID) public pure returns (bool) {
         return
-            interfaceID == NAME_INTERFACE_ID ||
+            interfaceID == ISSUERS_INTERFACE_ID ||
             super.supportsInterface(interfaceID);
     }
 }
