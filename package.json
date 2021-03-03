@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "EVM smart contracts related to EnergyWeb IAM",
   "scripts": {
-    "compile": "hardhat compile",
+    "build": "hardhat compile",
     "test": "hardhat test",
     "lint": "eslint . --ext .ts"
   },

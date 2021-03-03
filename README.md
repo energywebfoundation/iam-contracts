@@ -19,7 +19,7 @@ $ npm install
 ### Compile & Build
 
 ```sh
-$ npm run compile
+$ npm run build
 ```
 
 ### Run tests
