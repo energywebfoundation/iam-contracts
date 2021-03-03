@@ -5,6 +5,7 @@ import "@ensdomains/resolver/contracts/ResolverBase.sol";
 
 /**
  * Profile for resolving type of issuance expect for a role.
+ * The types are mutually exclusive. A role can only have a single type at a time.
  * These possible types are:
  * 00: Approval by some identity (i.e. an identity from a list of DIDs, or an identity with a given role)
  * 10: “Real-time” approval by a smart contract.
@@ -14,6 +15,7 @@ contract IssuerTypeResolver is ResolverBase {
 
     event IssuerTypeChanged(bytes32 indexed node, uint8 newType);
 
+    // uint used instead of enum so that new types can be added with needing to update the resolver
     mapping(bytes32 => uint8) public issuerTypes;
 
     /**

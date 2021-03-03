@@ -197,9 +197,11 @@ describe('issuerTypes', async () => {
 
 describe("supportsInterface function", async () => {
   it("supports interfaces of new resolver profiles", async () => {
-    expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('issuerType(bytes32)'))).to.be.true;
     expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('versionNumber(bytes32)'))).to.be.true;
+    expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('issuerType(bytes32)'))).to.be.true;
     expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('issuers(bytes32)'))).to.be.true;
+    expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('requiresConditionType(bytes32,uint256)'))).to.be.true;
+    expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('prerequisiteRoles(bytes32)'))).to.be.true;
   });
 
   it("supports interfaces of resolver profiles from PublicResolver", async () => {
