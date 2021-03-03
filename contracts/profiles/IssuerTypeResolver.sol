@@ -6,8 +6,8 @@ import "@ensdomains/resolver/contracts/ResolverBase.sol";
 /**
  * Profile for resolving type of issuance expect for a role.
  * These possible types are:
- * 0: Approval by some identity (i.e. an identity from a list of DIDs, or an identity with a given role)
- * 1: “Real-time” approval by a smart contract.
+ * 00: Approval by some identity (i.e. an identity from a list of DIDs, or an identity with a given role)
+ * 10: “Real-time” approval by a smart contract.
  */
 contract IssuerTypeResolver is ResolverBase {
     bytes4 private constant ISSUER_TYPE_INTERFACE_ID = 0xc585f697;
