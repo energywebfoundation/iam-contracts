@@ -1,7 +1,7 @@
 {
   "_format": "hh-sol-artifact-1",
   "contractName": "IssuersResolver",
-  "sourceName": "contracts/profiles/IssuersResolver.sol",
+  "sourceName": "contracts/profiles/issuance/IssuersResolver.sol",
   "abi": [
     {
       "anonymous": false,
