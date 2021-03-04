@@ -6,6 +6,15 @@ This repo is using the hardhat framework: https://hardhat.org/
 
 This repo uses the typescript functionality of hardhat: https://hardhat.org/guides/typescript.html
 
+## Contract Descriptions
+
+### RoleDefinitionResolver.sol
+
+This is an implementation of an ENS resolver that represents a role definition.
+It extends the [ENS Public Resolver](https://docs.ens.domains/contract-api-reference/publicresolver) with additional resolver profiles,
+specifically for the use case of issuing and verify role claims using a smart contract.
+In other words, this custom ENS resolver allows some properties of a role definition to be (usefully) readable by another smart contract.
+
 ## Development
 
 ### Installing Dependencies
