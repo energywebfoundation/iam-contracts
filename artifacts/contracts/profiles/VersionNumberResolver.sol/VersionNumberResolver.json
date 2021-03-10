@@ -14,9 +14,9 @@
         },
         {
           "indexed": false,
-          "internalType": "uint16",
+          "internalType": "string",
           "name": "newVersion",
-          "type": "uint16"
+          "type": "string"
         }
       ],
       "name": "VersionNumberChanged",
@@ -31,9 +31,9 @@
           "type": "bytes32"
         },
         {
-          "internalType": "uint16",
+          "internalType": "string",
           "name": "versionNumber",
-          "type": "uint16"
+          "type": "string"
         }
       ],
       "name": "setVersionNumber",
@@ -75,9 +75,9 @@
       "name": "versionNumber",
       "outputs": [
         {
-          "internalType": "uint16",
+          "internalType": "string",
           "name": "",
-          "type": "uint16"
+          "type": "string"
         }
       ],
       "payable": false,
@@ -96,9 +96,9 @@
       "name": "versionNumbers",
       "outputs": [
         {
-          "internalType": "uint16",
+          "internalType": "string",
           "name": "",
-          "type": "uint16"
+          "type": "string"
         }
       ],
       "payable": false,

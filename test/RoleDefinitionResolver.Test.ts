@@ -159,8 +159,8 @@ describe('issuers', async () => {
 describe('versionNumbers', async () => {
   it('permits setting version number by owner', async () => {
     const initialVersionNumber = await roleDefinitionResolver.versionNumber(roleNode);
-    expect(initialVersionNumber).to.equal(0, "version numbers should initialized to zero")
-    const newVersionNumber = initialVersionNumber + 1;
+    expect(initialVersionNumber).to.equal("", "version numbers should initialized to empty string")
+    const newVersionNumber = "1.0.0";
     const tx = await roleDefinitionResolver.setVersionNumber(roleNode, newVersionNumber);
     const changedVersionNumber = await roleDefinitionResolver.versionNumber(roleNode);
     expect(changedVersionNumber).to.equal(newVersionNumber);
@@ -171,7 +171,7 @@ describe('versionNumbers', async () => {
   });
 
   it('prevents updating version number by non-owner', async () => {
-    await expect(roleDefinitionResolver.connect(accounts[1]).setVersionNumber(roleNode, 10)).to.eventually.be.rejected;
+    await expect(roleDefinitionResolver.connect(accounts[1]).setVersionNumber(roleNode, "2.0")).to.eventually.be.rejected;
   });
 });
 
