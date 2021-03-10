@@ -4,3 +4,6 @@ node_modules
 #Hardhat files
 cache
 typechain
+
+#Ethers typechain files
+ethers
