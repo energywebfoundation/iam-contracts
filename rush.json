@@ -446,11 +446,10 @@
     //   // "versionPolicyName": ""
     // },
     // 
-    // {
-    //   "packageName": "my-controls",
-    //   "projectFolder": "libraries/my-controls",
-    //   "reviewCategory": "production"
-    // },
+    {
+      "packageName": "@ew-iam/contracts",
+      "projectFolder": "contracts"
+    }
     // 
     // {
     //   "packageName": "my-toolchain",
