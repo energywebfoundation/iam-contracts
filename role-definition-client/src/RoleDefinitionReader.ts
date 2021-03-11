@@ -25,17 +25,17 @@ export class RoleDefinitionReader {
     const issuersData = await this._ensResolver.issuers(node);
     let issuerType: string;
     if (issuersData.dids.length > 0) {
-      issuerType = 'did'
+      issuerType = 'DID'
     }
     else if (issuersData.role != "") {
-      issuerType = 'role'
+      issuerType = 'Role'
     }
     else {
       issuerType = ''
     }
     const issuers: IIssuerDefinition = {
       issuerType,
-      did: issuersData.dids,
+      did: issuersData.dids.map(address => `did:ethr:${address}`),
       roleName: issuersData.role
     }
 
