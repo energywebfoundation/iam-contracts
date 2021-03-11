@@ -449,6 +449,10 @@
     {
       "packageName": "@ew-iam/contracts",
       "projectFolder": "contracts"
+    },
+    {
+      "packageName": "@ew-iam/role-definition-client",
+      "projectFolder": "role-definition-client"
     }
     // 
     // {
