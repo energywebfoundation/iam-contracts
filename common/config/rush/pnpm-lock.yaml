@@ -3,6 +3,7 @@ dependencies:
   '@ensdomains/dnssec-oracle': 0.1.2
   '@ensdomains/ens': 0.4.5
   '@ensdomains/resolver': 0.2.4
+  '@ethersproject/contracts': 5.0.12
   '@nomiclabs/hardhat-ethers': 2.0.2_ethers@5.0.32+hardhat@2.1.1
   '@nomiclabs/hardhat-waffle': 2.0.1_a7036abe059170f7663156e7a8ba676a
   '@rush-temp/contracts': file:projects/contracts.tgz
@@ -8436,6 +8437,7 @@ packages:
       '@ensdomains/dnssec-oracle': 0.1.2
       '@ensdomains/ens': 0.4.5
       '@ensdomains/resolver': 0.2.4
+      '@ethersproject/contracts': 5.0.12
       '@nomiclabs/hardhat-ethers': 2.0.2_ethers@5.0.32+hardhat@2.1.1
       '@nomiclabs/hardhat-waffle': 2.0.1_a7036abe059170f7663156e7a8ba676a
       '@typechain/ethers-v5': 5.0.0_8cb1d5b4cfc3f8d458042e1612db5a80
@@ -8459,7 +8461,7 @@ packages:
     dev: false
     name: '@rush-temp/contracts'
     resolution:
-      integrity: sha512-bjcIZq23Umjv6skc9J94gn8cfThSx9tGGsSPE2/6dsfkPaVlhv5PaEZtWbUETvnUNBJivSwd4UiinLdCNA3MkA==
+      integrity: sha512-N/la36FKjlznc2axNTHVjxvdq+1H9oAUhUEFJghJ0LPzJZBRezW31BDlHJh3acmq6aBG2LylsxuFyHeZW2Mjkg==
       tarball: file:projects/contracts.tgz
     version: 0.0.0
   github.com/ethereumjs/ethereumjs-abi/1a27c59c15ab1e95ee8e5c4ed6ad814c49cc439e:
@@ -8471,11 +8473,13 @@ packages:
     resolution:
       tarball: https://codeload.github.com/ethereumjs/ethereumjs-abi/tar.gz/1a27c59c15ab1e95ee8e5c4ed6ad814c49cc439e
     version: 0.6.8
+registry: ''
 specifiers:
   '@ensdomains/buffer': 0.0.10
   '@ensdomains/dnssec-oracle': ^0.1.2
   '@ensdomains/ens': ^0.4.5
   '@ensdomains/resolver': ^0.2.4
+  '@ethersproject/contracts': ~5.0.12
   '@nomiclabs/hardhat-ethers': ^2.0.1
   '@nomiclabs/hardhat-waffle': ^2.0.1
   '@rush-temp/contracts': file:./projects/contracts.tgz
