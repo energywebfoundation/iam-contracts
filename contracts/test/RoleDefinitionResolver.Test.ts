@@ -122,9 +122,9 @@ describe('issuers', async () => {
     expect(issuers.role).to.equal(solidityDefaultString, "role should be cleared when setting dids");
 
     const eventArgs = await getTransactionEventArgs(tx);
-    expect(eventArgs.newIssuers.dids).to.eql(dids);
-    expect(eventArgs.newIssuers.role).to.equal(solidityDefaultString);
-    expect(eventArgs.node).to.equal(roleNode);
+    expect(eventArgs?.newIssuers.dids).to.eql(dids);
+    expect(eventArgs?.newIssuers.role).to.equal(solidityDefaultString);
+    expect(eventArgs?.node).to.equal(roleNode);
   });
 
   it('permits updating issuer dids by owner', async () => {
@@ -145,9 +145,9 @@ describe('issuers', async () => {
     expect(issuers.dids.length).to.equal(0, "dids should be cleared when setting the role");
 
     const eventArgs = await getTransactionEventArgs(tx);
-    expect(eventArgs.newIssuers.dids).to.eql([]);
-    expect(eventArgs.newIssuers.role).to.equal(anotherRoleNode);
-    expect(eventArgs.node).to.equal(roleNode);
+    expect(eventArgs?.newIssuers.dids).to.eql([]);
+    expect(eventArgs?.newIssuers.role).to.equal(anotherRoleNode);
+    expect(eventArgs?.node).to.equal(roleNode);
   });
 
   it('prevents updating issuers by non-owner', async () => {
@@ -166,8 +166,8 @@ describe('versionNumbers', async () => {
     expect(changedVersionNumber).to.equal(newVersionNumber);
 
     const eventArgs = await getTransactionEventArgs(tx);
-    expect(eventArgs.newVersion).to.equal(newVersionNumber);
-    expect(eventArgs.node).to.equal(roleNode);
+    expect(eventArgs?.newVersion).to.equal(newVersionNumber);
+    expect(eventArgs?.node).to.equal(roleNode);
   });
 
   it('prevents updating version number by non-owner', async () => {
@@ -185,8 +185,8 @@ describe('issuerTypes', async () => {
     expect(changedType).to.equal(newType);
 
     const eventArgs = await getTransactionEventArgs(tx);
-    expect(eventArgs.newType).to.equal(newType);
-    expect(eventArgs.node).to.equal(roleNode);
+    expect(eventArgs?.newType).to.equal(newType);
+    expect(eventArgs?.node).to.equal(roleNode);
   });
 
   it('prevents updating version number by non-owner', async () => {
