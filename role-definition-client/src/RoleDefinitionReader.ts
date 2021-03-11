@@ -1,6 +1,6 @@
 import { Signer } from "ethers";
 import { Provider } from "ethers/providers";
-import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText } from './IRoleDefinition'
+import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText } from './types/IRoleDefinition'
 import { RoleDefinitionResolver__factory } from "../ethers/factories/RoleDefinitionResolver__factory";
 import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver"
 
@@ -39,12 +39,17 @@ export class RoleDefinitionReader {
       roleName: issuersData.role
     }
 
+    // Object.values(EnrolmentConditionTypes).map(conditionType => this._ensResolver.requiresConditionType(node, conditionType))
+    // const enrolmentPreconditionType = await this._ensResolver.requiresConditionType(node, )
+    const enrolmentPreconditions = [];
+
     const version = await this._ensResolver.versionNumber(node);
 
     return {
       ...textProps,
       issuer: issuers,
-      version
+      version,
+      enrolmentPreconditions
     };
   }
 }

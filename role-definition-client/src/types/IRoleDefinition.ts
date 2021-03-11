@@ -1,12 +1,16 @@
 export interface IRoleDefinition extends IRoleDefinitionText {
   version: string;
   issuer: IIssuerDefinition
-  enrolmentPreconditions?: { type: PreconditionTypes; conditions: string[] }[];
+  enrolmentPreconditions: { type: PreconditionTypes; conditions: string[] }[];
 }
 
 export enum PreconditionTypes {
   Role = "role"
 }
+
+export const PreconditionTypeCodes = new TwoWayMap({
+  0: PreconditionTypes.Role
+})
 
 export interface IRoleDefinitionText {
   roleType: string;
