@@ -9,7 +9,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm run build:typechain:resolver && pnpm run build:ts",
+    "build": "pnpm run build:typechain:resolver && pnpm run build:ts && copyfiles \"ethers/**/*.d.ts\" dist",
     "build:ts": "bili",
     "build:typechain:resolver": "typechain --target ethers-v4 --outDir ethers './node_modules/@ew-iam/contracts/artifacts/contracts/RoleDefinitionResolver.sol/RoleDefinitionResolver.json'"
   },
@@ -24,8 +24,9 @@
   "devDependencies": {
     "@typechain/ethers-v4": "^4.0.0",
     "bili": "~5.0.5",
+    "copyfiles": "~2.4.1",
+    "rollup-plugin-typescript2": "~0.30.0",
     "typechain": "^4.0.3",
-    "typescript": "^4.2.3",
-    "rollup-plugin-typescript2": "~0.30.0"
+    "typescript": "^4.2.3"
   }
 }
