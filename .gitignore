@@ -70,3 +70,5 @@ typechain
 
 # VS Code files
 .vscode
+
+dist

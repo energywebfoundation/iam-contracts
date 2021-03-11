@@ -1,8 +1,8 @@
 import { Signer } from "ethers";
 import { Provider } from "ethers/providers";
 import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText } from './IRoleDefinition'
-import { RoleDefinitionResolver__factory } from "./ethers/factories/RoleDefinitionResolver__factory";
-import { RoleDefinitionResolver } from "./ethers/RoleDefinitionResolver"
+import { RoleDefinitionResolver__factory } from "../ethers/factories/RoleDefinitionResolver__factory";
+import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver"
 
 export class RoleDefinitionReader {
   protected readonly _ensResolver: RoleDefinitionResolver;
@@ -29,6 +29,9 @@ export class RoleDefinitionReader {
     }
     else if (issuersData.role != "") {
       issuerType = 'role'
+    }
+    else {
+      issuerType = ''
     }
     const issuers: IIssuerDefinition = {
       issuerType,
