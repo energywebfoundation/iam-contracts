@@ -1,6 +1,6 @@
 ## Overview
 
-This repo consists of packages relating to EnergyWeb IAM smart contracts related to EnergyWeb IAM.
+This repo consists of packages relating to EnergyWeb IAM.
 
 ## Package Descriptions
 
