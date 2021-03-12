@@ -166,6 +166,13 @@
     //    */
     //   // "autoinstallerName": "my-task"
     // }
+    {
+      "commandKind": "bulk",
+      "name": "test",
+      "summary": "Test packages.",
+      "description": "Executes automated tests.",
+      "enableParallelism": true
+    }
   ],
 
   /**

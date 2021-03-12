@@ -11,7 +11,8 @@
   "scripts": {
     "build": "pnpm run build:typechain:resolver && pnpm run build:ts && copyfiles \"ethers/**/*.d.ts\" dist",
     "build:ts": "bili",
-    "build:typechain:resolver": "typechain --target ethers-v4 --outDir ethers './node_modules/@ew-iam/contracts/artifacts/contracts/RoleDefinitionResolver.sol/RoleDefinitionResolver.json'"
+    "build:typechain:resolver": "typechain --target ethers-v4 --outDir ethers './node_modules/@ew-iam/contracts/artifacts/contracts/RoleDefinitionResolver.sol/RoleDefinitionResolver.json'",
+    "test": "echo \"no tests configured\""
   },
   "keywords": [],
   "author": "",
