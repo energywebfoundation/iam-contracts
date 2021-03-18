@@ -9,9 +9,11 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm run build:typechain:resolver && pnpm run build:ts && copyfiles \"ethers/**/*.d.ts\" dist",
+    "build": "pnpm run build:typechain && pnpm run build:ts && copyfiles \"ethers/**/*.d.ts\" dist",
     "build:ts": "bili",
+    "build:typechain": "pnpm run build:typechain:resolver && pnpm run build:typechain:registry",
     "build:typechain:resolver": "typechain --target ethers-v4 --outDir ethers './node_modules/@ew-iam/contracts/artifacts/contracts/RoleDefinitionResolver.sol/RoleDefinitionResolver.json'",
+    "build:typechain:registry": "typechain --target ethers-v4 --outDir ethers './node_modules/@ew-iam/contracts/artifacts/@ensdomains/ens/contracts/ENSRegistry.sol/ENSRegistry.json'",
     "test": "echo \"no tests configured\""
   },
   "keywords": [],
