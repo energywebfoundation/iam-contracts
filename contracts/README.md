@@ -41,18 +41,19 @@ In vs code, the tests (which are run using Mocha), can be debugged with the foll
       "type": "node",
       "request": "launch",
       "name": "Mocha All",
-      "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
+      "program": "${workspaceFolder}/contracts/node_modules/mocha/bin/_mocha",
       "args": [
           "-r",
           "ts-node/register",
           "--timeout",
           "999999",
           "--colors",
-          "${workspaceFolder}/test/**/*Test.ts",
+          "${workspaceFolder}/contracts/test/**/*Test.ts",
       ],
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "protocol": "inspector"
+      "protocol": "inspector",
+      "cwd": "${workspaceFolder}/contracts"
     }
   ]
 }
