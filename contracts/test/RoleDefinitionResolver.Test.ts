@@ -194,6 +194,24 @@ describe('issuerTypes', async () => {
   });
 });
 
+describe('enrolmentPrerequisiteRoles', async () => {
+  it('permits setting prerequisite roles by owner', async () => {
+    const initialRoles = await roleDefinitionResolver.prerequisiteRoles(roleNode);
+    expect(initialRoles).to.be.empty;
+    const newRoles = [utils.namehash("anotherRole.iam.ewc")];
+    const tx = await roleDefinitionResolver.setPrerequisiteRoles(roleNode, newRoles);
+    const changedRoles = await roleDefinitionResolver.prerequisiteRoles(roleNode);
+    expect(changedRoles).to.eql(newRoles);
+
+    const eventArgs = await getTransactionEventArgs(tx);
+    expect(eventArgs?.newPrerequisiteRoles).to.eql(newRoles);
+    expect(eventArgs?.node).to.equal(roleNode);
+  });
+
+  it('prevents updating prerequisite roles by non-owner', async () => {
+    await expect(roleDefinitionResolver.connect(accounts[1]).setPrerequisiteRoles(roleNode, [])).to.eventually.be.rejected;
+  });
+});
 
 describe("supportsInterface function", async () => {
   it("supports interfaces of new resolver profiles", async () => {
