@@ -8,10 +8,6 @@ export enum PreconditionTypes {
   Role = "role"
 }
 
-export const PreconditionTypeCodes = new TwoWayMap({
-  0: PreconditionTypes.Role
-})
-
 export interface IRoleDefinitionText {
   roleType: string;
   roleName: string;

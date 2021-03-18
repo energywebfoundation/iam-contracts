@@ -1,6 +1,6 @@
 import { Signer } from "ethers";
 import { Provider } from "ethers/providers";
-import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText } from './types/IRoleDefinition'
+import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionTypes } from './types/IRoleDefinition'
 import { RoleDefinitionResolver__factory } from "../ethers/factories/RoleDefinitionResolver__factory";
 import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver"
 
@@ -39,9 +39,11 @@ export class RoleDefinitionReader {
       roleName: issuersData.role
     }
 
-    // Object.values(EnrolmentConditionTypes).map(conditionType => this._ensResolver.requiresConditionType(node, conditionType))
-    // const enrolmentPreconditionType = await this._ensResolver.requiresConditionType(node, )
-    const enrolmentPreconditions = [];
+    const prerequisiteRoleNodes = await this._ensResolver.prerequisiteRoles(node)
+    const prerequisiteRoles = await Promise.all(prerequisiteRoleNodes.map(node => this._ensResolver.name(node)))
+    const enrolmentPreconditions = prerequisiteRoles.length >= 1
+      ? [{ type: PreconditionTypes.Role, conditions: prerequisiteRoles }]
+      : []
 
     const version = await this._ensResolver.versionNumber(node);
 
