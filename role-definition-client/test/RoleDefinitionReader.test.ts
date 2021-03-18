@@ -1,10 +1,12 @@
 import { Wallet } from "ethers";
-import { deployContracts, GANACHE_PORT, ensRegistry, ensRoleDefResolver } from "./setup_contracts";
-import { RoleDefinitionReader } from "../src/RoleDefinitionReader";
-import { IRoleDefinition, PreconditionTypes } from "../src/types/IRoleDefinition";
 import { keccak256, namehash, toUtf8Bytes } from "ethers/utils";
+import { deployContracts, GANACHE_PORT, ensRegistry, ensRoleDefResolver, provider } from "./setup_contracts";
+import { RoleDefinitionReader } from "../src/RoleDefinitionReader";
+import { DomainDefinitionTransactionFactory } from "../src/DomainDefinitionTransactionFactory"
+import { IRoleDefinition, PreconditionTypes } from "../src/types/DomainDefinitions";
 
-const wallet = Wallet.createRandom()
+let wallet = Wallet.createRandom()
+wallet = wallet.connect(provider)
 
 export const rpcUrl = `http://localhost:${GANACHE_PORT}`;
 
@@ -38,12 +40,17 @@ describe("RoleDefinitionReader tests", () => {
       }]
     };
 
-    const
+    const domainDefTxFactory = new DomainDefinitionTransactionFactory(ensRoleDefResolver);
+    const call = domainDefTxFactory.newRole({ domain: roleDomain, roleDefinition: data });
+    await (await wallet.sendTransaction(call)).wait()
 
-    const roleDef = await iam.getDefinition({
-      namespace: roleDomain,
-      type: ENSNamespaceTypes.Roles
-    });
+    // for await (const call of tx.calls) {
+    //   await (await this._signer.sendTransaction({ ...call, ...this._transactionOverrides })).wait();
+    // }
+
+    const roleDefinitionReader = new RoleDefinitionReader(ensRoleDefResolver.address, wallet)
+    const roleDef = await roleDefinitionReader.read(roleNode);
+
     expect(roleDef).toMatchObject<IRoleDefinition>(data);
 
     const reverseName = await ensRoleDefResolver.name(roleNode);

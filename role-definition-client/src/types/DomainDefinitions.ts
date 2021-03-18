@@ -1,3 +1,19 @@
+export interface IAppDefinition {
+  appName: string;
+  logoUrl?: string;
+  websiteUrl?: string;
+  description?: string;
+  others?: Record<string, unknown>;
+}
+
+export interface IOrganizationDefinition {
+  orgName: string;
+  logoUrl?: string;
+  websiteUrl?: string;
+  description?: string;
+  others?: Record<string, unknown>;
+}
+
 export interface IRoleDefinition extends IRoleDefinitionText {
   version: string;
   issuer: IIssuerDefinition

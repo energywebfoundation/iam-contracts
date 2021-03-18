@@ -28,7 +28,9 @@ dependencies:
   jest: 26.6.3_ts-node@9.1.1
   mocha: 8.3.2
   rollup-plugin-typescript2: 0.30.0
+  run-with-testrpc: 0.3.1
   ts-generator: 0.1.1
+  ts-jest: 26.5.4_jest@26.6.3
   ts-node: 9.1.1
   tslib: 2.1.0
 lockfileVersion: 5.2
@@ -3680,6 +3682,14 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-vIyhWmIkULaq04Gt93txdh+j02yX/JzlyhLYbV3YQCn/zvES3JnY7TifHHvvr1w5hTDluNKMkV05cs4vy8Q7sw==
+  /bs-logger/0.2.6:
+    dependencies:
+      fast-json-stable-stringify: 2.1.0
+    dev: false
+    engines:
+      node: '>= 6'
+    resolution:
+      integrity: sha512-pd8DCoxmbgc7hyPKOvxtqNcjYoOsABPQdcCUjGp3d42VR2CX1ORhk2A87oqqu5R1kk+76nsxZupkmyd+MVtCog==
   /bs58/4.0.1:
     dependencies:
       base-x: 3.0.8
@@ -4193,6 +4203,12 @@ packages:
     dev: false
     resolution:
       integrity: sha512-MKGMzyfeuutC/ZJ1cba9NqcNpfeqMUcYmyF1ZFY6/Cn7CNSAKx6a+s48sqLqyAiZuaP2TcqMhoo+dlwFnVxT9w==
+  /colors/1.4.0:
+    dev: false
+    engines:
+      node: '>=0.1.90'
+    resolution:
+      integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==
   /combined-stream/1.0.8:
     dependencies:
       delayed-stream: 1.0.0
@@ -6283,6 +6299,15 @@ packages:
     dev: false
     resolution:
       integrity: sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
+  /ganache-cli/6.12.2:
+    bundledDependencies:
+      - source-map-support
+      - yargs
+      - ethereumjs-util
+    dev: false
+    hasBin: true
+    resolution:
+      integrity: sha512-bnmwnJDBDsOWBUP8E/BExWf85TsdDEFelQSzihSJm9VChVO1SHp94YXLP5BlA4j/OTxp0wR4R1Tje9OHOuAJVw==
   /ganache-core/2.13.2:
     bundledDependencies:
       - keccak
@@ -10912,6 +10937,14 @@ packages:
     dev: false
     resolution:
       integrity: sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==
+  /run-with-testrpc/0.3.1:
+    dependencies:
+      colors: 1.4.0
+      ganache-cli: 6.12.2
+    dev: false
+    hasBin: true
+    resolution:
+      integrity: sha512-+G9L7oMhLNXStmXGSjWtWxu7QVTJROJq3P1vruH01FaRtDiKIuvgqs9aZ3eJoTkfjg6UoOPxg/kwgYZlwKIvoQ==
   /rustbn.js/0.2.0:
     dev: false
     resolution:
@@ -12026,6 +12059,51 @@ packages:
     hasBin: true
     resolution:
       integrity: sha512-N+ahhZxTLYu1HNTQetwWcx3so8hcYbkKBHTr4b4/YgObFTIKkOSSsaa+nal12w8mfrJAyzJfETXawbNjSfP2gQ==
+  /ts-jest/26.5.4_jest@26.6.3:
+    dependencies:
+      bs-logger: 0.2.6
+      buffer-from: 1.1.1
+      fast-json-stable-stringify: 2.1.0
+      jest: 26.6.3_ts-node@9.1.1
+      jest-util: 26.6.2
+      json5: 2.2.0
+      lodash: 4.17.21
+      make-error: 1.3.6
+      mkdirp: 1.0.4
+      semver: 7.3.4
+      yargs-parser: 20.2.7
+    dev: false
+    engines:
+      node: '>= 10'
+    hasBin: true
+    peerDependencies:
+      jest: '>=26 <27'
+      typescript: '>=3.8 <5.0'
+    resolution:
+      integrity: sha512-I5Qsddo+VTm94SukBJ4cPimOoFZsYTeElR2xy6H2TOVs+NsvgYglW8KuQgKoApOKuaU/Ix/vrF9ebFZlb5D2Pg==
+  /ts-jest/26.5.4_jest@26.6.3+typescript@4.2.3:
+    dependencies:
+      bs-logger: 0.2.6
+      buffer-from: 1.1.1
+      fast-json-stable-stringify: 2.1.0
+      jest: 26.6.3_ts-node@9.1.1
+      jest-util: 26.6.2
+      json5: 2.2.0
+      lodash: 4.17.21
+      make-error: 1.3.6
+      mkdirp: 1.0.4
+      semver: 7.3.4
+      typescript: 4.2.3
+      yargs-parser: 20.2.7
+    dev: false
+    engines:
+      node: '>= 10'
+    hasBin: true
+    peerDependencies:
+      jest: '>=26 <27'
+      typescript: '>=3.8 <5.0'
+    resolution:
+      integrity: sha512-I5Qsddo+VTm94SukBJ4cPimOoFZsYTeElR2xy6H2TOVs+NsvgYglW8KuQgKoApOKuaU/Ix/vrF9ebFZlb5D2Pg==
   /ts-node/9.1.1:
     dependencies:
       arg: 4.1.3
@@ -13320,6 +13398,8 @@ packages:
       ethers: 4.0.45
       jest: 26.6.3_ts-node@9.1.1
       rollup-plugin-typescript2: 0.30.0_typescript@4.2.3
+      run-with-testrpc: 0.3.1
+      ts-jest: 26.5.4_jest@26.6.3+typescript@4.2.3
       tslib: 2.1.0
       typechain: 4.0.3_typescript@4.2.3
       typescript: 4.2.3
@@ -13329,7 +13409,7 @@ packages:
     peerDependencies:
       ts-node: '*'
     resolution:
-      integrity: sha512-ZiAzkwcDqdh8r3HtlDYl2GNwoQ+Q+Gp/14BS4YvsNQ+ivMADr43mkdmnQk8JczKcflHLbYrhsDC89Lnd7ljCMA==
+      integrity: sha512-NCWCBF1IPDwVKs9Sefn4CJi38sDoze6EoPepBlD5mhJPjAEN45tBL+fEs7usscp3QzvDeS+6x93MJ5l8J5VDzQ==
       tarball: file:projects/role-definition-client.tgz
     version: 0.0.0
   github.com/ethereumjs/ethereumjs-abi/1a27c59c15ab1e95ee8e5c4ed6ad814c49cc439e:
@@ -13372,6 +13452,8 @@ specifiers:
   jest: ~26.6.3
   mocha: ~8.3.2
   rollup-plugin-typescript2: ~0.30.0
+  run-with-testrpc: ~0.3.1
   ts-generator: ^0.1.1
+  ts-jest: ~26.5.4
   ts-node: ^9.1.1
   tslib: ~2.1.0

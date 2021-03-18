@@ -1,6 +1,6 @@
 import { Signer } from "ethers";
 import { Provider } from "ethers/providers";
-import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionTypes } from './types/IRoleDefinition'
+import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionTypes } from './types/DomainDefinitions'
 import { RoleDefinitionResolver__factory } from "../ethers/factories/RoleDefinitionResolver__factory";
 import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver"
 
