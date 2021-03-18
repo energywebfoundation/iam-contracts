@@ -1,4 +1,4 @@
-import { ContractFactory, Wallet, Contract, providers, utils } from "ethers";
+import { Wallet, Contract, providers, utils } from "ethers";
 import { ENSRegistry } from "../ethers/ENSRegistry";
 import { ENSRegistry__factory } from "../ethers/factories/ENSRegistry__factory";
 import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver";

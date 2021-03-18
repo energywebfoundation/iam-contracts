@@ -14,10 +14,11 @@
     "build:typechain": "pnpm run build:typechain:resolver && pnpm run build:typechain:registry",
     "build:typechain:resolver": "typechain --target ethers-v4 --outDir ethers './node_modules/@ew-iam/contracts/artifacts/contracts/RoleDefinitionResolver.sol/RoleDefinitionResolver.json'",
     "build:typechain:registry": "typechain --target ethers-v4 --outDir ethers './node_modules/@ew-iam/contracts/artifacts/@ensdomains/ens/contracts/ENSRegistry.sol/ENSRegistry.json'",
-    "test": "echo \"no tests configured\""
+    "test:watch": "npm run start-rpc -- \"jest --coverage --watchAll\"",
+    "test": "npm run start-rpc -- \"jest --coverage --no-cache\""
   },
   "keywords": [],
-  "author": "",
+  "author": "Energy Web",
   "license": "GPL-3.0-or-later",
   "dependencies": {
     "@ew-iam/contracts": "~1.0.0",
@@ -30,6 +31,8 @@
     "copyfiles": "~2.4.1",
     "rollup-plugin-typescript2": "~0.30.0",
     "typechain": "^4.0.3",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "jest": "~26.6.3",
+    "@types/jest": "~26.0.21"
   }
 }
