@@ -1,7 +1,7 @@
 import { Wallet } from "ethers";
 import { keccak256, namehash, toUtf8Bytes } from "ethers/utils";
 import { deployContracts, GANACHE_PORT, ensRegistry, ensRoleDefResolver, provider } from "./setup_contracts";
-import { RoleDefinitionReader } from "../src/RoleDefinitionReader";
+import { DomainDefinitionReader } from "../src/DomainDefinitionReader";
 import { DomainDefinitionTransactionFactory } from "../src/DomainDefinitionTransactionFactory"
 import { IRoleDefinition, PreconditionType } from "../src/types/DomainDefinitions";
 
@@ -44,7 +44,7 @@ describe("RoleDefinitionReader tests", () => {
     const call = domainDefTxFactory.newRole({ domain: roleDomain, roleDefinition: data });
     await (await wallet.sendTransaction(call)).wait()
 
-    const roleDefinitionReader = new RoleDefinitionReader(ensRoleDefResolver.address, wallet)
+    const roleDefinitionReader = new DomainDefinitionReader(ensRoleDefResolver.address, wallet.provider)
     const roleDef = await roleDefinitionReader.read(roleNode);
 
     expect(roleDef).toMatchObject<IRoleDefinition>(data);

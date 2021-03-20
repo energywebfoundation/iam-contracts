@@ -3,7 +3,7 @@ import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionTy
 import { RoleDefinitionResolver__factory } from "../ethers/factories/RoleDefinitionResolver__factory";
 import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver"
 
-export class RoleDefinitionReader {
+export class DomainDefinitionReader {
   public static isOrgDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IOrganizationDefinition =>
     (domainDefinition as IOrganizationDefinition).orgName !== undefined;
 
@@ -30,10 +30,10 @@ export class RoleDefinitionReader {
       throw Error(`unable to parse resolved textData for node: ${node}. ${JSON.stringify(err)}`)
     }
 
-    if (RoleDefinitionReader.isOrgDefinition(textProps) || RoleDefinitionReader.isAppDefinition(textProps)) {
+    if (DomainDefinitionReader.isOrgDefinition(textProps) || DomainDefinitionReader.isAppDefinition(textProps)) {
       return textProps
     }
-    if (RoleDefinitionReader.isRoleDefinition(textProps)) {
+    if (DomainDefinitionReader.isRoleDefinition(textProps)) {
       return await this.readRoleDefinition(node, textProps)
     }
     throw Error("unable to read domain definition")
