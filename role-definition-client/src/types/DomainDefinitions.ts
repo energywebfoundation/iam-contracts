@@ -20,13 +20,6 @@ export interface IRoleDefinition extends IRoleDefinitionText {
   enrolmentPreconditions: { type: PreconditionType; conditions: string[] }[];
 }
 
-export enum DomainType {
-  NotSupported,
-  Role,
-  Organization,
-  Application
-}
-
 export enum PreconditionType {
   Role = "role"
 }

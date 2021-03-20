@@ -1,5 +1,5 @@
 import { RoleDefinitionReader } from "./RoleDefinitionReader"
-import { IOrganizationDefinition, IAppDefinition, IRoleDefinition } from "./types/DomainDefinitions"
+import { IOrganizationDefinition, IAppDefinition, IRoleDefinition, IRoleDefinitionText } from "./types/DomainDefinitions"
 
 export { RoleDefinitionReader }
-export { IOrganizationDefinition, IAppDefinition, IRoleDefinition }
+export { IOrganizationDefinition, IAppDefinition, IRoleDefinition, IRoleDefinitionText }

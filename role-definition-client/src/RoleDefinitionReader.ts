@@ -1,38 +1,22 @@
 import { Provider } from "ethers/providers";
-import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType, DomainType, IAppDefinition, IOrganizationDefinition } from './types/DomainDefinitions'
+import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType, IAppDefinition, IOrganizationDefinition } from './types/DomainDefinitions'
 import { RoleDefinitionResolver__factory } from "../ethers/factories/RoleDefinitionResolver__factory";
 import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver"
 
 export class RoleDefinitionReader {
+  public static isOrgDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IOrganizationDefinition =>
+    (domainDefinition as IOrganizationDefinition).orgName !== undefined;
+
+  public static isAppDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IAppDefinition =>
+    (domainDefinition as IAppDefinition).appName !== undefined;
+
+  public static isRoleDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IRoleDefinition =>
+    (domainDefinition as IRoleDefinition).roleName !== undefined;
+
   protected readonly _ensResolver: RoleDefinitionResolver;
 
   constructor(ensResolverAddress: string, provider: Provider) {
     this._ensResolver = RoleDefinitionResolver__factory.connect(ensResolverAddress, provider);
-  }
-
-  public static parseDomainType({
-    possibleProperties,
-  }: {
-    possibleProperties: {
-      orgName?: string;
-      appName?: string;
-      roleName?: string;
-    };
-  }): DomainType {
-    if (possibleProperties.orgName) {
-      return DomainType.Organization;
-    }
-    if (possibleProperties.appName) {
-      // TODO: Check that this can be done with an appName (maybe appName isn't the full namespace)
-      const [, parent] = possibleProperties.appName.split('.')
-      if (parent === 'apps') {
-        return DomainType.Application;
-      }
-    }
-    if (possibleProperties.roleName) {
-      return DomainType.Role
-    }
-    return DomainType.NotSupported;
   }
 
   public async read(node: string): Promise<IRoleDefinition | IAppDefinition | IOrganizationDefinition> {
@@ -41,19 +25,15 @@ export class RoleDefinitionReader {
     const textData = await this._ensResolver.text(node, 'metadata');
     let textProps
     try {
-      textProps = JSON.parse(textData) as IRoleDefinitionText;
+      textProps = JSON.parse(textData) as IRoleDefinitionText | IAppDefinition | IOrganizationDefinition;
     } catch (err) {
       throw Error(`unable to parse resolved textData for node: ${node}. ${JSON.stringify(err)}`)
     }
-    const domainType = RoleDefinitionReader.parseDomainType({ possibleProperties: textProps })
 
-    if (domainType === DomainType.Application) {
-      throw new Error("not implemented")
+    if (RoleDefinitionReader.isOrgDefinition(textProps) || RoleDefinitionReader.isAppDefinition(textProps)) {
+      return textProps
     }
-    if (domainType === DomainType.Organization) {
-      throw new Error("not implemented")
-    }
-    if (domainType === DomainType.Role) {
+    if (RoleDefinitionReader.isRoleDefinition(textProps)) {
       return await this.readRoleDefinition(node, textProps)
     }
     throw Error("unable to read domain definition")
@@ -93,5 +73,4 @@ export class RoleDefinitionReader {
       enrolmentPreconditions
     };
   }
-
 }
