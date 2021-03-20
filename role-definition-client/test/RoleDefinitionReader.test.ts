@@ -3,7 +3,7 @@ import { keccak256, namehash, toUtf8Bytes } from "ethers/utils";
 import { deployContracts, GANACHE_PORT, ensRegistry, ensRoleDefResolver, provider } from "./setup_contracts";
 import { RoleDefinitionReader } from "../src/RoleDefinitionReader";
 import { DomainDefinitionTransactionFactory } from "../src/DomainDefinitionTransactionFactory"
-import { IRoleDefinition, PreconditionTypes } from "../src/types/DomainDefinitions";
+import { IRoleDefinition, PreconditionType } from "../src/types/DomainDefinitions";
 
 let wallet = Wallet.createRandom()
 wallet = wallet.connect(provider)
@@ -35,7 +35,7 @@ describe("RoleDefinitionReader tests", () => {
       roleType: "test",
       version: "1.0.0",
       enrolmentPreconditions: [{
-        type: PreconditionTypes.Role,
+        type: PreconditionType.Role,
         conditions: [roleDomain] // Circular condition but sufficient for test
       }]
     };
@@ -43,10 +43,6 @@ describe("RoleDefinitionReader tests", () => {
     const domainDefTxFactory = new DomainDefinitionTransactionFactory(ensRoleDefResolver);
     const call = domainDefTxFactory.newRole({ domain: roleDomain, roleDefinition: data });
     await (await wallet.sendTransaction(call)).wait()
-
-    // for await (const call of tx.calls) {
-    //   await (await this._signer.sendTransaction({ ...call, ...this._transactionOverrides })).wait();
-    // }
 
     const roleDefinitionReader = new RoleDefinitionReader(ensRoleDefResolver.address, wallet)
     const roleDef = await roleDefinitionReader.read(roleNode);
@@ -56,4 +52,8 @@ describe("RoleDefinitionReader tests", () => {
     const reverseName = await ensRoleDefResolver.name(roleNode);
     expect(reverseName).toEqual(roleDomain);
   });
+
+  //TODO: Test for appName, orgName, roleName that is different from what is configured in name resolver
+
+  // TODO: Test role definition without some properties set
 });

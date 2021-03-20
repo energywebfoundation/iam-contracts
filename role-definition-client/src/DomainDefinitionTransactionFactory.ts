@@ -1,5 +1,5 @@
 import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver";
-import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, IIssuerDefinition, PreconditionTypes } from "./types/DomainDefinitions"
+import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, IIssuerDefinition, PreconditionType } from "./types/DomainDefinitions"
 import { DID } from "./types/DID";
 import { EncodedCall } from "./types/Transaction";
 import { namehash } from "ethers/utils";
@@ -77,7 +77,7 @@ export class DomainDefinitionTransactionFactory {
     const setIssuerTypeTx = this.setIssuerTypeTx({ domain, issuerType: 0 });
 
     let prerequisiteRolesTx;
-    const roleConditiions = data?.enrolmentPreconditions?.filter(condition => condition.type === PreconditionTypes.Role);
+    const roleConditiions = data?.enrolmentPreconditions?.filter(condition => condition.type === PreconditionType.Role);
     if (!roleConditiions || roleConditiions.length < 1) {
       prerequisiteRolesTx = this.setPrerequisiteRolesTx({ domain, prerequisiteRoles: [] });
     }

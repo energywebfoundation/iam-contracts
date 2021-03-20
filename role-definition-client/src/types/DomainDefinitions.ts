@@ -17,10 +17,17 @@ export interface IOrganizationDefinition {
 export interface IRoleDefinition extends IRoleDefinitionText {
   version: string;
   issuer: IIssuerDefinition
-  enrolmentPreconditions: { type: PreconditionTypes; conditions: string[] }[];
+  enrolmentPreconditions: { type: PreconditionType; conditions: string[] }[];
 }
 
-export enum PreconditionTypes {
+export enum DomainType {
+  NotSupported,
+  Role,
+  Organization,
+  Application
+}
+
+export enum PreconditionType {
   Role = "role"
 }
 
