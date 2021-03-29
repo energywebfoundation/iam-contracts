@@ -1,11 +1,11 @@
-import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver";
+import { RoleDefinitionResolver } from "../contract-types/RoleDefinitionResolver";
 import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, IIssuerDefinition, PreconditionType } from "./types/DomainDefinitions"
 import { DID } from "./types/DID";
 import { EncodedCall } from "./types/Transaction";
 import { namehash } from "ethers/utils";
 
 export class DomainDefinitionTransactionFactory {
-  constructor(private readonly roleDefinitionResolver: RoleDefinitionResolver) { }
+  constructor(protected readonly roleDefinitionResolver: RoleDefinitionResolver) { }
 
   /**
    * Creates transaction to set role definition and reverse name in resolver contract 

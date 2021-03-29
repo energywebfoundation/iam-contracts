@@ -9,11 +9,12 @@
     "dist"
   ],
   "scripts": {
-    "build": "pnpm run build:typechain && pnpm run build:ts && copyfiles \"ethers/**/*.d.ts\" dist",
+    "build": "pnpm run build:typechain && pnpm run build:ts && copyfiles \"contract-types/**/*.d.ts\" dist",
     "build:ts": "bili",
-    "build:typechain": "pnpm run build:typechain:resolver && pnpm run build:typechain:registry",
-    "build:typechain:resolver": "typechain --target ethers-v4 --outDir ethers './node_modules/@energyweb/iam-domain-contracts/artifacts/contracts/RoleDefinitionResolver.sol/RoleDefinitionResolver.json'",
-    "build:typechain:registry": "typechain --target ethers-v4 --outDir ethers './node_modules/@energyweb/iam-domain-contracts/artifacts/@ensdomains/ens/contracts/ENSRegistry.sol/ENSRegistry.json'",
+    "build:typechain": "pnpm run build:typechain:resolver && pnpm run build:typechain:registry && pnpm run build:typechain:publicresolver",
+    "build:typechain:resolver": "typechain --target ethers-v4 --outDir contract-types './node_modules/@energyweb/iam-domain-contracts/artifacts/contracts/RoleDefinitionResolver.sol/RoleDefinitionResolver.json'",
+    "build:typechain:registry": "typechain --target ethers-v4 --outDir contract-types './node_modules/@energyweb/iam-domain-contracts/artifacts/@ensdomains/ens/contracts/ENSRegistry.sol/ENSRegistry.json'",
+    "build:typechain:publicresolver": "typechain --target ethers-v4 --outDir contract-types './node_modules/@energyweb/iam-domain-contracts/artifacts/@ensdomains/resolver/contracts/PublicResolver.sol/PublicResolver.json'",
     "start-rpc": "run-with-testrpc -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000",
     "test:watch": "npm run start-rpc -- \"jest --coverage --watchAll\"",
     "test": "npm run start-rpc -- \"jest --coverage --no-cache\""

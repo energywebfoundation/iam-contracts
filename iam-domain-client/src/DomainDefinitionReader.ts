@@ -1,7 +1,7 @@
 import { Provider } from "ethers/providers";
 import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType, IAppDefinition, IOrganizationDefinition } from './types/DomainDefinitions'
-import { RoleDefinitionResolver__factory } from "../ethers/factories/RoleDefinitionResolver__factory";
-import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver"
+import { RoleDefinitionResolver__factory } from "../contract-types/factories/RoleDefinitionResolver__factory";
+import { RoleDefinitionResolver } from "../contract-types/RoleDefinitionResolver"
 
 export class DomainDefinitionReader {
   public static isOrgDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IOrganizationDefinition =>
@@ -19,6 +19,11 @@ export class DomainDefinitionReader {
     this._ensResolver = RoleDefinitionResolver__factory.connect(ensResolverAddress, provider);
   }
 
+  /**
+   * 
+   * @param node 
+   * @returns 
+   */
   public async read(node: string): Promise<IRoleDefinition | IAppDefinition | IOrganizationDefinition> {
     // TODO: Validate the node is a valid namehash
 

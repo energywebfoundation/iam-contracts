@@ -1,8 +1,10 @@
 import { Wallet, Contract, providers, utils } from "ethers";
-import { ENSRegistry } from "../ethers/ENSRegistry";
-import { ENSRegistry__factory } from "../ethers/factories/ENSRegistry__factory";
-import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver";
-import { RoleDefinitionResolver__factory } from "../ethers/factories/RoleDefinitionResolver__factory";
+import { ENSRegistry } from "../contract-types/ENSRegistry";
+import { ENSRegistry__factory } from "../contract-types/factories/ENSRegistry__factory";
+import { RoleDefinitionResolver } from "../contract-types/RoleDefinitionResolver";
+import { RoleDefinitionResolver__factory } from "../contract-types/factories/RoleDefinitionResolver__factory";
+import { PublicResolver } from "../contract-types/PublicResolver";
+import { PublicResolver__factory } from "../contract-types/factories/PublicResolver__factory";
 
 const { JsonRpcProvider } = providers;
 const { parseEther } = utils;
@@ -11,6 +13,7 @@ export const GANACHE_PORT = 8544;
 export const provider = new JsonRpcProvider(`http://localhost:${GANACHE_PORT}`);
 export let ensRegistry: ENSRegistry;
 export let ensRoleDefResolver: RoleDefinitionResolver;
+export let ensPublicResolver: PublicResolver;
 export let didContract: Contract;
 
 export const deployContracts = async (privateKey: string): Promise<void> => {
@@ -18,6 +21,7 @@ export const deployContracts = async (privateKey: string): Promise<void> => {
   await replenish(wallet.address);
   ensRegistry = await (new ENSRegistry__factory(wallet).deploy());
   ensRoleDefResolver = await (new RoleDefinitionResolver__factory(wallet).deploy(ensRegistry.address));
+  ensPublicResolver = await (new PublicResolver__factory(wallet).deploy(ensRegistry.address));
 };
 
 export const replenish = async (acc: string) => {

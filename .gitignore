@@ -73,7 +73,7 @@ typechain
 
 # Build outputs
 dist
-ethers
+contract-types
 
 # not needed as rush provides shrinkwrap file
 package-lock.json
