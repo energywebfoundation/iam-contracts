@@ -5,6 +5,8 @@ import { DomainDefinitionReader } from "../src/DomainDefinitionReader";
 import { DomainDefinitionTransactionFactory } from "../src/DomainDefinitionTransactionFactory"
 import { IRoleDefinition, PreconditionType } from "../src/types/DomainDefinitions";
 import { LegacyDomainDefTransactionFactory } from "./LegacyDomainDefTransactionFactory";
+import { addKnownResolver, setRegistryAddress, VOLTA_CHAIN_ID } from "../src/resolverConfig";
+import { ResolverContractType } from "../src/types/ResolverContractType";
 
 errors.setLogLevel("error"); // To disable "WARNING: Multiple definitions for addr"
 let wallet = Wallet.createRandom()
@@ -36,6 +38,9 @@ const data: IRoleDefinition = {
 describe("RoleDefinitionReader tests", () => {
   beforeEach(async () => {
     await deployContracts(wallet.privateKey);
+    setRegistryAddress(VOLTA_CHAIN_ID, ensRegistry.address);
+    addKnownResolver(VOLTA_CHAIN_ID, ensRoleDefResolver.address, ResolverContractType.RoleDefinitionResolver_v1);
+    addKnownResolver(VOLTA_CHAIN_ID, ensPublicResolver.address, ResolverContractType.PublicResolver);
 
     const rootNameHash = "0x0000000000000000000000000000000000000000000000000000000000000000";
     await ensRegistry.setSubnodeOwner(rootNameHash, hashLabel(roleDomain), wallet.address);
@@ -43,11 +48,12 @@ describe("RoleDefinitionReader tests", () => {
   });
 
   test("role can be created and read", async () => {
+    await ensRegistry.setResolver(roleNode, ensRoleDefResolver.address);
     const domainDefTxFactory = new DomainDefinitionTransactionFactory(ensRoleDefResolver);
     const call = domainDefTxFactory.newRole({ domain: roleDomain, roleDefinition: data });
     await (await wallet.sendTransaction(call)).wait()
 
-    const roleDefinitionReader = new DomainDefinitionReader(ensRoleDefResolver.address, wallet.provider)
+    const roleDefinitionReader = new DomainDefinitionReader(VOLTA_CHAIN_ID, wallet.provider)
     const roleDef = await roleDefinitionReader.read(roleNode);
 
     expect(roleDef).toMatchObject<IRoleDefinition>(data);
@@ -57,11 +63,12 @@ describe("RoleDefinitionReader tests", () => {
   });
 
   test("text only role can be created and read", async () => {
+    await ensRegistry.setResolver(roleNode, ensPublicResolver.address);
     const domainDefTxFactory = new LegacyDomainDefTransactionFactory(ensPublicResolver);
     const call = domainDefTxFactory.newRole({ domain: roleDomain, roleDefinition: data });
     await (await wallet.sendTransaction(call)).wait()
 
-    const roleDefinitionReader = new DomainDefinitionReader(ensPublicResolver.address, wallet.provider)
+    const roleDefinitionReader = new DomainDefinitionReader(VOLTA_CHAIN_ID, wallet.provider)
     const roleDef = await roleDefinitionReader.read(roleNode);
 
     expect(roleDef).toMatchObject<IRoleDefinition>(data);
@@ -69,6 +76,14 @@ describe("RoleDefinitionReader tests", () => {
     const reverseName = await ensRoleDefResolver.name(roleNode);
     expect(reverseName).toEqual(roleDomain);
   });
+
+  test("domain with unknown resolver throws error", async () => {
+    await ensRegistry.setResolver(roleNode, '0x0000000000000000000000000000000000000123');
+    const roleDefinitionReader = new DomainDefinitionReader(VOLTA_CHAIN_ID, wallet.provider)
+    await expect(roleDefinitionReader.read(roleNode)).rejects.toThrow("resolver is unknown");
+  });
+
+
 
   //TODO: Test for appName, orgName, roleName that is different from what is configured in name resolver
 

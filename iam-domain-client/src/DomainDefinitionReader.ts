@@ -2,6 +2,12 @@ import { Provider } from "ethers/providers";
 import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType, IAppDefinition, IOrganizationDefinition } from './types/DomainDefinitions'
 import { RoleDefinitionResolver__factory } from "../contract-types/factories/RoleDefinitionResolver__factory";
 import { RoleDefinitionResolver } from "../contract-types/RoleDefinitionResolver"
+import { ENSRegistry } from "../contract-types/ENSRegistry"
+import { ENSRegistry__factory } from "../contract-types/factories/ENSRegistry__factory";
+import { ensRegistryAddresses, knownEnsResolvers } from "./resolverConfig";
+import { ResolverContractType } from "./types/ResolverContractType";
+import { PublicResolver } from "../contract-types/PublicResolver";
+import { PublicResolver__factory } from "../contract-types/factories/PublicResolver__factory";
 
 export class DomainDefinitionReader {
   public static isOrgDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IOrganizationDefinition =>
@@ -13,40 +19,67 @@ export class DomainDefinitionReader {
   public static isRoleDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IRoleDefinition =>
     (domainDefinition as IRoleDefinition).roleName !== undefined;
 
-  protected readonly _ensResolver: RoleDefinitionResolver;
+  protected readonly _ensRegistry: ENSRegistry;
 
-  constructor(ensResolverAddress: string, provider: Provider) {
-    this._ensResolver = RoleDefinitionResolver__factory.connect(ensResolverAddress, provider);
+  constructor(private readonly chainID: number, private readonly provider: Provider) {
+    const ensRegistryAddress = ensRegistryAddresses[chainID]
+    this._ensRegistry = ENSRegistry__factory.connect(ensRegistryAddress, provider);
   }
 
   /**
    * 
    * @param node 
-   * @returns 
+   * @returns
    */
   public async read(node: string): Promise<IRoleDefinition | IAppDefinition | IOrganizationDefinition> {
     // TODO: Validate the node is a valid namehash
 
-    const textData = await this._ensResolver.text(node, 'metadata');
-    let textProps
-    try {
-      textProps = JSON.parse(textData) as IRoleDefinitionText | IAppDefinition | IOrganizationDefinition;
-    } catch (err) {
-      throw Error(`unable to parse resolved textData for node: ${node}. ${JSON.stringify(err)}`)
+    // Get resolver from registry
+    const resolverAddress = await this._ensRegistry.resolver(node);
+    if (resolverAddress === '0x0000000000000000000000000000000000000000') {
+      throw Error("no resolver address set")
     }
 
-    if (DomainDefinitionReader.isOrgDefinition(textProps) || DomainDefinitionReader.isAppDefinition(textProps)) {
-      return textProps
+    const resolverType = knownEnsResolvers[this.chainID][resolverAddress]
+    if (resolverType === undefined) {
+      throw Error("resolver is unknown")
     }
-    if (DomainDefinitionReader.isRoleDefinition(textProps)) {
-      return await this.readRoleDefinition(node, textProps)
+
+    if (resolverType === ResolverContractType.PublicResolver) {
+      const ensResolver: PublicResolver = PublicResolver__factory.connect(resolverAddress, this.provider);
+      const textData = await ensResolver.text(node, 'metadata');
+      let definition
+      try {
+        definition = JSON.parse(textData) as IRoleDefinitionText | IAppDefinition | IOrganizationDefinition;
+      } catch (err) {
+        throw Error(`unable to parse resolved textData for node: ${node}. ${JSON.stringify(err)}`)
+      }
+      return definition
     }
-    throw Error("unable to read domain definition")
+    else if (resolverType === ResolverContractType.RoleDefinitionResolver_v1) {
+      const ensResolver: RoleDefinitionResolver = RoleDefinitionResolver__factory.connect(resolverAddress, this.provider);
+      const textData = await ensResolver.text(node, 'metadata');
+      let textProps
+      try {
+        textProps = JSON.parse(textData) as IRoleDefinitionText | IAppDefinition | IOrganizationDefinition;
+      } catch (err) {
+        throw Error(`unable to parse resolved textData for node: ${node}. ${JSON.stringify(err)}`)
+      }
+
+      if (DomainDefinitionReader.isOrgDefinition(textProps) || DomainDefinitionReader.isAppDefinition(textProps)) {
+        return textProps
+      }
+      if (DomainDefinitionReader.isRoleDefinition(textProps)) {
+        return await this.readRoleDefinition(node, textProps, ensResolver)
+      }
+      throw Error("unable to read domain definition")
+    }
+    throw Error("resolver type not supported")
   }
 
   // TODO: Muliticalify (make all the queries in one)
-  private async readRoleDefinition(node: string, roleDefinitionText: IRoleDefinitionText) {
-    const issuersData = await this._ensResolver.issuers(node);
+  private async readRoleDefinition(node: string, roleDefinitionText: IRoleDefinitionText, ensResolver: RoleDefinitionResolver) {
+    const issuersData = await ensResolver.issuers(node);
     let issuerType: string;
     if (issuersData.dids.length > 0) {
       issuerType = 'DID'
@@ -63,13 +96,13 @@ export class DomainDefinitionReader {
       roleName: issuersData.role
     }
 
-    const prerequisiteRoleNodes = await this._ensResolver.prerequisiteRoles(node)
-    const prerequisiteRoles = await Promise.all(prerequisiteRoleNodes.map(node => this._ensResolver.name(node)))
+    const prerequisiteRoleNodes = await ensResolver.prerequisiteRoles(node)
+    const prerequisiteRoles = await Promise.all(prerequisiteRoleNodes.map(node => ensResolver.name(node)))
     const enrolmentPreconditions = prerequisiteRoles.length >= 1
       ? [{ type: PreconditionType.Role, conditions: prerequisiteRoles }]
       : []
 
-    const version = await this._ensResolver.versionNumber(node);
+    const version = await ensResolver.versionNumber(node);
 
     return {
       ...roleDefinitionText,
