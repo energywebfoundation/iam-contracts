@@ -1,6 +1,6 @@
 import { namehash } from "ethers/utils";
 import { PublicResolver } from "../contract-types/PublicResolver";
-import { IRoleDefinition, EncodedCall } from "../src/role-definition-client";
+import { IRoleDefinition, EncodedCall } from "../src/iam-domain-client";
 
 /**
  * Initially, Switchboard role data was only maintained in the text resolver
