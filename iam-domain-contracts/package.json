@@ -1,5 +1,5 @@
 {
-  "name": "@ew-iam/contracts",
+  "name": "@energyweb/iam-domain-contracts",
   "version": "1.0.0",
   "description": "EVM smart contracts related to EnergyWeb IAM",
   "scripts": {

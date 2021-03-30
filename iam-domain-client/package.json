@@ -1,10 +1,10 @@
 {
-  "name": "@ew-iam/domain-definition-client",
+  "name": "@energyweb/iam-domain-client",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/role-definition-client.js",
-  "module": "dist/role-definition-client.esm.js",
-  "types": "dist/src/role-definition-client.d.ts",
+  "main": "dist/iam-domain-client.js",
+  "module": "dist/iam-domain-client.esm.js",
+  "types": "dist/src/iam-domain-client.d.ts",
   "files": [
     "dist"
   ],
@@ -12,8 +12,8 @@
     "build": "pnpm run build:typechain && pnpm run build:ts && copyfiles \"ethers/**/*.d.ts\" dist",
     "build:ts": "bili",
     "build:typechain": "pnpm run build:typechain:resolver && pnpm run build:typechain:registry",
-    "build:typechain:resolver": "typechain --target ethers-v4 --outDir ethers './node_modules/@ew-iam/contracts/artifacts/contracts/RoleDefinitionResolver.sol/RoleDefinitionResolver.json'",
-    "build:typechain:registry": "typechain --target ethers-v4 --outDir ethers './node_modules/@ew-iam/contracts/artifacts/@ensdomains/ens/contracts/ENSRegistry.sol/ENSRegistry.json'",
+    "build:typechain:resolver": "typechain --target ethers-v4 --outDir ethers './node_modules/@energyweb/iam-domain-contracts/artifacts/contracts/RoleDefinitionResolver.sol/RoleDefinitionResolver.json'",
+    "build:typechain:registry": "typechain --target ethers-v4 --outDir ethers './node_modules/@energyweb/iam-domain-contracts/artifacts/@ensdomains/ens/contracts/ENSRegistry.sol/ENSRegistry.json'",
     "start-rpc": "run-with-testrpc -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000",
     "test:watch": "npm run start-rpc -- \"jest --coverage --watchAll\"",
     "test": "npm run start-rpc -- \"jest --coverage --no-cache\""
@@ -22,7 +22,7 @@
   "author": "Energy Web",
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@ew-iam/contracts": "~1.0.0",
+    "@energyweb/iam-domain-contracts": "~1.0.0",
     "ethers": "4.0.48",
     "tslib": "~2.1.0"
   },

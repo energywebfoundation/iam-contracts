@@ -5,7 +5,7 @@ const config: Config = {
     typescript2: {
     },
   },
-  input: 'src/role-definition-client.ts',
+  input: 'src/iam-domain-client.ts',
   output: {
     format: ['cjs', 'esm'],
     minify: false

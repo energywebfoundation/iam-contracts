@@ -4,15 +4,15 @@ This repo consists of packages relating to EnergyWeb IAM.
 
 ## Package Descriptions
 
-### contracts
+### iam-domain-contracts
 
 Provides the solidity and ABI files for the following contracts:
 
 - `RoleDefinitionResolver.sol`
 
-### role-definition-client
+### iam-domain-client
 
-Provides client class for reading from and writing to the `RoleDefinitionResolver`
+Provides client classes for reading from and writing to the `RoleDefinitionResolver`
 
 ## Development
 
