@@ -1,5 +1,5 @@
 {
-  "name": "@ew-iam/role-definition-client",
+  "name": "@ew-iam/domain-definition-client",
   "version": "1.0.0",
   "description": "",
   "main": "dist/role-definition-client.js",
