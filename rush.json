@@ -419,11 +419,13 @@
     // 
     {
       "packageName": "@energyweb/iam-domain-contracts",
-      "projectFolder": "iam-domain-contracts"
+      "projectFolder": "iam-domain-contracts",
+      "shouldPublish": true
     },
     {
       "packageName": "@energyweb/iam-domain-client",
-      "projectFolder": "iam-domain-client"
+      "projectFolder": "iam-domain-client",
+      "shouldPublish": true
     }
     // 
     // {
