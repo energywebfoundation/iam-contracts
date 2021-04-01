@@ -4,7 +4,7 @@ import { DID } from "./types/DID";
 import { EncodedCall } from "./types/Transaction";
 import { namehash } from "ethers/utils";
 
-export class DomainDefinitionTransactionFactory {
+export class DomainTransactionFactory {
   constructor(protected readonly roleDefinitionResolver: RoleDefinitionResolver) { }
 
   /**

@@ -1,8 +1,8 @@
 import { Wallet, errors } from "ethers";
 import { keccak256, namehash, toUtf8Bytes } from "ethers/utils";
 import { deployContracts, GANACHE_PORT, ensRegistry, ensRoleDefResolver, provider, ensPublicResolver } from "./setup_contracts";
-import { DomainDefinitionReader } from "../src/DomainDefinitionReader";
-import { DomainDefinitionTransactionFactory } from "../src/DomainDefinitionTransactionFactory"
+import { DomainDefinitionReader } from "../src/DomainReader";
+import { DomainTransactionFactory } from "../src/DomainTransactionFactory"
 import { IRoleDefinition, PreconditionType } from "../src/types/DomainDefinitions";
 import { LegacyDomainDefTransactionFactory } from "./LegacyDomainDefTransactionFactory";
 import { addKnownResolver, setRegistryAddress, VOLTA_CHAIN_ID } from "../src/resolverConfig";
@@ -49,7 +49,7 @@ describe("RoleDefinitionReader tests", () => {
 
   test("role can be created and read", async () => {
     await ensRegistry.setResolver(roleNode, ensRoleDefResolver.address);
-    const domainDefTxFactory = new DomainDefinitionTransactionFactory(ensRoleDefResolver);
+    const domainDefTxFactory = new DomainTransactionFactory(ensRoleDefResolver);
     const call = domainDefTxFactory.newRole({ domain: roleDomain, roleDefinition: data });
     await (await wallet.sendTransaction(call)).wait()
 
