@@ -8,7 +8,9 @@ import { LegacyDomainDefTransactionFactory } from "./LegacyDomainDefTransactionF
 import { addKnownResolver, setRegistryAddress, VOLTA_CHAIN_ID } from "../src/resolverConfig";
 import { ResolverContractType } from "../src/types/ResolverContractType";
 
-errors.setLogLevel("error"); // To disable "WARNING: Multiple definitions for addr"
+// To disable "WARNING: Multiple definitions for addr" that is triggered by ENS Registry
+errors.setLogLevel("error");
+
 let wallet = Wallet.createRandom()
 wallet = wallet.connect(provider)
 
@@ -73,7 +75,7 @@ describe("RoleDefinitionReader tests", () => {
 
     expect(roleDef).toMatchObject<IRoleDefinition>(data);
 
-    const reverseName = await ensRoleDefResolver.name(roleNode);
+    const reverseName = await ensPublicResolver.name(roleNode);
     expect(reverseName).toEqual(roleDomain);
   });
 
@@ -82,8 +84,6 @@ describe("RoleDefinitionReader tests", () => {
     const roleDefinitionReader = new DomainDefinitionReader(VOLTA_CHAIN_ID, wallet.provider)
     await expect(roleDefinitionReader.read(roleNode)).rejects.toThrow("resolver is unknown");
   });
-
-
 
   //TODO: Test for appName, orgName, roleName that is different from what is configured in name resolver
 
