@@ -22,12 +22,21 @@ const roleDomain = "role1";
 const roleNode = namehash(roleDomain);
 
 const data: IRoleDefinition = {
-  fields: [],
+  fields: [{
+    fieldType: "myFieldType",
+    label: "myLabel",
+    required: true,
+    minLength: 5,
+    // minDate: new Date() TODO: Implement reviver to convert date back
+    // maxDate: new Date()
+  }],
   issuer: {
     issuerType: "DID",
     did: [`did:ethr:0x7aA65E31d404A8857BA083f6195757a730b51CFe`]
   },
-  metadata: [],
+  metadata: [{
+    "myProperty": 42
+  }],
   roleName: roleDomain,
   roleType: "test",
   version: "1.0.0",
