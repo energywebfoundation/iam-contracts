@@ -58,7 +58,7 @@ describe("Domain CRUD tests", () => {
     expect(await ensRegistry.owner(node)).toEqual(wallet.address);
   });
 
-  test("role can be created and read", async () => {
+  test("role can be created, read and updated", async () => {
     await ensRegistry.setResolver(node, ensRoleDefResolver.address);
     const domainDefTxFactory = new DomainTransactionFactory(ensRoleDefResolver);
     const call = domainDefTxFactory.newRole({ domain: domain, roleDefinition: role });
@@ -66,11 +66,16 @@ describe("Domain CRUD tests", () => {
 
     const domainReader = new DomainReader(VOLTA_CHAIN_ID, wallet.provider)
     const roleDef = await domainReader.read(node);
-
     expect(roleDef).toMatchObject<IRoleDefinition>(role);
 
     const reverseName = await ensRoleDefResolver.name(node);
     expect(reverseName).toEqual(domain);
+
+    role.version = role.version + "updated" // Should make copy of role instead...
+    const updateRole = domainDefTxFactory.editRole({ domain: domain, roleDefinition: role });
+    await (await wallet.sendTransaction(updateRole)).wait()
+    const updatedRoleDef = await domainReader.read(node);
+    expect(updatedRoleDef).toMatchObject<IRoleDefinition>(role);
   });
 
   test("text only role can be created and read", async () => {
