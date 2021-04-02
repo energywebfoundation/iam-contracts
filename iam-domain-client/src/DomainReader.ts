@@ -51,7 +51,7 @@ export class DomainDefinitionReader {
       const textData = await ensResolver.text(node, 'metadata');
       let definition
       try {
-        definition = JSON.parse(textData) as IRoleDefinitionText | IAppDefinition | IOrganizationDefinition;
+        definition = JSON.parse(textData) as IRoleDefinition | IAppDefinition | IOrganizationDefinition;
       } catch (err) {
         throw Error(`unable to parse resolved textData for node: ${node}. ${JSON.stringify(err)}`)
       }
@@ -71,7 +71,7 @@ export class DomainDefinitionReader {
         return textProps
       }
       if (DomainDefinitionReader.isRoleDefinition(textProps)) {
-        return await this.readRoleDefinition(node, textProps, ensResolver)
+        return await this.readRoleDefResolver_v1(node, textProps, ensResolver)
       }
       throw Error("unable to read domain definition")
     }
@@ -79,7 +79,7 @@ export class DomainDefinitionReader {
   }
 
   // TODO: Muliticalify (make all the queries in one)
-  private async readRoleDefinition(node: string, roleDefinitionText: IRoleDefinitionText, ensResolver: RoleDefinitionResolver) {
+  protected async readRoleDefResolver_v1(node: string, roleDefinitionText: IRoleDefinitionText, ensResolver: RoleDefinitionResolver) {
     const issuersData = await ensResolver.issuers(node);
     let issuerType: string;
     if (issuersData.dids.length > 0) {
