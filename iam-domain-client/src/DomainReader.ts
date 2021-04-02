@@ -8,6 +8,7 @@ import { ensRegistryAddresses, knownEnsResolvers } from "./resolverConfig";
 import { ResolverContractType } from "./types/ResolverContractType";
 import { PublicResolver } from "../contract-types/PublicResolver";
 import { PublicResolver__factory } from "../contract-types/factories/PublicResolver__factory";
+import { ERROR_MESSAGES } from "./types/ErrorMessages";
 
 export class DomainDefinitionReader {
   public static isOrgDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IOrganizationDefinition =>
@@ -37,12 +38,12 @@ export class DomainDefinitionReader {
     // Get resolver from registry
     const resolverAddress = await this._ensRegistry.resolver(node);
     if (resolverAddress === '0x0000000000000000000000000000000000000000') {
-      throw Error("no resolver address set")
+      throw Error(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED)
     }
 
     const resolverType = knownEnsResolvers[this.chainID][resolverAddress]
     if (resolverType === undefined) {
-      throw Error("resolver is unknown")
+      throw Error(ERROR_MESSAGES.RESOLVER_NOT_KNOWN)
     }
 
     if (resolverType === ResolverContractType.PublicResolver) {

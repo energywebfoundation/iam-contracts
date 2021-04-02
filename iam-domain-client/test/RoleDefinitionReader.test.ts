@@ -7,6 +7,7 @@ import { IRoleDefinition, PreconditionType } from "../src/types/DomainDefinition
 import { LegacyDomainDefTransactionFactory } from "./LegacyDomainDefTransactionFactory";
 import { addKnownResolver, setRegistryAddress, VOLTA_CHAIN_ID } from "../src/resolverConfig";
 import { ResolverContractType } from "../src/types/ResolverContractType";
+import { ERROR_MESSAGES } from "../src/types/ErrorMessages";
 
 // To disable "WARNING: Multiple definitions for addr" that is triggered by ENS Registry
 errors.setLogLevel("error");
@@ -35,7 +36,6 @@ const data: IRoleDefinition = {
     conditions: [roleDomain] // Circular condition but sufficient for test
   }]
 };
-
 
 describe("RoleDefinitionReader tests", () => {
   beforeEach(async () => {
@@ -82,7 +82,13 @@ describe("RoleDefinitionReader tests", () => {
   test("domain with unknown resolver throws error", async () => {
     await ensRegistry.setResolver(roleNode, '0x0000000000000000000000000000000000000123');
     const roleDefinitionReader = new DomainDefinitionReader(VOLTA_CHAIN_ID, wallet.provider)
-    await expect(roleDefinitionReader.read(roleNode)).rejects.toThrow("resolver is unknown");
+    await expect(roleDefinitionReader.read(roleNode)).rejects.toThrow(ERROR_MESSAGES.RESOLVER_NOT_KNOWN);
+  });
+
+  test("domain which has not been registered throws error", async () => {
+    const unregisteredRole = namehash("notregistered.iam");
+    const roleDefinitionReader = new DomainDefinitionReader(VOLTA_CHAIN_ID, wallet.provider)
+    await expect(roleDefinitionReader.read(unregisteredRole)).rejects.toThrow(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED);
   });
 
   //TODO: Test for appName, orgName, roleName that is different from what is configured in name resolver
@@ -91,5 +97,4 @@ describe("RoleDefinitionReader tests", () => {
 
   // TODO: Test org and app creation and reading
 
-  // TODO: Test reading role which has not been registered
 });
