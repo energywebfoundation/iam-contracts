@@ -22,6 +22,7 @@ export class DomainDefinitionReader {
 
   protected readonly _ensRegistry: ENSRegistry;
 
+  // Is it possible/better to get the chainID from the provider?
   constructor(private readonly chainID: number, private readonly provider: Provider) {
     const ensRegistryAddress = ensRegistryAddresses[chainID]
     this._ensRegistry = ENSRegistry__factory.connect(ensRegistryAddress, provider);
@@ -73,9 +74,9 @@ export class DomainDefinitionReader {
       if (DomainDefinitionReader.isRoleDefinition(textProps)) {
         return await this.readRoleDefResolver_v1(node, textProps, ensResolver)
       }
-      throw Error("unable to read domain definition")
+      throw Error(ERROR_MESSAGES.DOMAIN_TYPE_UNKNWN)
     }
-    throw Error("resolver type not supported")
+    throw Error(ERROR_MESSAGES.RESOLVER_NOT_SUPPORTED)
   }
 
   // TODO: Muliticalify (make all the queries in one)

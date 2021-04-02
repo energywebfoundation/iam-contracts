@@ -88,10 +88,19 @@ describe("RoleDefinitionReader tests", () => {
     expect(reverseName).toEqual(roleDomain);
   });
 
-  test("domain with unknown resolver throws error", async () => {
+  test("domain with unknown resolver type throws error", async () => {
     await ensRegistry.setResolver(roleNode, '0x0000000000000000000000000000000000000123');
     const roleDefinitionReader = new DomainDefinitionReader(VOLTA_CHAIN_ID, wallet.provider)
     await expect(roleDefinitionReader.read(roleNode)).rejects.toThrow(ERROR_MESSAGES.RESOLVER_NOT_KNOWN);
+  });
+
+  test("domain with not supported resolver throws error", async () => {
+    const resolverAddress = '0x0000000000000000000000000000000000000123';
+    // @ts-ignore
+    addKnownResolver(VOLTA_CHAIN_ID, resolverAddress, "999");
+    await ensRegistry.setResolver(roleNode, resolverAddress);
+    const roleDefinitionReader = new DomainDefinitionReader(VOLTA_CHAIN_ID, wallet.provider)
+    await expect(roleDefinitionReader.read(roleNode)).rejects.toThrow(ERROR_MESSAGES.RESOLVER_NOT_SUPPORTED);
   });
 
   test("domain which has not been registered throws error", async () => {
