@@ -10,7 +10,7 @@ import { PublicResolver } from "../contract-types/PublicResolver";
 import { PublicResolver__factory } from "../contract-types/factories/PublicResolver__factory";
 import { ERROR_MESSAGES } from "./types/ErrorMessages";
 
-export class DomainDefinitionReader {
+export class DomainReader {
   public static isOrgDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IOrganizationDefinition =>
     (domainDefinition as IOrganizationDefinition).orgName !== undefined;
 
@@ -68,10 +68,10 @@ export class DomainDefinitionReader {
         throw Error(`unable to parse resolved textData for node: ${node}. ${JSON.stringify(err)}`)
       }
 
-      if (DomainDefinitionReader.isOrgDefinition(textProps) || DomainDefinitionReader.isAppDefinition(textProps)) {
+      if (DomainReader.isOrgDefinition(textProps) || DomainReader.isAppDefinition(textProps)) {
         return textProps
       }
-      if (DomainDefinitionReader.isRoleDefinition(textProps)) {
+      if (DomainReader.isRoleDefinition(textProps)) {
         return await this.readRoleDefResolver_v1(node, textProps, ensResolver)
       }
       throw Error(ERROR_MESSAGES.DOMAIN_TYPE_UNKNWN)
