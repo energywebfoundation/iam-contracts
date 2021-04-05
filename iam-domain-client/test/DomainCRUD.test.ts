@@ -5,7 +5,7 @@ import { DomainReader } from "../src/DomainReader";
 import { DomainTransactionFactory } from "../src/DomainTransactionFactory"
 import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, PreconditionType } from "../src/types/DomainDefinitions";
 import { LegacyDomainDefTransactionFactory } from "./LegacyDomainDefTransactionFactory";
-import { addKnownResolver, setRegistryAddress, VOLTA_CHAIN_ID } from "../src/resolverConfig";
+import { addKnownResolver, setRegistryAddress } from "../src/resolverConfig";
 import { ResolverContractType } from "../src/types/ResolverContractType";
 import { ERROR_MESSAGES } from "../src/types/ErrorMessages";
 
@@ -60,9 +60,10 @@ const getDomainUpdatedLogs = async () => {
 describe("Domain CRUD tests", () => {
   beforeEach(async () => {
     await deployContracts(wallet.privateKey);
-    setRegistryAddress(VOLTA_CHAIN_ID, ensRegistry.address);
-    addKnownResolver(VOLTA_CHAIN_ID, ensRoleDefResolver.address, ResolverContractType.RoleDefinitionResolver_v1);
-    addKnownResolver(VOLTA_CHAIN_ID, ensPublicResolver.address, ResolverContractType.PublicResolver);
+    const chainId = await (await provider.getNetwork()).chainId;
+    setRegistryAddress(chainId, ensRegistry.address);
+    addKnownResolver(chainId, ensRoleDefResolver.address, ResolverContractType.RoleDefinitionResolver_v1);
+    addKnownResolver(chainId, ensPublicResolver.address, ResolverContractType.PublicResolver);
 
     const rootNameHash = "0x0000000000000000000000000000000000000000000000000000000000000000";
     await ensRegistry.setSubnodeOwner(rootNameHash, hashLabel(domain), wallet.address);
@@ -75,7 +76,7 @@ describe("Domain CRUD tests", () => {
     const call = domainDefTxFactory.newRole({ domain: domain, roleDefinition: role });
     await (await wallet.sendTransaction(call)).wait()
 
-    const domainReader = new DomainReader(VOLTA_CHAIN_ID, wallet.provider)
+    const domainReader = new DomainReader(wallet.provider)
     const roleDef = await domainReader.read(node);
     expect(roleDef).toMatchObject<IRoleDefinition>(role);
 
@@ -98,7 +99,7 @@ describe("Domain CRUD tests", () => {
     const call = domainDefTxFactory.newRole({ domain: domain, roleDefinition: role });
     await (await wallet.sendTransaction(call)).wait()
 
-    const domainReader = new DomainReader(VOLTA_CHAIN_ID, wallet.provider)
+    const domainReader = new DomainReader(wallet.provider)
     const roleDef = await domainReader.read(node);
 
     expect(roleDef).toMatchObject<IRoleDefinition>(role);
@@ -116,7 +117,7 @@ describe("Domain CRUD tests", () => {
     const call = domainDefTxFactory.newDomain({ domain: domain, domainDefinition: app });
     await (await wallet.sendTransaction(call)).wait()
 
-    const domainReader = new DomainReader(VOLTA_CHAIN_ID, wallet.provider)
+    const domainReader = new DomainReader(wallet.provider)
     const appDef = await domainReader.read(node);
 
     expect(appDef).toMatchObject<IAppDefinition>(app);
@@ -137,7 +138,7 @@ describe("Domain CRUD tests", () => {
     const call = domainDefTxFactory.newDomain({ domain: domain, domainDefinition: org });
     await (await wallet.sendTransaction(call)).wait()
 
-    const domainReader = new DomainReader(VOLTA_CHAIN_ID, wallet.provider)
+    const domainReader = new DomainReader(wallet.provider)
     const appDef = await domainReader.read(node);
 
     expect(appDef).toMatchObject<IOrganizationDefinition>(org);
@@ -151,26 +152,23 @@ describe("Domain CRUD tests", () => {
 
   test("domain with unknown resolver type throws error", async () => {
     await ensRegistry.setResolver(node, '0x0000000000000000000000000000000000000123');
-    const roleDefinitionReader = new DomainReader(VOLTA_CHAIN_ID, wallet.provider)
+    const roleDefinitionReader = new DomainReader(wallet.provider)
     await expect(roleDefinitionReader.read(node)).rejects.toThrow(ERROR_MESSAGES.RESOLVER_NOT_KNOWN);
   });
 
   test("domain with not supported resolver throws error", async () => {
     const resolverAddress = '0x0000000000000000000000000000000000000123';
+    const chainId = await (await provider.getNetwork()).chainId;
     // @ts-ignore
-    addKnownResolver(VOLTA_CHAIN_ID, resolverAddress, "999");
+    addKnownResolver(chainId, resolverAddress, "999");
     await ensRegistry.setResolver(node, resolverAddress);
-    const roleDefinitionReader = new DomainReader(VOLTA_CHAIN_ID, wallet.provider)
+    const roleDefinitionReader = new DomainReader(wallet.provider)
     await expect(roleDefinitionReader.read(node)).rejects.toThrow(ERROR_MESSAGES.RESOLVER_NOT_SUPPORTED);
   });
 
   test("domain which has not been registered throws error", async () => {
     const unregisteredRole = namehash("notregistered.iam");
-    const roleDefinitionReader = new DomainReader(VOLTA_CHAIN_ID, wallet.provider)
+    const roleDefinitionReader = new DomainReader(wallet.provider)
     await expect(roleDefinitionReader.read(unregisteredRole)).rejects.toThrow(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED);
   });
-
-  //TODO: Test for appName, orgName, roleName that is different from what is configured in name resolver
-
-  // TODO: Test role definition without some properties set
 });

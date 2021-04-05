@@ -2,7 +2,6 @@ import { Provider } from "ethers/providers";
 import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType, IAppDefinition, IOrganizationDefinition } from './types/DomainDefinitions'
 import { RoleDefinitionResolver__factory } from "../contract-types/factories/RoleDefinitionResolver__factory";
 import { RoleDefinitionResolver } from "../contract-types/RoleDefinitionResolver"
-import { ENSRegistry } from "../contract-types/ENSRegistry"
 import { ENSRegistry__factory } from "../contract-types/factories/ENSRegistry__factory";
 import { ensRegistryAddresses, knownEnsResolvers } from "./resolverConfig";
 import { ResolverContractType } from "./types/ResolverContractType";
@@ -20,29 +19,27 @@ export class DomainReader {
   public static isRoleDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IRoleDefinition =>
     (domainDefinition as IRoleDefinition).roleName !== undefined;
 
-  protected readonly _ensRegistry: ENSRegistry;
-
-  // Is it possible/better to get the chainID from the provider?
-  constructor(private readonly chainID: number, private readonly provider: Provider) {
-    const ensRegistryAddress = ensRegistryAddresses[chainID]
-    this._ensRegistry = ENSRegistry__factory.connect(ensRegistryAddress, provider);
+  constructor(private readonly provider: Provider) {
   }
 
   /**
-   * 
-   * @param node 
+   * Reads the App, Org or Role Definition from the registered ENS resolver 
+   * @param node the ENS node hash of a domain name
    * @returns
    */
   public async read(node: string): Promise<IRoleDefinition | IAppDefinition | IOrganizationDefinition> {
-    // TODO: Validate the node is a valid namehash
+    const network = await this.provider.getNetwork();
+    const chainId = network.chainId
+    const ensRegistryAddress = ensRegistryAddresses[chainId]
+    const ensRegistry = ENSRegistry__factory.connect(ensRegistryAddress, this.provider);
 
     // Get resolver from registry
-    const resolverAddress = await this._ensRegistry.resolver(node);
+    const resolverAddress = await ensRegistry.resolver(node);
     if (resolverAddress === '0x0000000000000000000000000000000000000000') {
       throw Error(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED)
     }
 
-    const resolverType = knownEnsResolvers[this.chainID][resolverAddress]
+    const resolverType = knownEnsResolvers[chainId][resolverAddress]
     if (resolverType === undefined) {
       throw Error(ERROR_MESSAGES.RESOLVER_NOT_KNOWN)
     }

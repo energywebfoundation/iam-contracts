@@ -17,6 +17,9 @@ export const knownEnsResolvers: Record<number, Record<string, ResolverContractTy
 };
 
 export function addKnownResolver(chainId: number, address: string, type: ResolverContractType) {
+  if (!knownEnsResolvers[chainId]) {
+    knownEnsResolvers[chainId] = {}
+  }
   knownEnsResolvers[chainId][address] = type;
 }
 
