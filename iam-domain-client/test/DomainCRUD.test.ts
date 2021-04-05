@@ -1,6 +1,6 @@
 import { Wallet, errors } from "ethers";
 import { keccak256, namehash, toUtf8Bytes } from "ethers/utils";
-import { deployContracts, GANACHE_PORT, ensRegistry, ensRoleDefResolver, provider, ensPublicResolver } from "./setup_contracts";
+import { deployContracts, GANACHE_PORT, ensRegistry, ensRoleDefResolver, provider, ensPublicResolver, domainNotifier } from "./setup_contracts";
 import { DomainReader } from "../src/DomainReader";
 import { DomainTransactionFactory } from "../src/DomainTransactionFactory"
 import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, PreconditionType } from "../src/types/DomainDefinitions";
@@ -46,6 +46,17 @@ const role: IRoleDefinition = {
   }]
 };
 
+const getDomainUpdatedLogs = async () => {
+  const eventFilter = domainNotifier.filters.DomainUpdated(node);
+  const filter = {
+    fromBlock: 0,
+    toBlock: 'latest',
+    address: domainNotifier.address,
+    topics: eventFilter.topics
+  };
+  return await provider.getLogs(filter);
+}
+
 describe("Domain CRUD tests", () => {
   beforeEach(async () => {
     await deployContracts(wallet.privateKey);
@@ -71,11 +82,14 @@ describe("Domain CRUD tests", () => {
     const reverseName = await ensRoleDefResolver.name(node);
     expect(reverseName).toEqual(domain);
 
-    role.version = role.version + "updated" // Should make copy of role instead...
+    role.version = role.version + "updated"
     const updateRole = domainDefTxFactory.editRole({ domain: domain, roleDefinition: role });
     await (await wallet.sendTransaction(updateRole)).wait()
     const updatedRoleDef = await domainReader.read(node);
     expect(updatedRoleDef).toMatchObject<IRoleDefinition>(role);
+
+    const logs = await getDomainUpdatedLogs();
+    expect(logs.length).toEqual(2); // One log for create, one for update
   });
 
   test("text only role can be created and read", async () => {
@@ -109,6 +123,9 @@ describe("Domain CRUD tests", () => {
 
     const reverseName = await ensRoleDefResolver.name(node);
     expect(reverseName).toEqual(domain);
+
+    const logs = await getDomainUpdatedLogs();
+    expect(logs.length).toEqual(1);
   });
 
   test("org can be created and read", async () => {
@@ -127,6 +144,9 @@ describe("Domain CRUD tests", () => {
 
     const reverseName = await ensRoleDefResolver.name(node);
     expect(reverseName).toEqual(domain);
+
+    const logs = await getDomainUpdatedLogs();
+    expect(logs.length).toEqual(1);
   });
 
   test("domain with unknown resolver type throws error", async () => {

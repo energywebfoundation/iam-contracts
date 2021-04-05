@@ -29,14 +29,17 @@ export class DomainTransactionFactory {
   public newDomain({ domain, domainDefinition }: { domain: string, domainDefinition: IAppDefinition | IOrganizationDefinition }) {
     const setDomainNameTx = this.setDomainNameTx({ domain });
     const setDomainDefinitionTx = this.setTextTx({ data: domainDefinition, domain });
-    return this.createMultiCallTx({ transactionsToCombine: [setDomainNameTx, setDomainDefinitionTx] });
+    const domainUpdated = this.domainUpdated({ domain });
+    return this.createMultiCallTx({ transactionsToCombine: [setDomainNameTx, setDomainDefinitionTx, domainUpdated] });
   }
 
   /**
    * Creates transaction to update app/org definition in resolver contract 
    */
   public editDomain({ domain, domainDefinition }: { domain: string, domainDefinition: IAppDefinition | IOrganizationDefinition }) {
-    return this.setTextTx({ data: domainDefinition, domain });
+    const setDomainDefinitionTx = this.setTextTx({ data: domainDefinition, domain });
+    const domainUpdated = this.domainUpdated({ domain });
+    return this.createMultiCallTx({ transactionsToCombine: [setDomainDefinitionTx, domainUpdated] });
   }
 
   public setDomainNameTx({ domain }: { domain: string }): EncodedCall {
@@ -102,7 +105,9 @@ export class DomainTransactionFactory {
     })(data);
     const setTextTx = this.setTextTx({ domain, data: textProps });
 
-    return this.createMultiCallTx({ transactionsToCombine: [setVersionTx, setIssuersTx, setIssuerTypeTx, setTextTx, prerequisiteRolesTx] });
+    const domainUpdatedTx = this.domainUpdated({ domain })
+
+    return this.createMultiCallTx({ transactionsToCombine: [setVersionTx, setIssuersTx, setIssuerTypeTx, setTextTx, prerequisiteRolesTx, domainUpdatedTx] });
   }
 
   protected setTextTx({
@@ -118,6 +123,19 @@ export class DomainTransactionFactory {
         namehash(domain),
         "metadata",
         JSON.stringify(data)
+      ])
+    };
+  }
+
+  protected domainUpdated({
+    domain,
+  }: {
+    domain: string;
+  }): EncodedCall {
+    return {
+      to: this.roleDefinitionResolver.address,
+      data: this.roleDefinitionResolver.interface.functions.domainUpdated.encode([
+        namehash(domain),
       ])
     };
   }
