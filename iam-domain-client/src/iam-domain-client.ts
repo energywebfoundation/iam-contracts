@@ -3,7 +3,7 @@ import { DomainTransactionFactory } from "./DomainTransactionFactory"
 import { IOrganizationDefinition, IAppDefinition, IRoleDefinition, IRoleDefinitionText } from "./types/DomainDefinitions"
 import { EncodedCall } from "./types/Transaction"
 
-export { DomainReader as DomainDefinitionReader }
-export { DomainTransactionFactory as DomainDefinitionTransactionFactory }
+export { DomainReader }
+export { DomainTransactionFactory }
 export { IOrganizationDefinition, IAppDefinition, IRoleDefinition, IRoleDefinitionText }
 export { EncodedCall }
