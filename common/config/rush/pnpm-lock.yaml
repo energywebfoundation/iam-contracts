@@ -2043,9 +2043,9 @@ packages:
       typechain: ^4.0.0
     resolution:
       integrity: sha512-9lWTOMtnQJvR4eJ8tM14oeJXE5UGqRD0gqLiT4DNck5/OQwxTUs+W2v/Lah4bJzql0BxmxlEBueuLS4IGc3xGg==
-  /@typechain/ethers-v4/4.0.0_ethers@4.0.48+typechain@4.0.3:
+  /@typechain/ethers-v4/4.0.0_ethers@4.0.45+typechain@4.0.3:
     dependencies:
-      ethers: 4.0.48
+      ethers: 4.0.45
       typechain: 4.0.3_typescript@4.2.3
     dev: false
     peerDependencies:
@@ -5018,7 +5018,7 @@ packages:
     dev: false
     resolution:
       integrity: sha512-C3oFZNkJ8lz85ADqr3hzpjBc2ciejMRN2SCd/D0hwcqpr6MGxfdN/j89VN6l+ERTuCUvhg0VYsf40Q4qTz4bhQ==
-  /elliptic/6.5.3:
+  /elliptic/6.5.2:
     dependencies:
       bn.js: 4.12.0
       brorand: 1.1.0
@@ -5029,7 +5029,7 @@ packages:
       minimalistic-crypto-utils: 1.0.1
     dev: false
     resolution:
-      integrity: sha512-IMqzv5wNQf+E6aHeIqATs0tOLeOTwj1QKbRcS3jBbYkl5oLAserA8yJTT7/VyHUYG91PRmPyeQDObKLPpeS4dw==
+      integrity: sha512-f4x70okzZbIQl/NSRLkI/+tteV/9WqL98zx+SQ69KbXxmVrmjwsNUPn/gYJJ0sHvEak24cZgHIPegRePAtA/xw==
   /elliptic/6.5.4:
     dependencies:
       bn.js: 4.12.0
@@ -5739,11 +5739,11 @@ packages:
     optional: true
     resolution:
       integrity: sha512-MDwjwB9VQVnpp/Dc1XzA6J1a3wgHQ4hSvA1uWNatdpOrtCbPVuQSKSyRnjLvS0a+KKMw2pvQ9Ybqpb3+eW8oNA==
-  /ethers/4.0.48:
+  /ethers/4.0.45:
     dependencies:
       aes-js: 3.0.0
       bn.js: 4.12.0
-      elliptic: 6.5.3
+      elliptic: 6.5.2
       hash.js: 1.1.3
       js-sha3: 0.5.7
       scrypt-js: 2.0.4
@@ -5752,7 +5752,7 @@ packages:
       xmlhttprequest: 1.8.0
     dev: false
     resolution:
-      integrity: sha512-sZD5K8H28dOrcidzx9f8KYh8083n5BexIO3+SbE4jK83L85FxtpXZBCQdXb8gkg+7sBqomcLhhkU7UHL+F7I2g==
+      integrity: sha512-N/Wmc6Mw4pQO+Sss1HnKDCSS6KSCx0luoBMiPNq+1GbOaO3YaZOyplBEhj+NEoYsizZYODtkITg2oecPeNnidQ==
   /ethers/5.0.32:
     dependencies:
       '@ethersproject/abi': 5.0.13
@@ -13415,11 +13415,11 @@ packages:
       integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
   file:projects/iam-domain-client.tgz_ts-node@9.1.1:
     dependencies:
-      '@typechain/ethers-v4': 4.0.0_ethers@4.0.48+typechain@4.0.3
+      '@typechain/ethers-v4': 4.0.0_ethers@4.0.45+typechain@4.0.3
       '@types/jest': 26.0.21
       bili: 5.0.5
       copyfiles: 2.4.1
-      ethers: 4.0.48
+      ethers: 4.0.45
       jest: 26.6.3_ts-node@9.1.1
       rollup-plugin-typescript2: 0.30.0_typescript@4.2.3
       run-with-testrpc: 0.3.1
@@ -13433,7 +13433,7 @@ packages:
     peerDependencies:
       ts-node: '*'
     resolution:
-      integrity: sha512-Oi+BsnkXX2eQ7SVtw/n/qqV8I4KuiYCWk0C9Ir73WJxTXCzpOBtvMI3uu94SRNe0rKQuaK+/QheBg28wVC+TpA==
+      integrity: sha512-qP9CxQYgEQ/WyOzlrbacR5XQXdRSfdvZEM7+u0a8GDg1+Ih/Ks44v10zIccZVXM2kuxZ/cgg0fnYr6dBHknK6Q==
       tarball: file:projects/iam-domain-client.tgz
     version: 0.0.0
   file:projects/iam-domain-contracts.tgz:
