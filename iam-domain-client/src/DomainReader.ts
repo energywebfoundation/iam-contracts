@@ -22,27 +22,26 @@ export class DomainReader {
   constructor(private readonly provider: Provider) {
   }
 
+  public async readName(node: string): Promise<string> {
+    const { resolverAddress, resolverType } = await this.getResolverInfo(node);
+    if (resolverType === ResolverContractType.PublicResolver) {
+      const ensResolver = PublicResolver__factory.connect(resolverAddress, this.provider);
+      return await ensResolver.name(node);
+    }
+    if (resolverType === ResolverContractType.RoleDefinitionResolver_v1) {
+      const ensResolver = RoleDefinitionResolver__factory.connect(resolverAddress, this.provider);
+      return await ensResolver.name(node);
+    }
+    throw Error(`${ERROR_MESSAGES.NAME_NOT_REGISTERED}, node: ${node}`)
+  }
+
   /**
    * Reads the App, Org or Role Definition from the registered ENS resolver 
    * @param node the ENS node hash of a domain name
    * @returns
    */
   public async read(node: string): Promise<IRoleDefinition | IAppDefinition | IOrganizationDefinition> {
-    const network = await this.provider.getNetwork();
-    const chainId = network.chainId
-    const ensRegistryAddress = ensRegistryAddresses[chainId]
-    const ensRegistry = ENSRegistry__factory.connect(ensRegistryAddress, this.provider);
-
-    // Get resolver from registry
-    const resolverAddress = await ensRegistry.resolver(node);
-    if (resolverAddress === '0x0000000000000000000000000000000000000000') {
-      throw Error(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED)
-    }
-
-    const resolverType = knownEnsResolvers[chainId][resolverAddress]
-    if (resolverType === undefined) {
-      throw Error(ERROR_MESSAGES.RESOLVER_NOT_KNOWN)
-    }
+    const { resolverAddress, resolverType } = await this.getResolverInfo(node);
 
     if (resolverType === ResolverContractType.PublicResolver) {
       const ensResolver: PublicResolver = PublicResolver__factory.connect(resolverAddress, this.provider);
@@ -74,6 +73,26 @@ export class DomainReader {
       throw Error(ERROR_MESSAGES.DOMAIN_TYPE_UNKNWN)
     }
     throw Error(ERROR_MESSAGES.RESOLVER_NOT_SUPPORTED)
+  }
+
+  protected async getResolverInfo(node: string): Promise<{ resolverAddress: string, resolverType: ResolverContractType }> {
+    const network = await this.provider.getNetwork();
+    const chainId = network.chainId
+    const ensRegistryAddress = ensRegistryAddresses[chainId]
+    const ensRegistry = ENSRegistry__factory.connect(ensRegistryAddress, this.provider);
+
+    // Get resolver from registry
+    const resolverAddress = await ensRegistry.resolver(node);
+    if (resolverAddress === '0x0000000000000000000000000000000000000000') {
+      throw Error(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED)
+    }
+
+    const resolverType = knownEnsResolvers[chainId][resolverAddress]
+    if (resolverType === undefined) {
+      throw Error(ERROR_MESSAGES.RESOLVER_NOT_KNOWN)
+    }
+
+    return { resolverAddress, resolverType }
   }
 
   // TODO: Muliticalify (make all the queries in one)
