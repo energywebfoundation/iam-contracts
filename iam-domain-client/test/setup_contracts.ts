@@ -23,7 +23,7 @@ export const deployContracts = async (privateKey: string): Promise<void> => {
   const wallet = new Wallet(privateKey, provider);
   await replenish(wallet.address);
   ensRegistry = await (new ENSRegistry__factory(wallet).deploy());
-  domainNotifier = await (new DomainNotifier__factory(wallet).deploy());
+  domainNotifier = await (new DomainNotifier__factory(wallet).deploy(ensRegistry.address));
   ensRoleDefResolver = await (new RoleDefinitionResolver__factory(wallet).deploy(ensRegistry.address, domainNotifier.address));
   ensPublicResolver = await (new PublicResolver__factory(wallet).deploy(ensRegistry.address));
 };
