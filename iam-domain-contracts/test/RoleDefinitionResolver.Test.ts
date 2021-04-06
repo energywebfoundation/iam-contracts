@@ -66,7 +66,7 @@ beforeEach(async () => {
   // Deploy contracts
   ens = await ENS.deploy() as ENSRegistry;
   await ens.deployed();
-  domainNotifier = await DomainNotifierFactory.deploy() as DomainNotifier;
+  domainNotifier = await DomainNotifierFactory.deploy(ens.address) as DomainNotifier;
   await domainNotifier.deployed();
   roleDefinitionResolver = await RoleDefinitionResolverFactory.deploy(ens.address, domainNotifier.address) as RoleDefinitionResolver;
   await roleDefinitionResolver.deployed();
@@ -120,9 +120,14 @@ describe("upgrading resolver", async () => {
 
 describe('domain updated', async () => {
   it('permits triggering update event by owner', async () => {
+    await ens.connect(rootOwner).setResolver(roleNode, roleDefinitionResolver.address);
     const tx = await roleDefinitionResolver.domainUpdated(roleNode);
     const event = await getTransactionEventArgs(tx);
     expect(event.topics[1]).to.equal(roleNode);
+  });
+
+  it('prevents triggering update event directly', async () => {
+    await expect(domainNotifier.connect(rootOwner).domainUpdated(roleNode)).to.eventually.be.rejected;
   });
 
   it('prevents triggering update event by non-owner', async () => {
