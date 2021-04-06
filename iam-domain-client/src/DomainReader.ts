@@ -49,7 +49,7 @@ export class DomainReader {
       const textData = await ensResolver.text(node, 'metadata');
       let definition
       try {
-        definition = JSON.parse(textData) as IRoleDefinition | IAppDefinition | IOrganizationDefinition;
+        definition = JSON.parse(textData, this.reviveDates) as IRoleDefinition | IAppDefinition | IOrganizationDefinition;
       } catch (err) {
         throw Error(`unable to parse resolved textData for node: ${node}. ${JSON.stringify(err)}`)
       }
@@ -60,7 +60,7 @@ export class DomainReader {
       const textData = await ensResolver.text(node, 'metadata');
       let textProps
       try {
-        textProps = JSON.parse(textData) as IRoleDefinitionText | IAppDefinition | IOrganizationDefinition;
+        textProps = JSON.parse(textData, this.reviveDates) as IRoleDefinitionText | IAppDefinition | IOrganizationDefinition;
       } catch (err) {
         throw Error(`unable to parse resolved textData for node: ${node}. ${JSON.stringify(err)}`)
       }
@@ -109,5 +109,12 @@ export class DomainReader {
       version,
       enrolmentPreconditions
     };
+  }
+
+  protected reviveDates(key, value) {
+    if (key === "minDate" || key === "maxDate") {
+      return new Date(value);
+    }
+    return value;
   }
 }

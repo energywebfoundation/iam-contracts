@@ -27,8 +27,8 @@ const role: IRoleDefinition = {
     label: "myLabel",
     required: true,
     minLength: 5,
-    // minDate: new Date() TODO: Implement reviver to convert date back
-    // maxDate: new Date()
+    minDate: new Date(),
+    maxDate: new Date()
   }],
   issuer: {
     issuerType: "DID",
