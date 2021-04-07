@@ -1,0 +1,3466 @@
+{
+  "contractName": "EnrolmentConditionTypeResolver",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "node",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "addedType",
+          "type": "uint256"
+        }
+      ],
+      "name": "EnrolmentConditionTypeAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "node",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "removedType",
+          "type": "uint256"
+        }
+      ],
+      "name": "EnrolmentConditionTypeRemoved",
+      "type": "event"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "conditionTypes",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "node",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "conditionType",
+          "type": "uint256"
+        }
+      ],
+      "name": "addConditionType",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "node",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "conditionType",
+          "type": "uint256"
+        }
+      ],
+      "name": "removeConditionType",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "node",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "condition",
+          "type": "uint256"
+        }
+      ],
+      "name": "requiresConditionType",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceID",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.17+commit.d19bba13\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"node\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"addedType\",\"type\":\"uint256\"}],\"name\":\"EnrolmentConditionTypeAdded\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"node\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"removedType\",\"type\":\"uint256\"}],\"name\":\"EnrolmentConditionTypeRemoved\",\"type\":\"event\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"node\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"conditionType\",\"type\":\"uint256\"}],\"name\":\"addConditionType\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"name\":\"conditionTypes\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"node\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"conditionType\",\"type\":\"uint256\"}],\"name\":\"removeConditionType\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"node\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"condition\",\"type\":\"uint256\"}],\"name\":\"requiresConditionType\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceID\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"addConditionType(bytes32,uint256)\":{\"params\":{\"conditionType\":\"The conditionType to add.\",\"node\":\"The node to update.\"}},\"removeConditionType(bytes32,uint256)\":{\"params\":{\"conditionType\":\"The conditionType to add.\",\"node\":\"The node to update.\"}},\"requiresConditionType(bytes32,uint256)\":{\"params\":{\"condition\":\"The condition to check\",\"node\":\"The ENS node to query.\"},\"return\":\"Whether or not the role requires this condition\"}}},\"userdoc\":{\"methods\":{\"addConditionType(bytes32,uint256)\":{\"notice\":\"Adds a conditionType required for a role. If type is already required for a role, no action is taken. May only be called by the owner of that node in the ENS registry.\"},\"removeConditionType(bytes32,uint256)\":{\"notice\":\"Removes a conditionType required for a role. If type is already not required for a role, no action is taken. May only be called by the owner of that node in the ENS registry.\"},\"requiresConditionType(bytes32,uint256)\":{\"notice\":\"Returns whether or not a condition type is required for a role\"}},\"notice\":\"Profile for resolving type of conditions required for an identity to be eligible for a role. A role can require a combination of the types. These possible types are: 00: The requesting identity must have some role\"}},\"settings\":{\"compilationTarget\":{\"/Users/john/ew/iam-contracts/contracts/profiles/enrolment-conditions/EnrolmentConditionTypeResolver.sol\":\"EnrolmentConditionTypeResolver\"},\"evmVersion\":\"constantinople\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/john/ew/iam-contracts/contracts/profiles/enrolment-conditions/EnrolmentConditionTypeResolver.sol\":{\"keccak256\":\"0x12b43dc0a08fd0bce48840638063e9ba9f1e9af9506e295ea033791728d5c14e\",\"urls\":[\"bzz-raw://3efbe8168f6ebc443dc677b1580d481b7f3662ba50cfda8c94def96f6f42c661\",\"dweb:/ipfs/QmcSf32ec5MZowSgPLKj84yJZHU6XQZGbZT3ztPL4zaxQv\"]},\"@ensdomains/resolver/contracts/ResolverBase.sol\":{\"keccak256\":\"0xfc7d550960829127576d6fc3080513d74ef18a6d7057d0d9262ce071890053e8\",\"urls\":[\"bzz-raw://dc477afd53175b96112bb0e2e25ce85b1f7c0e3fe0da4a2e8539d86712583b00\",\"dweb:/ipfs/QmQdwwHEcNMxTWtkrNpkbxtokwiFDdQ5xwPYcuZPRbJQKp\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.5.0;\n\nimport \"@ensdomains/resolver/contracts/ResolverBase.sol\";\n\n/**\n * Profile for resolving type of conditions required for an identity to be eligible for a role.\n * A role can require a combination of the types.\n * These possible types are:\n * 00: The requesting identity must have some role\n */\ncontract EnrolmentConditionTypeResolver is ResolverBase {\n    bytes4 private constant ENROLMENT_CONDITION_TYPE_INTERFACE_ID = 0xafe767c6;\n\n    event EnrolmentConditionTypeAdded(bytes32 indexed node, uint256 addedType);\n    event EnrolmentConditionTypeRemoved(\n        bytes32 indexed node,\n        uint256 removedType\n    );\n\n    mapping(bytes32 => mapping(uint256 => bool)) public conditionTypes;\n\n    /**\n     * Adds a conditionType required for a role.\n     * If type is already required for a role, no action is taken.\n     * May only be called by the owner of that node in the ENS registry.\n     * @param node The node to update.\n     * @param conditionType The conditionType to add.\n     */\n    function addConditionType(bytes32 node, uint256 conditionType)\n        external\n        authorised(node)\n    {\n        if (conditionTypes[node][conditionType] == false) {\n            conditionTypes[node][conditionType] = true;\n            emit EnrolmentConditionTypeAdded(node, conditionType);\n        }\n    }\n\n    /**\n     * Removes a conditionType required for a role.\n     * If type is already not required for a role, no action is taken.\n     * May only be called by the owner of that node in the ENS registry.\n     * @param node The node to update.\n     * @param conditionType The conditionType to add.\n     */\n    function removeConditionType(bytes32 node, uint256 conditionType)\n        external\n        authorised(node)\n    {\n        if (conditionTypes[node][conditionType] == true) {\n            conditionTypes[node][conditionType] = false;\n            emit EnrolmentConditionTypeRemoved(node, conditionType);\n        }\n    }\n\n    /**\n     * Returns whether or not a condition type is required for a role\n     * @param node The ENS node to query.\n     * @param condition The condition to check\n     * @return Whether or not the role requires this condition\n     */\n    function requiresConditionType(bytes32 node, uint256 condition)\n        external\n        view\n        returns (bool)\n    {\n        return (conditionTypes[node][condition]);\n    }\n\n    function supportsInterface(bytes4 interfaceID) public pure returns (bool) {\n        return\n            interfaceID == ENROLMENT_CONDITION_TYPE_INTERFACE_ID ||\n            super.supportsInterface(interfaceID);\n    }\n}\n",
+  "sourcePath": "/Users/john/ew/iam-contracts/contracts/profiles/enrolment-conditions/EnrolmentConditionTypeResolver.sol",
+  "ast": {
+    "absolutePath": "/Users/john/ew/iam-contracts/contracts/profiles/enrolment-conditions/EnrolmentConditionTypeResolver.sol",
+    "exportedSymbols": {
+      "EnrolmentConditionTypeResolver": [
+        323
+      ]
+    },
+    "id": 324,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 198,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:4"
+      },
+      {
+        "absolutePath": "@ensdomains/resolver/contracts/ResolverBase.sol",
+        "file": "@ensdomains/resolver/contracts/ResolverBase.sol",
+        "id": 199,
+        "nodeType": "ImportDirective",
+        "scope": 324,
+        "sourceUnit": 3189,
+        "src": "25:57:4",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 200,
+              "name": "ResolverBase",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 3188,
+              "src": "361:12:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ResolverBase_$3188",
+                "typeString": "contract ResolverBase"
+              }
+            },
+            "id": 201,
+            "nodeType": "InheritanceSpecifier",
+            "src": "361:12:4"
+          }
+        ],
+        "contractDependencies": [
+          3188
+        ],
+        "contractKind": "contract",
+        "documentation": "Profile for resolving type of conditions required for an identity to be eligible for a role.\nA role can require a combination of the types.\nThese possible types are:\n00: The requesting identity must have some role",
+        "fullyImplemented": false,
+        "id": 323,
+        "linearizedBaseContracts": [
+          323,
+          3188
+        ],
+        "name": "EnrolmentConditionTypeResolver",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": true,
+            "id": 204,
+            "name": "ENROLMENT_CONDITION_TYPE_INTERFACE_ID",
+            "nodeType": "VariableDeclaration",
+            "scope": 323,
+            "src": "380:74:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes4",
+              "typeString": "bytes4"
+            },
+            "typeName": {
+              "id": 202,
+              "name": "bytes4",
+              "nodeType": "ElementaryTypeName",
+              "src": "380:6:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes4",
+                "typeString": "bytes4"
+              }
+            },
+            "value": {
+              "argumentTypes": null,
+              "hexValue": "30786166653736376336",
+              "id": 203,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "number",
+              "lValueRequested": false,
+              "nodeType": "Literal",
+              "src": "444:10:4",
+              "subdenomination": null,
+              "typeDescriptions": {
+                "typeIdentifier": "t_rational_2951178182_by_1",
+                "typeString": "int_const 2951178182"
+              },
+              "value": "0xafe767c6"
+            },
+            "visibility": "private"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 210,
+            "name": "EnrolmentConditionTypeAdded",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 209,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 206,
+                  "indexed": true,
+                  "name": "node",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 210,
+                  "src": "495:20:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 205,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "495:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 208,
+                  "indexed": false,
+                  "name": "addedType",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 210,
+                  "src": "517:17:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 207,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "517:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "494:41:4"
+            },
+            "src": "461:75:4"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 216,
+            "name": "EnrolmentConditionTypeRemoved",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 215,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 212,
+                  "indexed": true,
+                  "name": "node",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 216,
+                  "src": "586:20:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 211,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "586:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 214,
+                  "indexed": false,
+                  "name": "removedType",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 216,
+                  "src": "616:19:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 213,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "616:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "576:65:4"
+            },
+            "src": "541:101:4"
+          },
+          {
+            "constant": false,
+            "id": 222,
+            "name": "conditionTypes",
+            "nodeType": "VariableDeclaration",
+            "scope": 323,
+            "src": "648:66:4",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_bytes32_$_t_mapping$_t_uint256_$_t_bool_$_$",
+              "typeString": "mapping(bytes32 => mapping(uint256 => bool))"
+            },
+            "typeName": {
+              "id": 221,
+              "keyType": {
+                "id": 217,
+                "name": "bytes32",
+                "nodeType": "ElementaryTypeName",
+                "src": "656:7:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "648:44:4",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_bytes32_$_t_mapping$_t_uint256_$_t_bool_$_$",
+                "typeString": "mapping(bytes32 => mapping(uint256 => bool))"
+              },
+              "valueType": {
+                "id": 220,
+                "keyType": {
+                  "id": 218,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "675:7:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "nodeType": "Mapping",
+                "src": "667:24:4",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_mapping$_t_uint256_$_t_bool_$",
+                  "typeString": "mapping(uint256 => bool)"
+                },
+                "valueType": {
+                  "id": 219,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "686:4:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                }
+              }
+            },
+            "value": null,
+            "visibility": "public"
+          },
+          {
+            "body": {
+              "id": 254,
+              "nodeType": "Block",
+              "src": "1128:200:4",
+              "statements": [
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    },
+                    "id": 238,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 232,
+                          "name": "conditionTypes",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 222,
+                          "src": "1142:14:4",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_bytes32_$_t_mapping$_t_uint256_$_t_bool_$_$",
+                            "typeString": "mapping(bytes32 => mapping(uint256 => bool))"
+                          }
+                        },
+                        "id": 234,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "id": 233,
+                          "name": "node",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 224,
+                          "src": "1157:4:4",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1142:20:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_mapping$_t_uint256_$_t_bool_$",
+                          "typeString": "mapping(uint256 => bool)"
+                        }
+                      },
+                      "id": 236,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "id": 235,
+                        "name": "conditionType",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 226,
+                        "src": "1163:13:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "IndexAccess",
+                      "src": "1142:35:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "hexValue": "66616c7365",
+                      "id": 237,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "bool",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "1181:5:4",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      },
+                      "value": "false"
+                    },
+                    "src": "1142:44:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": null,
+                  "id": 253,
+                  "nodeType": "IfStatement",
+                  "src": "1138:184:4",
+                  "trueBody": {
+                    "id": 252,
+                    "nodeType": "Block",
+                    "src": "1188:134:4",
+                    "statements": [
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 245,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftHandSide": {
+                            "argumentTypes": null,
+                            "baseExpression": {
+                              "argumentTypes": null,
+                              "baseExpression": {
+                                "argumentTypes": null,
+                                "id": 239,
+                                "name": "conditionTypes",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 222,
+                                "src": "1202:14:4",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_mapping$_t_bytes32_$_t_mapping$_t_uint256_$_t_bool_$_$",
+                                  "typeString": "mapping(bytes32 => mapping(uint256 => bool))"
+                                }
+                              },
+                              "id": 242,
+                              "indexExpression": {
+                                "argumentTypes": null,
+                                "id": 240,
+                                "name": "node",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 224,
+                                "src": "1217:4:4",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_bytes32",
+                                  "typeString": "bytes32"
+                                }
+                              },
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "nodeType": "IndexAccess",
+                              "src": "1202:20:4",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_mapping$_t_uint256_$_t_bool_$",
+                                "typeString": "mapping(uint256 => bool)"
+                              }
+                            },
+                            "id": 243,
+                            "indexExpression": {
+                              "argumentTypes": null,
+                              "id": 241,
+                              "name": "conditionType",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 226,
+                              "src": "1223:13:4",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": true,
+                            "nodeType": "IndexAccess",
+                            "src": "1202:35:4",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bool",
+                              "typeString": "bool"
+                            }
+                          },
+                          "nodeType": "Assignment",
+                          "operator": "=",
+                          "rightHandSide": {
+                            "argumentTypes": null,
+                            "hexValue": "74727565",
+                            "id": 244,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "bool",
+                            "lValueRequested": false,
+                            "nodeType": "Literal",
+                            "src": "1240:4:4",
+                            "subdenomination": null,
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bool",
+                              "typeString": "bool"
+                            },
+                            "value": "true"
+                          },
+                          "src": "1202:42:4",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "id": 246,
+                        "nodeType": "ExpressionStatement",
+                        "src": "1202:42:4"
+                      },
+                      {
+                        "eventCall": {
+                          "argumentTypes": null,
+                          "arguments": [
+                            {
+                              "argumentTypes": null,
+                              "id": 248,
+                              "name": "node",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 224,
+                              "src": "1291:4:4",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            },
+                            {
+                              "argumentTypes": null,
+                              "id": 249,
+                              "name": "conditionType",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 226,
+                              "src": "1297:13:4",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              },
+                              {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            ],
+                            "id": 247,
+                            "name": "EnrolmentConditionTypeAdded",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 210,
+                            "src": "1263:27:4",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_function_event_nonpayable$_t_bytes32_$_t_uint256_$returns$__$",
+                              "typeString": "function (bytes32,uint256)"
+                            }
+                          },
+                          "id": 250,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "kind": "functionCall",
+                          "lValueRequested": false,
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "1263:48:4",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_tuple$__$",
+                            "typeString": "tuple()"
+                          }
+                        },
+                        "id": 251,
+                        "nodeType": "EmitStatement",
+                        "src": "1258:53:4"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "documentation": "Adds a conditionType required for a role.\nIf type is already required for a role, no action is taken.\nMay only be called by the owner of that node in the ENS registry.\n@param node The node to update.\n@param conditionType The conditionType to add.",
+            "id": 255,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 229,
+                    "name": "node",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 224,
+                    "src": "1118:4:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  }
+                ],
+                "id": 230,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 228,
+                  "name": "authorised",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 3155,
+                  "src": "1107:10:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$_t_bytes32_$",
+                    "typeString": "modifier (bytes32)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1107:16:4"
+              }
+            ],
+            "name": "addConditionType",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 227,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 224,
+                  "name": "node",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 255,
+                  "src": "1045:12:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 223,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1045:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 226,
+                  "name": "conditionType",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 255,
+                  "src": "1059:21:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 225,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1059:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1044:37:4"
+            },
+            "returnParameters": {
+              "id": 231,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1128:0:4"
+            },
+            "scope": 323,
+            "src": "1019:309:4",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 287,
+              "nodeType": "Block",
+              "src": "1751:202:4",
+              "statements": [
+                {
+                  "condition": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    },
+                    "id": 271,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "baseExpression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 265,
+                          "name": "conditionTypes",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 222,
+                          "src": "1765:14:4",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_bytes32_$_t_mapping$_t_uint256_$_t_bool_$_$",
+                            "typeString": "mapping(bytes32 => mapping(uint256 => bool))"
+                          }
+                        },
+                        "id": 267,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "id": 266,
+                          "name": "node",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 257,
+                          "src": "1780:4:4",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1765:20:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_mapping$_t_uint256_$_t_bool_$",
+                          "typeString": "mapping(uint256 => bool)"
+                        }
+                      },
+                      "id": 269,
+                      "indexExpression": {
+                        "argumentTypes": null,
+                        "id": 268,
+                        "name": "conditionType",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 259,
+                        "src": "1786:13:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      },
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "nodeType": "IndexAccess",
+                      "src": "1765:35:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "==",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "hexValue": "74727565",
+                      "id": 270,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": true,
+                      "kind": "bool",
+                      "lValueRequested": false,
+                      "nodeType": "Literal",
+                      "src": "1804:4:4",
+                      "subdenomination": null,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      },
+                      "value": "true"
+                    },
+                    "src": "1765:43:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "falseBody": null,
+                  "id": 286,
+                  "nodeType": "IfStatement",
+                  "src": "1761:186:4",
+                  "trueBody": {
+                    "id": 285,
+                    "nodeType": "Block",
+                    "src": "1810:137:4",
+                    "statements": [
+                      {
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 278,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "leftHandSide": {
+                            "argumentTypes": null,
+                            "baseExpression": {
+                              "argumentTypes": null,
+                              "baseExpression": {
+                                "argumentTypes": null,
+                                "id": 272,
+                                "name": "conditionTypes",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 222,
+                                "src": "1824:14:4",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_mapping$_t_bytes32_$_t_mapping$_t_uint256_$_t_bool_$_$",
+                                  "typeString": "mapping(bytes32 => mapping(uint256 => bool))"
+                                }
+                              },
+                              "id": 275,
+                              "indexExpression": {
+                                "argumentTypes": null,
+                                "id": 273,
+                                "name": "node",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 257,
+                                "src": "1839:4:4",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_bytes32",
+                                  "typeString": "bytes32"
+                                }
+                              },
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "nodeType": "IndexAccess",
+                              "src": "1824:20:4",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_mapping$_t_uint256_$_t_bool_$",
+                                "typeString": "mapping(uint256 => bool)"
+                              }
+                            },
+                            "id": 276,
+                            "indexExpression": {
+                              "argumentTypes": null,
+                              "id": 274,
+                              "name": "conditionType",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 259,
+                              "src": "1845:13:4",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            },
+                            "isConstant": false,
+                            "isLValue": true,
+                            "isPure": false,
+                            "lValueRequested": true,
+                            "nodeType": "IndexAccess",
+                            "src": "1824:35:4",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bool",
+                              "typeString": "bool"
+                            }
+                          },
+                          "nodeType": "Assignment",
+                          "operator": "=",
+                          "rightHandSide": {
+                            "argumentTypes": null,
+                            "hexValue": "66616c7365",
+                            "id": 277,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "bool",
+                            "lValueRequested": false,
+                            "nodeType": "Literal",
+                            "src": "1862:5:4",
+                            "subdenomination": null,
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bool",
+                              "typeString": "bool"
+                            },
+                            "value": "false"
+                          },
+                          "src": "1824:43:4",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          }
+                        },
+                        "id": 279,
+                        "nodeType": "ExpressionStatement",
+                        "src": "1824:43:4"
+                      },
+                      {
+                        "eventCall": {
+                          "argumentTypes": null,
+                          "arguments": [
+                            {
+                              "argumentTypes": null,
+                              "id": 281,
+                              "name": "node",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 257,
+                              "src": "1916:4:4",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              }
+                            },
+                            {
+                              "argumentTypes": null,
+                              "id": 282,
+                              "name": "conditionType",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 259,
+                              "src": "1922:13:4",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            }
+                          ],
+                          "expression": {
+                            "argumentTypes": [
+                              {
+                                "typeIdentifier": "t_bytes32",
+                                "typeString": "bytes32"
+                              },
+                              {
+                                "typeIdentifier": "t_uint256",
+                                "typeString": "uint256"
+                              }
+                            ],
+                            "id": 280,
+                            "name": "EnrolmentConditionTypeRemoved",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 216,
+                            "src": "1886:29:4",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_function_event_nonpayable$_t_bytes32_$_t_uint256_$returns$__$",
+                              "typeString": "function (bytes32,uint256)"
+                            }
+                          },
+                          "id": 283,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "kind": "functionCall",
+                          "lValueRequested": false,
+                          "names": [],
+                          "nodeType": "FunctionCall",
+                          "src": "1886:50:4",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_tuple$__$",
+                            "typeString": "tuple()"
+                          }
+                        },
+                        "id": 284,
+                        "nodeType": "EmitStatement",
+                        "src": "1881:55:4"
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "documentation": "Removes a conditionType required for a role.\nIf type is already not required for a role, no action is taken.\nMay only be called by the owner of that node in the ENS registry.\n@param node The node to update.\n@param conditionType The conditionType to add.",
+            "id": 288,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 262,
+                    "name": "node",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 257,
+                    "src": "1741:4:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  }
+                ],
+                "id": 263,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 261,
+                  "name": "authorised",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 3155,
+                  "src": "1730:10:4",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$_t_bytes32_$",
+                    "typeString": "modifier (bytes32)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1730:16:4"
+              }
+            ],
+            "name": "removeConditionType",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 260,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 257,
+                  "name": "node",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 288,
+                  "src": "1668:12:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 256,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1668:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 259,
+                  "name": "conditionType",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 288,
+                  "src": "1682:21:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 258,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1682:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1667:37:4"
+            },
+            "returnParameters": {
+              "id": 264,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1751:0:4"
+            },
+            "scope": 323,
+            "src": "1639:314:4",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 304,
+              "nodeType": "Block",
+              "src": "2318:57:4",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "components": [
+                      {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "baseExpression": {
+                            "argumentTypes": null,
+                            "id": 297,
+                            "name": "conditionTypes",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 222,
+                            "src": "2336:14:4",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_mapping$_t_bytes32_$_t_mapping$_t_uint256_$_t_bool_$_$",
+                              "typeString": "mapping(bytes32 => mapping(uint256 => bool))"
+                            }
+                          },
+                          "id": 299,
+                          "indexExpression": {
+                            "argumentTypes": null,
+                            "id": 298,
+                            "name": "node",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 290,
+                            "src": "2351:4:4",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bytes32",
+                              "typeString": "bytes32"
+                            }
+                          },
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "IndexAccess",
+                          "src": "2336:20:4",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_uint256_$_t_bool_$",
+                            "typeString": "mapping(uint256 => bool)"
+                          }
+                        },
+                        "id": 301,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "id": 300,
+                          "name": "condition",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 292,
+                          "src": "2357:9:4",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_uint256",
+                            "typeString": "uint256"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "2336:31:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      }
+                    ],
+                    "id": 302,
+                    "isConstant": false,
+                    "isInlineArray": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "TupleExpression",
+                    "src": "2335:33:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 296,
+                  "id": 303,
+                  "nodeType": "Return",
+                  "src": "2328:40:4"
+                }
+              ]
+            },
+            "documentation": "Returns whether or not a condition type is required for a role\n@param node The ENS node to query.\n@param condition The condition to check\n@return Whether or not the role requires this condition",
+            "id": 305,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "requiresConditionType",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 293,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 290,
+                  "name": "node",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 305,
+                  "src": "2228:12:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 289,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2228:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 292,
+                  "name": "condition",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 305,
+                  "src": "2242:17:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 291,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2242:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2227:33:4"
+            },
+            "returnParameters": {
+              "id": 296,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 295,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 305,
+                  "src": "2308:4:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 294,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2308:4:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2307:6:4"
+            },
+            "scope": 323,
+            "src": "2197:178:4",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 321,
+              "nodeType": "Block",
+              "src": "2455:140:4",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    },
+                    "id": 319,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "commonType": {
+                        "typeIdentifier": "t_bytes4",
+                        "typeString": "bytes4"
+                      },
+                      "id": 314,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "leftExpression": {
+                        "argumentTypes": null,
+                        "id": 312,
+                        "name": "interfaceID",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 307,
+                        "src": "2484:11:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes4",
+                          "typeString": "bytes4"
+                        }
+                      },
+                      "nodeType": "BinaryOperation",
+                      "operator": "==",
+                      "rightExpression": {
+                        "argumentTypes": null,
+                        "id": 313,
+                        "name": "ENROLMENT_CONDITION_TYPE_INTERFACE_ID",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 204,
+                        "src": "2499:37:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes4",
+                          "typeString": "bytes4"
+                        }
+                      },
+                      "src": "2484:52:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "||",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "arguments": [
+                        {
+                          "argumentTypes": null,
+                          "id": 317,
+                          "name": "interfaceID",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 307,
+                          "src": "2576:11:4",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes4",
+                            "typeString": "bytes4"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_bytes4",
+                            "typeString": "bytes4"
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 315,
+                          "name": "super",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 4475,
+                          "src": "2552:5:4",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_super$_EnrolmentConditionTypeResolver_$323",
+                            "typeString": "contract super EnrolmentConditionTypeResolver"
+                          }
+                        },
+                        "id": 316,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "supportsInterface",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 3136,
+                        "src": "2552:23:4",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_function_internal_pure$_t_bytes4_$returns$_t_bool_$",
+                          "typeString": "function (bytes4) pure returns (bool)"
+                        }
+                      },
+                      "id": 318,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "functionCall",
+                      "lValueRequested": false,
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "2552:36:4",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "src": "2484:104:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 311,
+                  "id": 320,
+                  "nodeType": "Return",
+                  "src": "2465:123:4"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 322,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "supportsInterface",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 308,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 307,
+                  "name": "interfaceID",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 322,
+                  "src": "2408:18:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes4",
+                    "typeString": "bytes4"
+                  },
+                  "typeName": {
+                    "id": 306,
+                    "name": "bytes4",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2408:6:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes4",
+                      "typeString": "bytes4"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2407:20:4"
+            },
+            "returnParameters": {
+              "id": 311,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 310,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 322,
+                  "src": "2449:4:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 309,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "2449:4:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "2448:6:4"
+            },
+            "scope": 323,
+            "src": "2381:214:4",
+            "stateMutability": "pure",
+            "superFunction": 3136,
+            "visibility": "public"
+          }
+        ],
+        "scope": 324,
+        "src": "318:2279:4"
+      }
+    ],
+    "src": "0:2598:4"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "/Users/john/ew/iam-contracts/contracts/profiles/enrolment-conditions/EnrolmentConditionTypeResolver.sol",
+      "exportedSymbols": {
+        "EnrolmentConditionTypeResolver": [
+          323
+        ]
+      }
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.5",
+            ".0"
+          ]
+        },
+        "id": 198,
+        "name": "PragmaDirective",
+        "src": "0:23:4"
+      },
+      {
+        "attributes": {
+          "SourceUnit": 3189,
+          "absolutePath": "@ensdomains/resolver/contracts/ResolverBase.sol",
+          "file": "@ensdomains/resolver/contracts/ResolverBase.sol",
+          "scope": 324,
+          "symbolAliases": [
+            null
+          ],
+          "unitAlias": ""
+        },
+        "id": 199,
+        "name": "ImportDirective",
+        "src": "25:57:4"
+      },
+      {
+        "attributes": {
+          "contractDependencies": [
+            3188
+          ],
+          "contractKind": "contract",
+          "documentation": "Profile for resolving type of conditions required for an identity to be eligible for a role.\nA role can require a combination of the types.\nThese possible types are:\n00: The requesting identity must have some role",
+          "fullyImplemented": false,
+          "linearizedBaseContracts": [
+            323,
+            3188
+          ],
+          "name": "EnrolmentConditionTypeResolver",
+          "scope": 324
+        },
+        "children": [
+          {
+            "attributes": {
+              "arguments": null
+            },
+            "children": [
+              {
+                "attributes": {
+                  "contractScope": null,
+                  "name": "ResolverBase",
+                  "referencedDeclaration": 3188,
+                  "type": "contract ResolverBase"
+                },
+                "id": 200,
+                "name": "UserDefinedTypeName",
+                "src": "361:12:4"
+              }
+            ],
+            "id": 201,
+            "name": "InheritanceSpecifier",
+            "src": "361:12:4"
+          },
+          {
+            "attributes": {
+              "constant": true,
+              "name": "ENROLMENT_CONDITION_TYPE_INTERFACE_ID",
+              "scope": 323,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "bytes4",
+              "visibility": "private"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "bytes4",
+                  "type": "bytes4"
+                },
+                "id": 202,
+                "name": "ElementaryTypeName",
+                "src": "380:6:4"
+              },
+              {
+                "attributes": {
+                  "argumentTypes": null,
+                  "hexvalue": "30786166653736376336",
+                  "isConstant": false,
+                  "isLValue": false,
+                  "isPure": true,
+                  "lValueRequested": false,
+                  "subdenomination": null,
+                  "token": "number",
+                  "type": "int_const 2951178182",
+                  "value": "0xafe767c6"
+                },
+                "id": 203,
+                "name": "Literal",
+                "src": "444:10:4"
+              }
+            ],
+            "id": 204,
+            "name": "VariableDeclaration",
+            "src": "380:74:4"
+          },
+          {
+            "attributes": {
+              "anonymous": false,
+              "documentation": null,
+              "name": "EnrolmentConditionTypeAdded"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": true,
+                      "name": "node",
+                      "scope": 210,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes32",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes32",
+                          "type": "bytes32"
+                        },
+                        "id": 205,
+                        "name": "ElementaryTypeName",
+                        "src": "495:7:4"
+                      }
+                    ],
+                    "id": 206,
+                    "name": "VariableDeclaration",
+                    "src": "495:20:4"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": false,
+                      "name": "addedType",
+                      "scope": 210,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 207,
+                        "name": "ElementaryTypeName",
+                        "src": "517:7:4"
+                      }
+                    ],
+                    "id": 208,
+                    "name": "VariableDeclaration",
+                    "src": "517:17:4"
+                  }
+                ],
+                "id": 209,
+                "name": "ParameterList",
+                "src": "494:41:4"
+              }
+            ],
+            "id": 210,
+            "name": "EventDefinition",
+            "src": "461:75:4"
+          },
+          {
+            "attributes": {
+              "anonymous": false,
+              "documentation": null,
+              "name": "EnrolmentConditionTypeRemoved"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": true,
+                      "name": "node",
+                      "scope": 216,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes32",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes32",
+                          "type": "bytes32"
+                        },
+                        "id": 211,
+                        "name": "ElementaryTypeName",
+                        "src": "586:7:4"
+                      }
+                    ],
+                    "id": 212,
+                    "name": "VariableDeclaration",
+                    "src": "586:20:4"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": false,
+                      "name": "removedType",
+                      "scope": 216,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 213,
+                        "name": "ElementaryTypeName",
+                        "src": "616:7:4"
+                      }
+                    ],
+                    "id": 214,
+                    "name": "VariableDeclaration",
+                    "src": "616:19:4"
+                  }
+                ],
+                "id": 215,
+                "name": "ParameterList",
+                "src": "576:65:4"
+              }
+            ],
+            "id": 216,
+            "name": "EventDefinition",
+            "src": "541:101:4"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "name": "conditionTypes",
+              "scope": 323,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "mapping(bytes32 => mapping(uint256 => bool))",
+              "value": null,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "type": "mapping(bytes32 => mapping(uint256 => bool))"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "name": "bytes32",
+                      "type": "bytes32"
+                    },
+                    "id": 217,
+                    "name": "ElementaryTypeName",
+                    "src": "656:7:4"
+                  },
+                  {
+                    "attributes": {
+                      "type": "mapping(uint256 => bool)"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 218,
+                        "name": "ElementaryTypeName",
+                        "src": "675:7:4"
+                      },
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 219,
+                        "name": "ElementaryTypeName",
+                        "src": "686:4:4"
+                      }
+                    ],
+                    "id": 220,
+                    "name": "Mapping",
+                    "src": "667:24:4"
+                  }
+                ],
+                "id": 221,
+                "name": "Mapping",
+                "src": "648:44:4"
+              }
+            ],
+            "id": 222,
+            "name": "VariableDeclaration",
+            "src": "648:66:4"
+          },
+          {
+            "attributes": {
+              "documentation": "Adds a conditionType required for a role.\nIf type is already required for a role, no action is taken.\nMay only be called by the owner of that node in the ENS registry.\n@param node The node to update.\n@param conditionType The conditionType to add.",
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "name": "addConditionType",
+              "scope": 323,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "node",
+                      "scope": 255,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes32",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes32",
+                          "type": "bytes32"
+                        },
+                        "id": 223,
+                        "name": "ElementaryTypeName",
+                        "src": "1045:7:4"
+                      }
+                    ],
+                    "id": 224,
+                    "name": "VariableDeclaration",
+                    "src": "1045:12:4"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "conditionType",
+                      "scope": 255,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 225,
+                        "name": "ElementaryTypeName",
+                        "src": "1059:7:4"
+                      }
+                    ],
+                    "id": 226,
+                    "name": "VariableDeclaration",
+                    "src": "1059:21:4"
+                  }
+                ],
+                "id": 227,
+                "name": "ParameterList",
+                "src": "1044:37:4"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 231,
+                "name": "ParameterList",
+                "src": "1128:0:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 3155,
+                      "type": "modifier (bytes32)",
+                      "value": "authorised"
+                    },
+                    "id": 228,
+                    "name": "Identifier",
+                    "src": "1107:10:4"
+                  },
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 224,
+                      "type": "bytes32",
+                      "value": "node"
+                    },
+                    "id": 229,
+                    "name": "Identifier",
+                    "src": "1118:4:4"
+                  }
+                ],
+                "id": 230,
+                "name": "ModifierInvocation",
+                "src": "1107:16:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "falseBody": null
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "commonType": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          },
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "==",
+                          "type": "bool"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "type": "bool"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "type": "mapping(uint256 => bool)"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 222,
+                                      "type": "mapping(bytes32 => mapping(uint256 => bool))",
+                                      "value": "conditionTypes"
+                                    },
+                                    "id": 232,
+                                    "name": "Identifier",
+                                    "src": "1142:14:4"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 224,
+                                      "type": "bytes32",
+                                      "value": "node"
+                                    },
+                                    "id": 233,
+                                    "name": "Identifier",
+                                    "src": "1157:4:4"
+                                  }
+                                ],
+                                "id": 234,
+                                "name": "IndexAccess",
+                                "src": "1142:20:4"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 226,
+                                  "type": "uint256",
+                                  "value": "conditionType"
+                                },
+                                "id": 235,
+                                "name": "Identifier",
+                                "src": "1163:13:4"
+                              }
+                            ],
+                            "id": 236,
+                            "name": "IndexAccess",
+                            "src": "1142:35:4"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "hexvalue": "66616c7365",
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "lValueRequested": false,
+                              "subdenomination": null,
+                              "token": "bool",
+                              "type": "bool",
+                              "value": "false"
+                            },
+                            "id": 237,
+                            "name": "Literal",
+                            "src": "1181:5:4"
+                          }
+                        ],
+                        "id": 238,
+                        "name": "BinaryOperation",
+                        "src": "1142:44:4"
+                      },
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "operator": "=",
+                                  "type": "bool"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "isConstant": false,
+                                      "isLValue": true,
+                                      "isPure": false,
+                                      "lValueRequested": true,
+                                      "type": "bool"
+                                    },
+                                    "children": [
+                                      {
+                                        "attributes": {
+                                          "argumentTypes": null,
+                                          "isConstant": false,
+                                          "isLValue": true,
+                                          "isPure": false,
+                                          "lValueRequested": false,
+                                          "type": "mapping(uint256 => bool)"
+                                        },
+                                        "children": [
+                                          {
+                                            "attributes": {
+                                              "argumentTypes": null,
+                                              "overloadedDeclarations": [
+                                                null
+                                              ],
+                                              "referencedDeclaration": 222,
+                                              "type": "mapping(bytes32 => mapping(uint256 => bool))",
+                                              "value": "conditionTypes"
+                                            },
+                                            "id": 239,
+                                            "name": "Identifier",
+                                            "src": "1202:14:4"
+                                          },
+                                          {
+                                            "attributes": {
+                                              "argumentTypes": null,
+                                              "overloadedDeclarations": [
+                                                null
+                                              ],
+                                              "referencedDeclaration": 224,
+                                              "type": "bytes32",
+                                              "value": "node"
+                                            },
+                                            "id": 240,
+                                            "name": "Identifier",
+                                            "src": "1217:4:4"
+                                          }
+                                        ],
+                                        "id": 242,
+                                        "name": "IndexAccess",
+                                        "src": "1202:20:4"
+                                      },
+                                      {
+                                        "attributes": {
+                                          "argumentTypes": null,
+                                          "overloadedDeclarations": [
+                                            null
+                                          ],
+                                          "referencedDeclaration": 226,
+                                          "type": "uint256",
+                                          "value": "conditionType"
+                                        },
+                                        "id": 241,
+                                        "name": "Identifier",
+                                        "src": "1223:13:4"
+                                      }
+                                    ],
+                                    "id": 243,
+                                    "name": "IndexAccess",
+                                    "src": "1202:35:4"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "hexvalue": "74727565",
+                                      "isConstant": false,
+                                      "isLValue": false,
+                                      "isPure": true,
+                                      "lValueRequested": false,
+                                      "subdenomination": null,
+                                      "token": "bool",
+                                      "type": "bool",
+                                      "value": "true"
+                                    },
+                                    "id": 244,
+                                    "name": "Literal",
+                                    "src": "1240:4:4"
+                                  }
+                                ],
+                                "id": 245,
+                                "name": "Assignment",
+                                "src": "1202:42:4"
+                              }
+                            ],
+                            "id": 246,
+                            "name": "ExpressionStatement",
+                            "src": "1202:42:4"
+                          },
+                          {
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": false,
+                                  "isStructConstructorCall": false,
+                                  "lValueRequested": false,
+                                  "names": [
+                                    null
+                                  ],
+                                  "type": "tuple()",
+                                  "type_conversion": false
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": [
+                                        {
+                                          "typeIdentifier": "t_bytes32",
+                                          "typeString": "bytes32"
+                                        },
+                                        {
+                                          "typeIdentifier": "t_uint256",
+                                          "typeString": "uint256"
+                                        }
+                                      ],
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 210,
+                                      "type": "function (bytes32,uint256)",
+                                      "value": "EnrolmentConditionTypeAdded"
+                                    },
+                                    "id": 247,
+                                    "name": "Identifier",
+                                    "src": "1263:27:4"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 224,
+                                      "type": "bytes32",
+                                      "value": "node"
+                                    },
+                                    "id": 248,
+                                    "name": "Identifier",
+                                    "src": "1291:4:4"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 226,
+                                      "type": "uint256",
+                                      "value": "conditionType"
+                                    },
+                                    "id": 249,
+                                    "name": "Identifier",
+                                    "src": "1297:13:4"
+                                  }
+                                ],
+                                "id": 250,
+                                "name": "FunctionCall",
+                                "src": "1263:48:4"
+                              }
+                            ],
+                            "id": 251,
+                            "name": "EmitStatement",
+                            "src": "1258:53:4"
+                          }
+                        ],
+                        "id": 252,
+                        "name": "Block",
+                        "src": "1188:134:4"
+                      }
+                    ],
+                    "id": 253,
+                    "name": "IfStatement",
+                    "src": "1138:184:4"
+                  }
+                ],
+                "id": 254,
+                "name": "Block",
+                "src": "1128:200:4"
+              }
+            ],
+            "id": 255,
+            "name": "FunctionDefinition",
+            "src": "1019:309:4"
+          },
+          {
+            "attributes": {
+              "documentation": "Removes a conditionType required for a role.\nIf type is already not required for a role, no action is taken.\nMay only be called by the owner of that node in the ENS registry.\n@param node The node to update.\n@param conditionType The conditionType to add.",
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "name": "removeConditionType",
+              "scope": 323,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "node",
+                      "scope": 288,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes32",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes32",
+                          "type": "bytes32"
+                        },
+                        "id": 256,
+                        "name": "ElementaryTypeName",
+                        "src": "1668:7:4"
+                      }
+                    ],
+                    "id": 257,
+                    "name": "VariableDeclaration",
+                    "src": "1668:12:4"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "conditionType",
+                      "scope": 288,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 258,
+                        "name": "ElementaryTypeName",
+                        "src": "1682:7:4"
+                      }
+                    ],
+                    "id": 259,
+                    "name": "VariableDeclaration",
+                    "src": "1682:21:4"
+                  }
+                ],
+                "id": 260,
+                "name": "ParameterList",
+                "src": "1667:37:4"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 264,
+                "name": "ParameterList",
+                "src": "1751:0:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 3155,
+                      "type": "modifier (bytes32)",
+                      "value": "authorised"
+                    },
+                    "id": 261,
+                    "name": "Identifier",
+                    "src": "1730:10:4"
+                  },
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 257,
+                      "type": "bytes32",
+                      "value": "node"
+                    },
+                    "id": 262,
+                    "name": "Identifier",
+                    "src": "1741:4:4"
+                  }
+                ],
+                "id": 263,
+                "name": "ModifierInvocation",
+                "src": "1730:16:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "falseBody": null
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "commonType": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          },
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "==",
+                          "type": "bool"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "type": "bool"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "type": "mapping(uint256 => bool)"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 222,
+                                      "type": "mapping(bytes32 => mapping(uint256 => bool))",
+                                      "value": "conditionTypes"
+                                    },
+                                    "id": 265,
+                                    "name": "Identifier",
+                                    "src": "1765:14:4"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 257,
+                                      "type": "bytes32",
+                                      "value": "node"
+                                    },
+                                    "id": 266,
+                                    "name": "Identifier",
+                                    "src": "1780:4:4"
+                                  }
+                                ],
+                                "id": 267,
+                                "name": "IndexAccess",
+                                "src": "1765:20:4"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 259,
+                                  "type": "uint256",
+                                  "value": "conditionType"
+                                },
+                                "id": 268,
+                                "name": "Identifier",
+                                "src": "1786:13:4"
+                              }
+                            ],
+                            "id": 269,
+                            "name": "IndexAccess",
+                            "src": "1765:35:4"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "hexvalue": "74727565",
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": true,
+                              "lValueRequested": false,
+                              "subdenomination": null,
+                              "token": "bool",
+                              "type": "bool",
+                              "value": "true"
+                            },
+                            "id": 270,
+                            "name": "Literal",
+                            "src": "1804:4:4"
+                          }
+                        ],
+                        "id": 271,
+                        "name": "BinaryOperation",
+                        "src": "1765:43:4"
+                      },
+                      {
+                        "children": [
+                          {
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "operator": "=",
+                                  "type": "bool"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "isConstant": false,
+                                      "isLValue": true,
+                                      "isPure": false,
+                                      "lValueRequested": true,
+                                      "type": "bool"
+                                    },
+                                    "children": [
+                                      {
+                                        "attributes": {
+                                          "argumentTypes": null,
+                                          "isConstant": false,
+                                          "isLValue": true,
+                                          "isPure": false,
+                                          "lValueRequested": false,
+                                          "type": "mapping(uint256 => bool)"
+                                        },
+                                        "children": [
+                                          {
+                                            "attributes": {
+                                              "argumentTypes": null,
+                                              "overloadedDeclarations": [
+                                                null
+                                              ],
+                                              "referencedDeclaration": 222,
+                                              "type": "mapping(bytes32 => mapping(uint256 => bool))",
+                                              "value": "conditionTypes"
+                                            },
+                                            "id": 272,
+                                            "name": "Identifier",
+                                            "src": "1824:14:4"
+                                          },
+                                          {
+                                            "attributes": {
+                                              "argumentTypes": null,
+                                              "overloadedDeclarations": [
+                                                null
+                                              ],
+                                              "referencedDeclaration": 257,
+                                              "type": "bytes32",
+                                              "value": "node"
+                                            },
+                                            "id": 273,
+                                            "name": "Identifier",
+                                            "src": "1839:4:4"
+                                          }
+                                        ],
+                                        "id": 275,
+                                        "name": "IndexAccess",
+                                        "src": "1824:20:4"
+                                      },
+                                      {
+                                        "attributes": {
+                                          "argumentTypes": null,
+                                          "overloadedDeclarations": [
+                                            null
+                                          ],
+                                          "referencedDeclaration": 259,
+                                          "type": "uint256",
+                                          "value": "conditionType"
+                                        },
+                                        "id": 274,
+                                        "name": "Identifier",
+                                        "src": "1845:13:4"
+                                      }
+                                    ],
+                                    "id": 276,
+                                    "name": "IndexAccess",
+                                    "src": "1824:35:4"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "hexvalue": "66616c7365",
+                                      "isConstant": false,
+                                      "isLValue": false,
+                                      "isPure": true,
+                                      "lValueRequested": false,
+                                      "subdenomination": null,
+                                      "token": "bool",
+                                      "type": "bool",
+                                      "value": "false"
+                                    },
+                                    "id": 277,
+                                    "name": "Literal",
+                                    "src": "1862:5:4"
+                                  }
+                                ],
+                                "id": 278,
+                                "name": "Assignment",
+                                "src": "1824:43:4"
+                              }
+                            ],
+                            "id": 279,
+                            "name": "ExpressionStatement",
+                            "src": "1824:43:4"
+                          },
+                          {
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": false,
+                                  "isStructConstructorCall": false,
+                                  "lValueRequested": false,
+                                  "names": [
+                                    null
+                                  ],
+                                  "type": "tuple()",
+                                  "type_conversion": false
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": [
+                                        {
+                                          "typeIdentifier": "t_bytes32",
+                                          "typeString": "bytes32"
+                                        },
+                                        {
+                                          "typeIdentifier": "t_uint256",
+                                          "typeString": "uint256"
+                                        }
+                                      ],
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 216,
+                                      "type": "function (bytes32,uint256)",
+                                      "value": "EnrolmentConditionTypeRemoved"
+                                    },
+                                    "id": 280,
+                                    "name": "Identifier",
+                                    "src": "1886:29:4"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 257,
+                                      "type": "bytes32",
+                                      "value": "node"
+                                    },
+                                    "id": 281,
+                                    "name": "Identifier",
+                                    "src": "1916:4:4"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 259,
+                                      "type": "uint256",
+                                      "value": "conditionType"
+                                    },
+                                    "id": 282,
+                                    "name": "Identifier",
+                                    "src": "1922:13:4"
+                                  }
+                                ],
+                                "id": 283,
+                                "name": "FunctionCall",
+                                "src": "1886:50:4"
+                              }
+                            ],
+                            "id": 284,
+                            "name": "EmitStatement",
+                            "src": "1881:55:4"
+                          }
+                        ],
+                        "id": 285,
+                        "name": "Block",
+                        "src": "1810:137:4"
+                      }
+                    ],
+                    "id": 286,
+                    "name": "IfStatement",
+                    "src": "1761:186:4"
+                  }
+                ],
+                "id": 287,
+                "name": "Block",
+                "src": "1751:202:4"
+              }
+            ],
+            "id": 288,
+            "name": "FunctionDefinition",
+            "src": "1639:314:4"
+          },
+          {
+            "attributes": {
+              "documentation": "Returns whether or not a condition type is required for a role\n@param node The ENS node to query.\n@param condition The condition to check\n@return Whether or not the role requires this condition",
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "requiresConditionType",
+              "scope": 323,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "node",
+                      "scope": 305,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes32",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes32",
+                          "type": "bytes32"
+                        },
+                        "id": 289,
+                        "name": "ElementaryTypeName",
+                        "src": "2228:7:4"
+                      }
+                    ],
+                    "id": 290,
+                    "name": "VariableDeclaration",
+                    "src": "2228:12:4"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "condition",
+                      "scope": 305,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "uint256",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "uint256",
+                          "type": "uint256"
+                        },
+                        "id": 291,
+                        "name": "ElementaryTypeName",
+                        "src": "2242:7:4"
+                      }
+                    ],
+                    "id": 292,
+                    "name": "VariableDeclaration",
+                    "src": "2242:17:4"
+                  }
+                ],
+                "id": 293,
+                "name": "ParameterList",
+                "src": "2227:33:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "",
+                      "scope": 305,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 294,
+                        "name": "ElementaryTypeName",
+                        "src": "2308:4:4"
+                      }
+                    ],
+                    "id": 295,
+                    "name": "VariableDeclaration",
+                    "src": "2308:4:4"
+                  }
+                ],
+                "id": 296,
+                "name": "ParameterList",
+                "src": "2307:6:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 296
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isInlineArray": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "type": "bool"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "type": "bool"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "type": "mapping(uint256 => bool)"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 222,
+                                      "type": "mapping(bytes32 => mapping(uint256 => bool))",
+                                      "value": "conditionTypes"
+                                    },
+                                    "id": 297,
+                                    "name": "Identifier",
+                                    "src": "2336:14:4"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 290,
+                                      "type": "bytes32",
+                                      "value": "node"
+                                    },
+                                    "id": 298,
+                                    "name": "Identifier",
+                                    "src": "2351:4:4"
+                                  }
+                                ],
+                                "id": 299,
+                                "name": "IndexAccess",
+                                "src": "2336:20:4"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 292,
+                                  "type": "uint256",
+                                  "value": "condition"
+                                },
+                                "id": 300,
+                                "name": "Identifier",
+                                "src": "2357:9:4"
+                              }
+                            ],
+                            "id": 301,
+                            "name": "IndexAccess",
+                            "src": "2336:31:4"
+                          }
+                        ],
+                        "id": 302,
+                        "name": "TupleExpression",
+                        "src": "2335:33:4"
+                      }
+                    ],
+                    "id": 303,
+                    "name": "Return",
+                    "src": "2328:40:4"
+                  }
+                ],
+                "id": 304,
+                "name": "Block",
+                "src": "2318:57:4"
+              }
+            ],
+            "id": 305,
+            "name": "FunctionDefinition",
+            "src": "2197:178:4"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "supportsInterface",
+              "scope": 323,
+              "stateMutability": "pure",
+              "superFunction": 3136,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "interfaceID",
+                      "scope": 322,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes4",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes4",
+                          "type": "bytes4"
+                        },
+                        "id": 306,
+                        "name": "ElementaryTypeName",
+                        "src": "2408:6:4"
+                      }
+                    ],
+                    "id": 307,
+                    "name": "VariableDeclaration",
+                    "src": "2408:18:4"
+                  }
+                ],
+                "id": 308,
+                "name": "ParameterList",
+                "src": "2407:20:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "",
+                      "scope": 322,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 309,
+                        "name": "ElementaryTypeName",
+                        "src": "2449:4:4"
+                      }
+                    ],
+                    "id": 310,
+                    "name": "VariableDeclaration",
+                    "src": "2449:4:4"
+                  }
+                ],
+                "id": 311,
+                "name": "ParameterList",
+                "src": "2448:6:4"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 311
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "commonType": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          },
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "||",
+                          "type": "bool"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "commonType": {
+                                "typeIdentifier": "t_bytes4",
+                                "typeString": "bytes4"
+                              },
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "operator": "==",
+                              "type": "bool"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 307,
+                                  "type": "bytes4",
+                                  "value": "interfaceID"
+                                },
+                                "id": 312,
+                                "name": "Identifier",
+                                "src": "2484:11:4"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 204,
+                                  "type": "bytes4",
+                                  "value": "ENROLMENT_CONDITION_TYPE_INTERFACE_ID"
+                                },
+                                "id": 313,
+                                "name": "Identifier",
+                                "src": "2499:37:4"
+                              }
+                            ],
+                            "id": 314,
+                            "name": "BinaryOperation",
+                            "src": "2484:52:4"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "isStructConstructorCall": false,
+                              "lValueRequested": false,
+                              "names": [
+                                null
+                              ],
+                              "type": "bool",
+                              "type_conversion": false
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": [
+                                    {
+                                      "typeIdentifier": "t_bytes4",
+                                      "typeString": "bytes4"
+                                    }
+                                  ],
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "member_name": "supportsInterface",
+                                  "referencedDeclaration": 3136,
+                                  "type": "function (bytes4) pure returns (bool)"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 4475,
+                                      "type": "contract super EnrolmentConditionTypeResolver",
+                                      "value": "super"
+                                    },
+                                    "id": 315,
+                                    "name": "Identifier",
+                                    "src": "2552:5:4"
+                                  }
+                                ],
+                                "id": 316,
+                                "name": "MemberAccess",
+                                "src": "2552:23:4"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 307,
+                                  "type": "bytes4",
+                                  "value": "interfaceID"
+                                },
+                                "id": 317,
+                                "name": "Identifier",
+                                "src": "2576:11:4"
+                              }
+                            ],
+                            "id": 318,
+                            "name": "FunctionCall",
+                            "src": "2552:36:4"
+                          }
+                        ],
+                        "id": 319,
+                        "name": "BinaryOperation",
+                        "src": "2484:104:4"
+                      }
+                    ],
+                    "id": 320,
+                    "name": "Return",
+                    "src": "2465:123:4"
+                  }
+                ],
+                "id": 321,
+                "name": "Block",
+                "src": "2455:140:4"
+              }
+            ],
+            "id": 322,
+            "name": "FunctionDefinition",
+            "src": "2381:214:4"
+          }
+        ],
+        "id": 323,
+        "name": "ContractDefinition",
+        "src": "318:2279:4"
+      }
+    ],
+    "id": 324,
+    "name": "SourceUnit",
+    "src": "0:2598:4"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.17+commit.d19bba13.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.3.4",
+  "updatedAt": "2021-04-07T19:06:43.431Z",
+  "devdoc": {
+    "methods": {
+      "addConditionType(bytes32,uint256)": {
+        "params": {
+          "conditionType": "The conditionType to add.",
+          "node": "The node to update."
+        }
+      },
+      "removeConditionType(bytes32,uint256)": {
+        "params": {
+          "conditionType": "The conditionType to add.",
+          "node": "The node to update."
+        }
+      },
+      "requiresConditionType(bytes32,uint256)": {
+        "params": {
+          "condition": "The condition to check",
+          "node": "The ENS node to query."
+        },
+        "return": "Whether or not the role requires this condition"
+      }
+    }
+  },
+  "userdoc": {
+    "methods": {
+      "addConditionType(bytes32,uint256)": {
+        "notice": "Adds a conditionType required for a role. If type is already required for a role, no action is taken. May only be called by the owner of that node in the ENS registry."
+      },
+      "removeConditionType(bytes32,uint256)": {
+        "notice": "Removes a conditionType required for a role. If type is already not required for a role, no action is taken. May only be called by the owner of that node in the ENS registry."
+      },
+      "requiresConditionType(bytes32,uint256)": {
+        "notice": "Returns whether or not a condition type is required for a role"
+      }
+    },
+    "notice": "Profile for resolving type of conditions required for an identity to be eligible for a role. A role can require a combination of the types. These possible types are: 00: The requesting identity must have some role"
+  }
+}
