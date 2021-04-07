@@ -7,5 +7,5 @@
     "outDir": "dist",
     "resolveJsonModule": true
   },
-  "include": ["./test"],
+  "include": ["./scripts", "./test"],
 }

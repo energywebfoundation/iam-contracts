@@ -1,0 +1,3456 @@
+{
+  "contractName": "IssuersResolver",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "node",
+          "type": "bytes32"
+        },
+        {
+          "components": [
+            {
+              "internalType": "address[]",
+              "name": "dids",
+              "type": "address[]"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "role",
+              "type": "bytes32"
+            }
+          ],
+          "indexed": false,
+          "internalType": "struct IssuersResolver.Issuers",
+          "name": "newIssuers",
+          "type": "tuple"
+        }
+      ],
+      "name": "IssuersChanged",
+      "type": "event"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "node",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address[]",
+          "name": "dids",
+          "type": "address[]"
+        }
+      ],
+      "name": "setIssuerDids",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": false,
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "node",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "setIssuerRole",
+      "outputs": [],
+      "payable": false,
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "node",
+          "type": "bytes32"
+        }
+      ],
+      "name": "issuers",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "dids",
+          "type": "address[]"
+        },
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "constant": true,
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceID",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "payable": false,
+      "stateMutability": "pure",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.5.17+commit.d19bba13\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"node\",\"type\":\"bytes32\"},{\"components\":[{\"internalType\":\"address[]\",\"name\":\"dids\",\"type\":\"address[]\"},{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"indexed\":false,\"internalType\":\"struct IssuersResolver.Issuers\",\"name\":\"newIssuers\",\"type\":\"tuple\"}],\"name\":\"IssuersChanged\",\"type\":\"event\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"node\",\"type\":\"bytes32\"}],\"name\":\"issuers\",\"outputs\":[{\"internalType\":\"address[]\",\"name\":\"dids\",\"type\":\"address[]\"},{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"payable\":false,\"stateMutability\":\"view\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"node\",\"type\":\"bytes32\"},{\"internalType\":\"address[]\",\"name\":\"dids\",\"type\":\"address[]\"}],\"name\":\"setIssuerDids\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":false,\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"node\",\"type\":\"bytes32\"},{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"setIssuerRole\",\"outputs\":[],\"payable\":false,\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"constant\":true,\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceID\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"payable\":false,\"stateMutability\":\"pure\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{\"issuers(bytes32)\":{\"params\":{\"node\":\"The ENS node to query.\"},\"return\":\"The associated issuers.\"},\"setIssuerDids(bytes32,address[])\":{\"params\":{\"dids\":\"The dids to set.\",\"node\":\"The node to update.\"}},\"setIssuerRole(bytes32,bytes32)\":{\"params\":{\"node\":\"The node to update.\",\"role\":\"The role to set.\"}}}},\"userdoc\":{\"methods\":{\"issuers(bytes32)\":{\"notice\":\"Returns the issuers associated with an ENS node.\"},\"setIssuerDids(bytes32,address[])\":{\"notice\":\"Sets the dids associated with a role. Clears the role associated with a role. May only be called by the owner of that node in the ENS registry.\"},\"setIssuerRole(bytes32,bytes32)\":{\"notice\":\"Sets the dids associated with a role. Clears the role associated with a role. May only be called by the owner of that node in the ENS registry.\"}},\"notice\":\"Profile for resolving identities (by did or by role) which can issue a role definition\"}},\"settings\":{\"compilationTarget\":{\"/Users/john/ew/iam-contracts/iam-contracts/contracts/profiles/issuance/IssuersResolver.sol\":\"IssuersResolver\"},\"evmVersion\":\"constantinople\",\"libraries\":{},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/john/ew/iam-contracts/iam-contracts/contracts/profiles/issuance/IssuersResolver.sol\":{\"keccak256\":\"0x1bbb7aa0e0eb85b1931b68a44eae8d12dc14b326364f62f0a407fa783016e76f\",\"urls\":[\"bzz-raw://88a1f2d8ff25849c6e6500a0ea4ccb407a37946d45a52f439e50e1e75141668d\",\"dweb:/ipfs/QmRdZXyzPFu28JQjrDDv6ct1udaD7i2RGuF15TYa5dyRX7\"]},\"@ensdomains/resolver/contracts/ResolverBase.sol\":{\"keccak256\":\"0xfc7d550960829127576d6fc3080513d74ef18a6d7057d0d9262ce071890053e8\",\"urls\":[\"bzz-raw://dc477afd53175b96112bb0e2e25ce85b1f7c0e3fe0da4a2e8539d86712583b00\",\"dweb:/ipfs/QmQdwwHEcNMxTWtkrNpkbxtokwiFDdQ5xwPYcuZPRbJQKp\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.5.0;\npragma experimental ABIEncoderV2;\n\nimport \"@ensdomains/resolver/contracts/ResolverBase.sol\";\n\n/**\n * Profile for resolving identities (by did or by role) which can issue a role definition\n */\ncontract IssuersResolver is ResolverBase {\n    bytes4 private constant ISSUERS_INTERFACE_ID = 0xc53a4413;\n\n    struct Issuers {\n        address[] dids;\n        bytes32 role;\n    }\n\n    event IssuersChanged(bytes32 indexed node, Issuers newIssuers);\n\n    mapping(bytes32 => Issuers) issuersMap;\n\n    /**\n     * Sets the dids associated with a role.\n     * Clears the role associated with a role.\n     * May only be called by the owner of that node in the ENS registry.\n     * @param node The node to update.\n     * @param dids The dids to set.\n     */\n    function setIssuerDids(bytes32 node, address[] calldata dids)\n        external\n        authorised(node)\n    {\n        issuersMap[node].dids = dids;\n        delete issuersMap[node].role;\n        emit IssuersChanged(node, issuersMap[node]);\n    }\n\n    /**\n     * Sets the dids associated with a role.\n     * Clears the role associated with a role.\n     * May only be called by the owner of that node in the ENS registry.\n     * @param node The node to update.\n     * @param role The role to set.\n     */\n    function setIssuerRole(bytes32 node, bytes32 role)\n        external\n        authorised(node)\n    {\n        issuersMap[node].role = role;\n        delete issuersMap[node].dids;\n        emit IssuersChanged(node, issuersMap[node]);\n    }\n\n    /**\n     * Returns the issuers associated with an ENS node.\n     * @param node The ENS node to query.\n     * @return The associated issuers.\n     */\n    function issuers(bytes32 node)\n        external\n        view\n        returns (address[] memory dids, bytes32 role)\n    {\n        return (issuersMap[node].dids, issuersMap[node].role);\n    }\n\n    function supportsInterface(bytes4 interfaceID) public pure returns (bool) {\n        return\n            interfaceID == ISSUERS_INTERFACE_ID ||\n            super.supportsInterface(interfaceID);\n    }\n}\n",
+  "sourcePath": "/Users/john/ew/iam-contracts/iam-contracts/contracts/profiles/issuance/IssuersResolver.sol",
+  "ast": {
+    "absolutePath": "/Users/john/ew/iam-contracts/iam-contracts/contracts/profiles/issuance/IssuersResolver.sol",
+    "exportedSymbols": {
+      "IssuersResolver": [
+        601
+      ]
+    },
+    "id": 602,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 476,
+        "literals": [
+          "solidity",
+          "^",
+          "0.5",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:7"
+      },
+      {
+        "id": 477,
+        "literals": [
+          "experimental",
+          "ABIEncoderV2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "24:33:7"
+      },
+      {
+        "absolutePath": "@ensdomains/resolver/contracts/ResolverBase.sol",
+        "file": "@ensdomains/resolver/contracts/ResolverBase.sol",
+        "id": 478,
+        "nodeType": "ImportDirective",
+        "scope": 602,
+        "sourceUnit": 3189,
+        "src": "59:57:7",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "baseContracts": [
+          {
+            "arguments": null,
+            "baseName": {
+              "contractScope": null,
+              "id": 479,
+              "name": "ResolverBase",
+              "nodeType": "UserDefinedTypeName",
+              "referencedDeclaration": 3188,
+              "src": "244:12:7",
+              "typeDescriptions": {
+                "typeIdentifier": "t_contract$_ResolverBase_$3188",
+                "typeString": "contract ResolverBase"
+              }
+            },
+            "id": 480,
+            "nodeType": "InheritanceSpecifier",
+            "src": "244:12:7"
+          }
+        ],
+        "contractDependencies": [
+          3188
+        ],
+        "contractKind": "contract",
+        "documentation": "Profile for resolving identities (by did or by role) which can issue a role definition",
+        "fullyImplemented": false,
+        "id": 601,
+        "linearizedBaseContracts": [
+          601,
+          3188
+        ],
+        "name": "IssuersResolver",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": true,
+            "id": 483,
+            "name": "ISSUERS_INTERFACE_ID",
+            "nodeType": "VariableDeclaration",
+            "scope": 601,
+            "src": "263:57:7",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes4",
+              "typeString": "bytes4"
+            },
+            "typeName": {
+              "id": 481,
+              "name": "bytes4",
+              "nodeType": "ElementaryTypeName",
+              "src": "263:6:7",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes4",
+                "typeString": "bytes4"
+              }
+            },
+            "value": {
+              "argumentTypes": null,
+              "hexValue": "30786335336134343133",
+              "id": 482,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "number",
+              "lValueRequested": false,
+              "nodeType": "Literal",
+              "src": "310:10:7",
+              "subdenomination": null,
+              "typeDescriptions": {
+                "typeIdentifier": "t_rational_3308930067_by_1",
+                "typeString": "int_const 3308930067"
+              },
+              "value": "0xc53a4413"
+            },
+            "visibility": "private"
+          },
+          {
+            "canonicalName": "IssuersResolver.Issuers",
+            "id": 489,
+            "members": [
+              {
+                "constant": false,
+                "id": 486,
+                "name": "dids",
+                "nodeType": "VariableDeclaration",
+                "scope": 489,
+                "src": "352:14:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                  "typeString": "address[]"
+                },
+                "typeName": {
+                  "baseType": {
+                    "id": 484,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "352:7:7",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "id": 485,
+                  "length": null,
+                  "nodeType": "ArrayTypeName",
+                  "src": "352:9:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                    "typeString": "address[]"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 488,
+                "name": "role",
+                "nodeType": "VariableDeclaration",
+                "scope": 489,
+                "src": "376:12:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 487,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "376:7:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "Issuers",
+            "nodeType": "StructDefinition",
+            "scope": 601,
+            "src": "327:68:7",
+            "visibility": "public"
+          },
+          {
+            "anonymous": false,
+            "documentation": null,
+            "id": 495,
+            "name": "IssuersChanged",
+            "nodeType": "EventDefinition",
+            "parameters": {
+              "id": 494,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 491,
+                  "indexed": true,
+                  "name": "node",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 495,
+                  "src": "422:20:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 490,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "422:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 493,
+                  "indexed": false,
+                  "name": "newIssuers",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 495,
+                  "src": "444:18:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Issuers_$489_memory_ptr",
+                    "typeString": "struct IssuersResolver.Issuers"
+                  },
+                  "typeName": {
+                    "contractScope": null,
+                    "id": 492,
+                    "name": "Issuers",
+                    "nodeType": "UserDefinedTypeName",
+                    "referencedDeclaration": 489,
+                    "src": "444:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_struct$_Issuers_$489_storage_ptr",
+                      "typeString": "struct IssuersResolver.Issuers"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "421:42:7"
+            },
+            "src": "401:63:7"
+          },
+          {
+            "constant": false,
+            "id": 499,
+            "name": "issuersMap",
+            "nodeType": "VariableDeclaration",
+            "scope": 601,
+            "src": "470:38:7",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Issuers_$489_storage_$",
+              "typeString": "mapping(bytes32 => struct IssuersResolver.Issuers)"
+            },
+            "typeName": {
+              "id": 498,
+              "keyType": {
+                "id": 496,
+                "name": "bytes32",
+                "nodeType": "ElementaryTypeName",
+                "src": "478:7:7",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                }
+              },
+              "nodeType": "Mapping",
+              "src": "470:27:7",
+              "typeDescriptions": {
+                "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Issuers_$489_storage_$",
+                "typeString": "mapping(bytes32 => struct IssuersResolver.Issuers)"
+              },
+              "valueType": {
+                "contractScope": null,
+                "id": 497,
+                "name": "Issuers",
+                "nodeType": "UserDefinedTypeName",
+                "referencedDeclaration": 489,
+                "src": "489:7:7",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_Issuers_$489_storage_ptr",
+                  "typeString": "struct IssuersResolver.Issuers"
+                }
+              }
+            },
+            "value": null,
+            "visibility": "internal"
+          },
+          {
+            "body": {
+              "id": 530,
+              "nodeType": "Block",
+              "src": "879:136:7",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 515,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 510,
+                          "name": "issuersMap",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 499,
+                          "src": "889:10:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Issuers_$489_storage_$",
+                            "typeString": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)"
+                          }
+                        },
+                        "id": 512,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "id": 511,
+                          "name": "node",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 501,
+                          "src": "900:4:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "889:16:7",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Issuers_$489_storage",
+                          "typeString": "struct IssuersResolver.Issuers storage ref"
+                        }
+                      },
+                      "id": 513,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "dids",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 486,
+                      "src": "889:21:7",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                        "typeString": "address[] storage ref"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 514,
+                      "name": "dids",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 504,
+                      "src": "913:4:7",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_address_$dyn_calldata_ptr",
+                        "typeString": "address[] calldata"
+                      }
+                    },
+                    "src": "889:28:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                      "typeString": "address[] storage ref"
+                    }
+                  },
+                  "id": 516,
+                  "nodeType": "ExpressionStatement",
+                  "src": "889:28:7"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 521,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "UnaryOperation",
+                    "operator": "delete",
+                    "prefix": true,
+                    "src": "927:28:7",
+                    "subExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 517,
+                          "name": "issuersMap",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 499,
+                          "src": "934:10:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Issuers_$489_storage_$",
+                            "typeString": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)"
+                          }
+                        },
+                        "id": 519,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "id": 518,
+                          "name": "node",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 501,
+                          "src": "945:4:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "934:16:7",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Issuers_$489_storage",
+                          "typeString": "struct IssuersResolver.Issuers storage ref"
+                        }
+                      },
+                      "id": 520,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "role",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 488,
+                      "src": "934:21:7",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 522,
+                  "nodeType": "ExpressionStatement",
+                  "src": "927:28:7"
+                },
+                {
+                  "eventCall": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 524,
+                        "name": "node",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 501,
+                        "src": "985:4:7",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 525,
+                          "name": "issuersMap",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 499,
+                          "src": "991:10:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Issuers_$489_storage_$",
+                            "typeString": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)"
+                          }
+                        },
+                        "id": 527,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "id": 526,
+                          "name": "node",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 501,
+                          "src": "1002:4:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "991:16:7",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Issuers_$489_storage",
+                          "typeString": "struct IssuersResolver.Issuers storage ref"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        {
+                          "typeIdentifier": "t_struct$_Issuers_$489_storage",
+                          "typeString": "struct IssuersResolver.Issuers storage ref"
+                        }
+                      ],
+                      "id": 523,
+                      "name": "IssuersChanged",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 495,
+                      "src": "970:14:7",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_bytes32_$_t_struct$_Issuers_$489_memory_ptr_$returns$__$",
+                        "typeString": "function (bytes32,struct IssuersResolver.Issuers memory)"
+                      }
+                    },
+                    "id": 528,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "970:38:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 529,
+                  "nodeType": "EmitStatement",
+                  "src": "965:43:7"
+                }
+              ]
+            },
+            "documentation": "Sets the dids associated with a role.\nClears the role associated with a role.\nMay only be called by the owner of that node in the ENS registry.\n@param node The node to update.\n@param dids The dids to set.",
+            "id": 531,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 507,
+                    "name": "node",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 501,
+                    "src": "869:4:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  }
+                ],
+                "id": 508,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 506,
+                  "name": "authorised",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 3155,
+                  "src": "858:10:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$_t_bytes32_$",
+                    "typeString": "modifier (bytes32)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "858:16:7"
+              }
+            ],
+            "name": "setIssuerDids",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 505,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 501,
+                  "name": "node",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 531,
+                  "src": "794:12:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 500,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "794:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 504,
+                  "name": "dids",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 531,
+                  "src": "808:23:7",
+                  "stateVariable": false,
+                  "storageLocation": "calldata",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_calldata_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 502,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "808:7:7",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 503,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "808:9:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "793:39:7"
+            },
+            "returnParameters": {
+              "id": 509,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "879:0:7"
+            },
+            "scope": 601,
+            "src": "771:244:7",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 561,
+              "nodeType": "Block",
+              "src": "1374:136:7",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 546,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftHandSide": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 541,
+                          "name": "issuersMap",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 499,
+                          "src": "1384:10:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Issuers_$489_storage_$",
+                            "typeString": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)"
+                          }
+                        },
+                        "id": 543,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "id": 542,
+                          "name": "node",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 533,
+                          "src": "1395:4:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1384:16:7",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Issuers_$489_storage",
+                          "typeString": "struct IssuersResolver.Issuers storage ref"
+                        }
+                      },
+                      "id": 544,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "role",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 488,
+                      "src": "1384:21:7",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "nodeType": "Assignment",
+                    "operator": "=",
+                    "rightHandSide": {
+                      "argumentTypes": null,
+                      "id": 545,
+                      "name": "role",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 535,
+                      "src": "1408:4:7",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bytes32",
+                        "typeString": "bytes32"
+                      }
+                    },
+                    "src": "1384:28:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "id": 547,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1384:28:7"
+                },
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "id": 552,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "UnaryOperation",
+                    "operator": "delete",
+                    "prefix": true,
+                    "src": "1422:28:7",
+                    "subExpression": {
+                      "argumentTypes": null,
+                      "expression": {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 548,
+                          "name": "issuersMap",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 499,
+                          "src": "1429:10:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Issuers_$489_storage_$",
+                            "typeString": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)"
+                          }
+                        },
+                        "id": 550,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "id": 549,
+                          "name": "node",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 533,
+                          "src": "1440:4:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1429:16:7",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Issuers_$489_storage",
+                          "typeString": "struct IssuersResolver.Issuers storage ref"
+                        }
+                      },
+                      "id": 551,
+                      "isConstant": false,
+                      "isLValue": true,
+                      "isPure": false,
+                      "lValueRequested": true,
+                      "memberName": "dids",
+                      "nodeType": "MemberAccess",
+                      "referencedDeclaration": 486,
+                      "src": "1429:21:7",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                        "typeString": "address[] storage ref"
+                      }
+                    },
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 553,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1422:28:7"
+                },
+                {
+                  "eventCall": {
+                    "argumentTypes": null,
+                    "arguments": [
+                      {
+                        "argumentTypes": null,
+                        "id": 555,
+                        "name": "node",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 533,
+                        "src": "1480:4:7",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "baseExpression": {
+                          "argumentTypes": null,
+                          "id": 556,
+                          "name": "issuersMap",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 499,
+                          "src": "1486:10:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Issuers_$489_storage_$",
+                            "typeString": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)"
+                          }
+                        },
+                        "id": 558,
+                        "indexExpression": {
+                          "argumentTypes": null,
+                          "id": 557,
+                          "name": "node",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 533,
+                          "src": "1497:4:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes32",
+                            "typeString": "bytes32"
+                          }
+                        },
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "nodeType": "IndexAccess",
+                        "src": "1486:16:7",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_struct$_Issuers_$489_storage",
+                          "typeString": "struct IssuersResolver.Issuers storage ref"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        {
+                          "typeIdentifier": "t_struct$_Issuers_$489_storage",
+                          "typeString": "struct IssuersResolver.Issuers storage ref"
+                        }
+                      ],
+                      "id": 554,
+                      "name": "IssuersChanged",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 495,
+                      "src": "1465:14:7",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_event_nonpayable$_t_bytes32_$_t_struct$_Issuers_$489_memory_ptr_$returns$__$",
+                        "typeString": "function (bytes32,struct IssuersResolver.Issuers memory)"
+                      }
+                    },
+                    "id": 559,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1465:38:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 560,
+                  "nodeType": "EmitStatement",
+                  "src": "1460:43:7"
+                }
+              ]
+            },
+            "documentation": "Sets the dids associated with a role.\nClears the role associated with a role.\nMay only be called by the owner of that node in the ENS registry.\n@param node The node to update.\n@param role The role to set.",
+            "id": 562,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "argumentTypes": null,
+                    "id": 538,
+                    "name": "node",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 533,
+                    "src": "1364:4:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  }
+                ],
+                "id": 539,
+                "modifierName": {
+                  "argumentTypes": null,
+                  "id": 537,
+                  "name": "authorised",
+                  "nodeType": "Identifier",
+                  "overloadedDeclarations": [],
+                  "referencedDeclaration": 3155,
+                  "src": "1353:10:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_modifier$_t_bytes32_$",
+                    "typeString": "modifier (bytes32)"
+                  }
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1353:16:7"
+              }
+            ],
+            "name": "setIssuerRole",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 536,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 533,
+                  "name": "node",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 562,
+                  "src": "1300:12:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 532,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1300:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 535,
+                  "name": "role",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 562,
+                  "src": "1314:12:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 534,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1314:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1299:28:7"
+            },
+            "returnParameters": {
+              "id": 540,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1374:0:7"
+            },
+            "scope": 601,
+            "src": "1277:233:7",
+            "stateMutability": "nonpayable",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 582,
+              "nodeType": "Block",
+              "src": "1788:70:7",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "components": [
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "baseExpression": {
+                            "argumentTypes": null,
+                            "id": 572,
+                            "name": "issuersMap",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 499,
+                            "src": "1806:10:7",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Issuers_$489_storage_$",
+                              "typeString": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)"
+                            }
+                          },
+                          "id": 574,
+                          "indexExpression": {
+                            "argumentTypes": null,
+                            "id": 573,
+                            "name": "node",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 564,
+                            "src": "1817:4:7",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bytes32",
+                              "typeString": "bytes32"
+                            }
+                          },
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "IndexAccess",
+                          "src": "1806:16:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Issuers_$489_storage",
+                            "typeString": "struct IssuersResolver.Issuers storage ref"
+                          }
+                        },
+                        "id": 575,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "dids",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 486,
+                        "src": "1806:21:7",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_array$_t_address_$dyn_storage",
+                          "typeString": "address[] storage ref"
+                        }
+                      },
+                      {
+                        "argumentTypes": null,
+                        "expression": {
+                          "argumentTypes": null,
+                          "baseExpression": {
+                            "argumentTypes": null,
+                            "id": 576,
+                            "name": "issuersMap",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 499,
+                            "src": "1829:10:7",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_mapping$_t_bytes32_$_t_struct$_Issuers_$489_storage_$",
+                              "typeString": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)"
+                            }
+                          },
+                          "id": 578,
+                          "indexExpression": {
+                            "argumentTypes": null,
+                            "id": 577,
+                            "name": "node",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 564,
+                            "src": "1840:4:7",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bytes32",
+                              "typeString": "bytes32"
+                            }
+                          },
+                          "isConstant": false,
+                          "isLValue": true,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "nodeType": "IndexAccess",
+                          "src": "1829:16:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_struct$_Issuers_$489_storage",
+                            "typeString": "struct IssuersResolver.Issuers storage ref"
+                          }
+                        },
+                        "id": 579,
+                        "isConstant": false,
+                        "isLValue": true,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "role",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 488,
+                        "src": "1829:21:7",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      }
+                    ],
+                    "id": 580,
+                    "isConstant": false,
+                    "isInlineArray": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "nodeType": "TupleExpression",
+                    "src": "1805:46:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$_t_array$_t_address_$dyn_storage_$_t_bytes32_$",
+                      "typeString": "tuple(address[] storage ref,bytes32)"
+                    }
+                  },
+                  "functionReturnParameters": 571,
+                  "id": 581,
+                  "nodeType": "Return",
+                  "src": "1798:53:7"
+                }
+              ]
+            },
+            "documentation": "Returns the issuers associated with an ENS node.\n@param node The ENS node to query.\n@return The associated issuers.",
+            "id": 583,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "issuers",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 565,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 564,
+                  "name": "node",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 583,
+                  "src": "1686:12:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 563,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1686:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1685:14:7"
+            },
+            "returnParameters": {
+              "id": 571,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 568,
+                  "name": "dids",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 583,
+                  "src": "1747:21:7",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_address_$dyn_memory_ptr",
+                    "typeString": "address[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "id": 566,
+                      "name": "address",
+                      "nodeType": "ElementaryTypeName",
+                      "src": "1747:7:7",
+                      "stateMutability": "nonpayable",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_address",
+                        "typeString": "address"
+                      }
+                    },
+                    "id": 567,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "1747:9:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_address_$dyn_storage_ptr",
+                      "typeString": "address[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 570,
+                  "name": "role",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 583,
+                  "src": "1770:12:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 569,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1770:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1746:37:7"
+            },
+            "scope": 601,
+            "src": "1669:189:7",
+            "stateMutability": "view",
+            "superFunction": null,
+            "visibility": "external"
+          },
+          {
+            "body": {
+              "id": 599,
+              "nodeType": "Block",
+              "src": "1938:123:7",
+              "statements": [
+                {
+                  "expression": {
+                    "argumentTypes": null,
+                    "commonType": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    },
+                    "id": 597,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "argumentTypes": null,
+                      "commonType": {
+                        "typeIdentifier": "t_bytes4",
+                        "typeString": "bytes4"
+                      },
+                      "id": 592,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "leftExpression": {
+                        "argumentTypes": null,
+                        "id": 590,
+                        "name": "interfaceID",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 585,
+                        "src": "1967:11:7",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes4",
+                          "typeString": "bytes4"
+                        }
+                      },
+                      "nodeType": "BinaryOperation",
+                      "operator": "==",
+                      "rightExpression": {
+                        "argumentTypes": null,
+                        "id": 591,
+                        "name": "ISSUERS_INTERFACE_ID",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 483,
+                        "src": "1982:20:7",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes4",
+                          "typeString": "bytes4"
+                        }
+                      },
+                      "src": "1967:35:7",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "||",
+                    "rightExpression": {
+                      "argumentTypes": null,
+                      "arguments": [
+                        {
+                          "argumentTypes": null,
+                          "id": 595,
+                          "name": "interfaceID",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 585,
+                          "src": "2042:11:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes4",
+                            "typeString": "bytes4"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_bytes4",
+                            "typeString": "bytes4"
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": null,
+                          "id": 593,
+                          "name": "super",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 4479,
+                          "src": "2018:5:7",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_super$_IssuersResolver_$601",
+                            "typeString": "contract super IssuersResolver"
+                          }
+                        },
+                        "id": 594,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "supportsInterface",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 3136,
+                        "src": "2018:23:7",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_function_internal_pure$_t_bytes4_$returns$_t_bool_$",
+                          "typeString": "function (bytes4) pure returns (bool)"
+                        }
+                      },
+                      "id": 596,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "functionCall",
+                      "lValueRequested": false,
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "2018:36:7",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "src": "1967:87:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 589,
+                  "id": 598,
+                  "nodeType": "Return",
+                  "src": "1948:106:7"
+                }
+              ]
+            },
+            "documentation": null,
+            "id": 600,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "supportsInterface",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 586,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 585,
+                  "name": "interfaceID",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 600,
+                  "src": "1891:18:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes4",
+                    "typeString": "bytes4"
+                  },
+                  "typeName": {
+                    "id": 584,
+                    "name": "bytes4",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1891:6:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes4",
+                      "typeString": "bytes4"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1890:20:7"
+            },
+            "returnParameters": {
+              "id": 589,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 588,
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 600,
+                  "src": "1932:4:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 587,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1932:4:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1931:6:7"
+            },
+            "scope": 601,
+            "src": "1864:197:7",
+            "stateMutability": "pure",
+            "superFunction": 3136,
+            "visibility": "public"
+          }
+        ],
+        "scope": 602,
+        "src": "216:1847:7"
+      }
+    ],
+    "src": "0:2064:7"
+  },
+  "legacyAST": {
+    "attributes": {
+      "absolutePath": "/Users/john/ew/iam-contracts/iam-contracts/contracts/profiles/issuance/IssuersResolver.sol",
+      "exportedSymbols": {
+        "IssuersResolver": [
+          601
+        ]
+      }
+    },
+    "children": [
+      {
+        "attributes": {
+          "literals": [
+            "solidity",
+            "^",
+            "0.5",
+            ".0"
+          ]
+        },
+        "id": 476,
+        "name": "PragmaDirective",
+        "src": "0:23:7"
+      },
+      {
+        "attributes": {
+          "literals": [
+            "experimental",
+            "ABIEncoderV2"
+          ]
+        },
+        "id": 477,
+        "name": "PragmaDirective",
+        "src": "24:33:7"
+      },
+      {
+        "attributes": {
+          "SourceUnit": 3189,
+          "absolutePath": "@ensdomains/resolver/contracts/ResolverBase.sol",
+          "file": "@ensdomains/resolver/contracts/ResolverBase.sol",
+          "scope": 602,
+          "symbolAliases": [
+            null
+          ],
+          "unitAlias": ""
+        },
+        "id": 478,
+        "name": "ImportDirective",
+        "src": "59:57:7"
+      },
+      {
+        "attributes": {
+          "contractDependencies": [
+            3188
+          ],
+          "contractKind": "contract",
+          "documentation": "Profile for resolving identities (by did or by role) which can issue a role definition",
+          "fullyImplemented": false,
+          "linearizedBaseContracts": [
+            601,
+            3188
+          ],
+          "name": "IssuersResolver",
+          "scope": 602
+        },
+        "children": [
+          {
+            "attributes": {
+              "arguments": null
+            },
+            "children": [
+              {
+                "attributes": {
+                  "contractScope": null,
+                  "name": "ResolverBase",
+                  "referencedDeclaration": 3188,
+                  "type": "contract ResolverBase"
+                },
+                "id": 479,
+                "name": "UserDefinedTypeName",
+                "src": "244:12:7"
+              }
+            ],
+            "id": 480,
+            "name": "InheritanceSpecifier",
+            "src": "244:12:7"
+          },
+          {
+            "attributes": {
+              "constant": true,
+              "name": "ISSUERS_INTERFACE_ID",
+              "scope": 601,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "bytes4",
+              "visibility": "private"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "name": "bytes4",
+                  "type": "bytes4"
+                },
+                "id": 481,
+                "name": "ElementaryTypeName",
+                "src": "263:6:7"
+              },
+              {
+                "attributes": {
+                  "argumentTypes": null,
+                  "hexvalue": "30786335336134343133",
+                  "isConstant": false,
+                  "isLValue": false,
+                  "isPure": true,
+                  "lValueRequested": false,
+                  "subdenomination": null,
+                  "token": "number",
+                  "type": "int_const 3308930067",
+                  "value": "0xc53a4413"
+                },
+                "id": 482,
+                "name": "Literal",
+                "src": "310:10:7"
+              }
+            ],
+            "id": 483,
+            "name": "VariableDeclaration",
+            "src": "263:57:7"
+          },
+          {
+            "attributes": {
+              "canonicalName": "IssuersResolver.Issuers",
+              "name": "Issuers",
+              "scope": 601,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "constant": false,
+                  "name": "dids",
+                  "scope": 489,
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "type": "address[]",
+                  "value": null,
+                  "visibility": "internal"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "length": null,
+                      "type": "address[]"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "address",
+                          "stateMutability": "nonpayable",
+                          "type": "address"
+                        },
+                        "id": 484,
+                        "name": "ElementaryTypeName",
+                        "src": "352:7:7"
+                      }
+                    ],
+                    "id": 485,
+                    "name": "ArrayTypeName",
+                    "src": "352:9:7"
+                  }
+                ],
+                "id": 486,
+                "name": "VariableDeclaration",
+                "src": "352:14:7"
+              },
+              {
+                "attributes": {
+                  "constant": false,
+                  "name": "role",
+                  "scope": 489,
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "type": "bytes32",
+                  "value": null,
+                  "visibility": "internal"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "name": "bytes32",
+                      "type": "bytes32"
+                    },
+                    "id": 487,
+                    "name": "ElementaryTypeName",
+                    "src": "376:7:7"
+                  }
+                ],
+                "id": 488,
+                "name": "VariableDeclaration",
+                "src": "376:12:7"
+              }
+            ],
+            "id": 489,
+            "name": "StructDefinition",
+            "src": "327:68:7"
+          },
+          {
+            "attributes": {
+              "anonymous": false,
+              "documentation": null,
+              "name": "IssuersChanged"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": true,
+                      "name": "node",
+                      "scope": 495,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes32",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes32",
+                          "type": "bytes32"
+                        },
+                        "id": 490,
+                        "name": "ElementaryTypeName",
+                        "src": "422:7:7"
+                      }
+                    ],
+                    "id": 491,
+                    "name": "VariableDeclaration",
+                    "src": "422:20:7"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "indexed": false,
+                      "name": "newIssuers",
+                      "scope": 495,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "struct IssuersResolver.Issuers",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "contractScope": null,
+                          "name": "Issuers",
+                          "referencedDeclaration": 489,
+                          "type": "struct IssuersResolver.Issuers"
+                        },
+                        "id": 492,
+                        "name": "UserDefinedTypeName",
+                        "src": "444:7:7"
+                      }
+                    ],
+                    "id": 493,
+                    "name": "VariableDeclaration",
+                    "src": "444:18:7"
+                  }
+                ],
+                "id": 494,
+                "name": "ParameterList",
+                "src": "421:42:7"
+              }
+            ],
+            "id": 495,
+            "name": "EventDefinition",
+            "src": "401:63:7"
+          },
+          {
+            "attributes": {
+              "constant": false,
+              "name": "issuersMap",
+              "scope": 601,
+              "stateVariable": true,
+              "storageLocation": "default",
+              "type": "mapping(bytes32 => struct IssuersResolver.Issuers)",
+              "value": null,
+              "visibility": "internal"
+            },
+            "children": [
+              {
+                "attributes": {
+                  "type": "mapping(bytes32 => struct IssuersResolver.Issuers)"
+                },
+                "children": [
+                  {
+                    "attributes": {
+                      "name": "bytes32",
+                      "type": "bytes32"
+                    },
+                    "id": 496,
+                    "name": "ElementaryTypeName",
+                    "src": "478:7:7"
+                  },
+                  {
+                    "attributes": {
+                      "contractScope": null,
+                      "name": "Issuers",
+                      "referencedDeclaration": 489,
+                      "type": "struct IssuersResolver.Issuers"
+                    },
+                    "id": 497,
+                    "name": "UserDefinedTypeName",
+                    "src": "489:7:7"
+                  }
+                ],
+                "id": 498,
+                "name": "Mapping",
+                "src": "470:27:7"
+              }
+            ],
+            "id": 499,
+            "name": "VariableDeclaration",
+            "src": "470:38:7"
+          },
+          {
+            "attributes": {
+              "documentation": "Sets the dids associated with a role.\nClears the role associated with a role.\nMay only be called by the owner of that node in the ENS registry.\n@param node The node to update.\n@param dids The dids to set.",
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "name": "setIssuerDids",
+              "scope": 601,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "node",
+                      "scope": 531,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes32",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes32",
+                          "type": "bytes32"
+                        },
+                        "id": 500,
+                        "name": "ElementaryTypeName",
+                        "src": "794:7:7"
+                      }
+                    ],
+                    "id": 501,
+                    "name": "VariableDeclaration",
+                    "src": "794:12:7"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "dids",
+                      "scope": 531,
+                      "stateVariable": false,
+                      "storageLocation": "calldata",
+                      "type": "address[]",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "length": null,
+                          "type": "address[]"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "name": "address",
+                              "stateMutability": "nonpayable",
+                              "type": "address"
+                            },
+                            "id": 502,
+                            "name": "ElementaryTypeName",
+                            "src": "808:7:7"
+                          }
+                        ],
+                        "id": 503,
+                        "name": "ArrayTypeName",
+                        "src": "808:9:7"
+                      }
+                    ],
+                    "id": 504,
+                    "name": "VariableDeclaration",
+                    "src": "808:23:7"
+                  }
+                ],
+                "id": 505,
+                "name": "ParameterList",
+                "src": "793:39:7"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 509,
+                "name": "ParameterList",
+                "src": "879:0:7"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 3155,
+                      "type": "modifier (bytes32)",
+                      "value": "authorised"
+                    },
+                    "id": 506,
+                    "name": "Identifier",
+                    "src": "858:10:7"
+                  },
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 501,
+                      "type": "bytes32",
+                      "value": "node"
+                    },
+                    "id": 507,
+                    "name": "Identifier",
+                    "src": "869:4:7"
+                  }
+                ],
+                "id": 508,
+                "name": "ModifierInvocation",
+                "src": "858:16:7"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "address[] storage ref"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "dids",
+                              "referencedDeclaration": 486,
+                              "type": "address[] storage ref"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "type": "struct IssuersResolver.Issuers storage ref"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 499,
+                                      "type": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)",
+                                      "value": "issuersMap"
+                                    },
+                                    "id": 510,
+                                    "name": "Identifier",
+                                    "src": "889:10:7"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 501,
+                                      "type": "bytes32",
+                                      "value": "node"
+                                    },
+                                    "id": 511,
+                                    "name": "Identifier",
+                                    "src": "900:4:7"
+                                  }
+                                ],
+                                "id": 512,
+                                "name": "IndexAccess",
+                                "src": "889:16:7"
+                              }
+                            ],
+                            "id": 513,
+                            "name": "MemberAccess",
+                            "src": "889:21:7"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 504,
+                              "type": "address[] calldata",
+                              "value": "dids"
+                            },
+                            "id": 514,
+                            "name": "Identifier",
+                            "src": "913:4:7"
+                          }
+                        ],
+                        "id": 515,
+                        "name": "Assignment",
+                        "src": "889:28:7"
+                      }
+                    ],
+                    "id": 516,
+                    "name": "ExpressionStatement",
+                    "src": "889:28:7"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "delete",
+                          "prefix": true,
+                          "type": "tuple()"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "role",
+                              "referencedDeclaration": 488,
+                              "type": "bytes32"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "type": "struct IssuersResolver.Issuers storage ref"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 499,
+                                      "type": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)",
+                                      "value": "issuersMap"
+                                    },
+                                    "id": 517,
+                                    "name": "Identifier",
+                                    "src": "934:10:7"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 501,
+                                      "type": "bytes32",
+                                      "value": "node"
+                                    },
+                                    "id": 518,
+                                    "name": "Identifier",
+                                    "src": "945:4:7"
+                                  }
+                                ],
+                                "id": 519,
+                                "name": "IndexAccess",
+                                "src": "934:16:7"
+                              }
+                            ],
+                            "id": 520,
+                            "name": "MemberAccess",
+                            "src": "934:21:7"
+                          }
+                        ],
+                        "id": 521,
+                        "name": "UnaryOperation",
+                        "src": "927:28:7"
+                      }
+                    ],
+                    "id": 522,
+                    "name": "ExpressionStatement",
+                    "src": "927:28:7"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "tuple()",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_bytes32",
+                                  "typeString": "bytes32"
+                                },
+                                {
+                                  "typeIdentifier": "t_struct$_Issuers_$489_storage",
+                                  "typeString": "struct IssuersResolver.Issuers storage ref"
+                                }
+                              ],
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 495,
+                              "type": "function (bytes32,struct IssuersResolver.Issuers memory)",
+                              "value": "IssuersChanged"
+                            },
+                            "id": 523,
+                            "name": "Identifier",
+                            "src": "970:14:7"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 501,
+                              "type": "bytes32",
+                              "value": "node"
+                            },
+                            "id": 524,
+                            "name": "Identifier",
+                            "src": "985:4:7"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "type": "struct IssuersResolver.Issuers storage ref"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 499,
+                                  "type": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)",
+                                  "value": "issuersMap"
+                                },
+                                "id": 525,
+                                "name": "Identifier",
+                                "src": "991:10:7"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 501,
+                                  "type": "bytes32",
+                                  "value": "node"
+                                },
+                                "id": 526,
+                                "name": "Identifier",
+                                "src": "1002:4:7"
+                              }
+                            ],
+                            "id": 527,
+                            "name": "IndexAccess",
+                            "src": "991:16:7"
+                          }
+                        ],
+                        "id": 528,
+                        "name": "FunctionCall",
+                        "src": "970:38:7"
+                      }
+                    ],
+                    "id": 529,
+                    "name": "EmitStatement",
+                    "src": "965:43:7"
+                  }
+                ],
+                "id": 530,
+                "name": "Block",
+                "src": "879:136:7"
+              }
+            ],
+            "id": 531,
+            "name": "FunctionDefinition",
+            "src": "771:244:7"
+          },
+          {
+            "attributes": {
+              "documentation": "Sets the dids associated with a role.\nClears the role associated with a role.\nMay only be called by the owner of that node in the ENS registry.\n@param node The node to update.\n@param role The role to set.",
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "name": "setIssuerRole",
+              "scope": 601,
+              "stateMutability": "nonpayable",
+              "superFunction": null,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "node",
+                      "scope": 562,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes32",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes32",
+                          "type": "bytes32"
+                        },
+                        "id": 532,
+                        "name": "ElementaryTypeName",
+                        "src": "1300:7:7"
+                      }
+                    ],
+                    "id": 533,
+                    "name": "VariableDeclaration",
+                    "src": "1300:12:7"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "role",
+                      "scope": 562,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes32",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes32",
+                          "type": "bytes32"
+                        },
+                        "id": 534,
+                        "name": "ElementaryTypeName",
+                        "src": "1314:7:7"
+                      }
+                    ],
+                    "id": 535,
+                    "name": "VariableDeclaration",
+                    "src": "1314:12:7"
+                  }
+                ],
+                "id": 536,
+                "name": "ParameterList",
+                "src": "1299:28:7"
+              },
+              {
+                "attributes": {
+                  "parameters": [
+                    null
+                  ]
+                },
+                "children": [],
+                "id": 540,
+                "name": "ParameterList",
+                "src": "1374:0:7"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 3155,
+                      "type": "modifier (bytes32)",
+                      "value": "authorised"
+                    },
+                    "id": 537,
+                    "name": "Identifier",
+                    "src": "1353:10:7"
+                  },
+                  {
+                    "attributes": {
+                      "argumentTypes": null,
+                      "overloadedDeclarations": [
+                        null
+                      ],
+                      "referencedDeclaration": 533,
+                      "type": "bytes32",
+                      "value": "node"
+                    },
+                    "id": 538,
+                    "name": "Identifier",
+                    "src": "1364:4:7"
+                  }
+                ],
+                "id": 539,
+                "name": "ModifierInvocation",
+                "src": "1353:16:7"
+              },
+              {
+                "children": [
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "=",
+                          "type": "bytes32"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "role",
+                              "referencedDeclaration": 488,
+                              "type": "bytes32"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "type": "struct IssuersResolver.Issuers storage ref"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 499,
+                                      "type": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)",
+                                      "value": "issuersMap"
+                                    },
+                                    "id": 541,
+                                    "name": "Identifier",
+                                    "src": "1384:10:7"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 533,
+                                      "type": "bytes32",
+                                      "value": "node"
+                                    },
+                                    "id": 542,
+                                    "name": "Identifier",
+                                    "src": "1395:4:7"
+                                  }
+                                ],
+                                "id": 543,
+                                "name": "IndexAccess",
+                                "src": "1384:16:7"
+                              }
+                            ],
+                            "id": 544,
+                            "name": "MemberAccess",
+                            "src": "1384:21:7"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 535,
+                              "type": "bytes32",
+                              "value": "role"
+                            },
+                            "id": 545,
+                            "name": "Identifier",
+                            "src": "1408:4:7"
+                          }
+                        ],
+                        "id": 546,
+                        "name": "Assignment",
+                        "src": "1384:28:7"
+                      }
+                    ],
+                    "id": 547,
+                    "name": "ExpressionStatement",
+                    "src": "1384:28:7"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "delete",
+                          "prefix": true,
+                          "type": "tuple()"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": true,
+                              "member_name": "dids",
+                              "referencedDeclaration": 486,
+                              "type": "address[] storage ref"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "type": "struct IssuersResolver.Issuers storage ref"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 499,
+                                      "type": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)",
+                                      "value": "issuersMap"
+                                    },
+                                    "id": 548,
+                                    "name": "Identifier",
+                                    "src": "1429:10:7"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 533,
+                                      "type": "bytes32",
+                                      "value": "node"
+                                    },
+                                    "id": 549,
+                                    "name": "Identifier",
+                                    "src": "1440:4:7"
+                                  }
+                                ],
+                                "id": 550,
+                                "name": "IndexAccess",
+                                "src": "1429:16:7"
+                              }
+                            ],
+                            "id": 551,
+                            "name": "MemberAccess",
+                            "src": "1429:21:7"
+                          }
+                        ],
+                        "id": 552,
+                        "name": "UnaryOperation",
+                        "src": "1422:28:7"
+                      }
+                    ],
+                    "id": 553,
+                    "name": "ExpressionStatement",
+                    "src": "1422:28:7"
+                  },
+                  {
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "isStructConstructorCall": false,
+                          "lValueRequested": false,
+                          "names": [
+                            null
+                          ],
+                          "type": "tuple()",
+                          "type_conversion": false
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_bytes32",
+                                  "typeString": "bytes32"
+                                },
+                                {
+                                  "typeIdentifier": "t_struct$_Issuers_$489_storage",
+                                  "typeString": "struct IssuersResolver.Issuers storage ref"
+                                }
+                              ],
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 495,
+                              "type": "function (bytes32,struct IssuersResolver.Issuers memory)",
+                              "value": "IssuersChanged"
+                            },
+                            "id": 554,
+                            "name": "Identifier",
+                            "src": "1465:14:7"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "overloadedDeclarations": [
+                                null
+                              ],
+                              "referencedDeclaration": 533,
+                              "type": "bytes32",
+                              "value": "node"
+                            },
+                            "id": 555,
+                            "name": "Identifier",
+                            "src": "1480:4:7"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "type": "struct IssuersResolver.Issuers storage ref"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 499,
+                                  "type": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)",
+                                  "value": "issuersMap"
+                                },
+                                "id": 556,
+                                "name": "Identifier",
+                                "src": "1486:10:7"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 533,
+                                  "type": "bytes32",
+                                  "value": "node"
+                                },
+                                "id": 557,
+                                "name": "Identifier",
+                                "src": "1497:4:7"
+                              }
+                            ],
+                            "id": 558,
+                            "name": "IndexAccess",
+                            "src": "1486:16:7"
+                          }
+                        ],
+                        "id": 559,
+                        "name": "FunctionCall",
+                        "src": "1465:38:7"
+                      }
+                    ],
+                    "id": 560,
+                    "name": "EmitStatement",
+                    "src": "1460:43:7"
+                  }
+                ],
+                "id": 561,
+                "name": "Block",
+                "src": "1374:136:7"
+              }
+            ],
+            "id": 562,
+            "name": "FunctionDefinition",
+            "src": "1277:233:7"
+          },
+          {
+            "attributes": {
+              "documentation": "Returns the issuers associated with an ENS node.\n@param node The ENS node to query.\n@return The associated issuers.",
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "issuers",
+              "scope": 601,
+              "stateMutability": "view",
+              "superFunction": null,
+              "visibility": "external"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "node",
+                      "scope": 583,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes32",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes32",
+                          "type": "bytes32"
+                        },
+                        "id": 563,
+                        "name": "ElementaryTypeName",
+                        "src": "1686:7:7"
+                      }
+                    ],
+                    "id": 564,
+                    "name": "VariableDeclaration",
+                    "src": "1686:12:7"
+                  }
+                ],
+                "id": 565,
+                "name": "ParameterList",
+                "src": "1685:14:7"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "dids",
+                      "scope": 583,
+                      "stateVariable": false,
+                      "storageLocation": "memory",
+                      "type": "address[]",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "length": null,
+                          "type": "address[]"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "name": "address",
+                              "stateMutability": "nonpayable",
+                              "type": "address"
+                            },
+                            "id": 566,
+                            "name": "ElementaryTypeName",
+                            "src": "1747:7:7"
+                          }
+                        ],
+                        "id": 567,
+                        "name": "ArrayTypeName",
+                        "src": "1747:9:7"
+                      }
+                    ],
+                    "id": 568,
+                    "name": "VariableDeclaration",
+                    "src": "1747:21:7"
+                  },
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "role",
+                      "scope": 583,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes32",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes32",
+                          "type": "bytes32"
+                        },
+                        "id": 569,
+                        "name": "ElementaryTypeName",
+                        "src": "1770:7:7"
+                      }
+                    ],
+                    "id": 570,
+                    "name": "VariableDeclaration",
+                    "src": "1770:12:7"
+                  }
+                ],
+                "id": 571,
+                "name": "ParameterList",
+                "src": "1746:37:7"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 571
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "isConstant": false,
+                          "isInlineArray": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "type": "tuple(address[] storage ref,bytes32)"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "member_name": "dids",
+                              "referencedDeclaration": 486,
+                              "type": "address[] storage ref"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "type": "struct IssuersResolver.Issuers storage ref"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 499,
+                                      "type": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)",
+                                      "value": "issuersMap"
+                                    },
+                                    "id": 572,
+                                    "name": "Identifier",
+                                    "src": "1806:10:7"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 564,
+                                      "type": "bytes32",
+                                      "value": "node"
+                                    },
+                                    "id": 573,
+                                    "name": "Identifier",
+                                    "src": "1817:4:7"
+                                  }
+                                ],
+                                "id": 574,
+                                "name": "IndexAccess",
+                                "src": "1806:16:7"
+                              }
+                            ],
+                            "id": 575,
+                            "name": "MemberAccess",
+                            "src": "1806:21:7"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": true,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "member_name": "role",
+                              "referencedDeclaration": 488,
+                              "type": "bytes32"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "isConstant": false,
+                                  "isLValue": true,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "type": "struct IssuersResolver.Issuers storage ref"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 499,
+                                      "type": "mapping(bytes32 => struct IssuersResolver.Issuers storage ref)",
+                                      "value": "issuersMap"
+                                    },
+                                    "id": 576,
+                                    "name": "Identifier",
+                                    "src": "1829:10:7"
+                                  },
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 564,
+                                      "type": "bytes32",
+                                      "value": "node"
+                                    },
+                                    "id": 577,
+                                    "name": "Identifier",
+                                    "src": "1840:4:7"
+                                  }
+                                ],
+                                "id": 578,
+                                "name": "IndexAccess",
+                                "src": "1829:16:7"
+                              }
+                            ],
+                            "id": 579,
+                            "name": "MemberAccess",
+                            "src": "1829:21:7"
+                          }
+                        ],
+                        "id": 580,
+                        "name": "TupleExpression",
+                        "src": "1805:46:7"
+                      }
+                    ],
+                    "id": 581,
+                    "name": "Return",
+                    "src": "1798:53:7"
+                  }
+                ],
+                "id": 582,
+                "name": "Block",
+                "src": "1788:70:7"
+              }
+            ],
+            "id": 583,
+            "name": "FunctionDefinition",
+            "src": "1669:189:7"
+          },
+          {
+            "attributes": {
+              "documentation": null,
+              "implemented": true,
+              "isConstructor": false,
+              "kind": "function",
+              "modifiers": [
+                null
+              ],
+              "name": "supportsInterface",
+              "scope": 601,
+              "stateMutability": "pure",
+              "superFunction": 3136,
+              "visibility": "public"
+            },
+            "children": [
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "interfaceID",
+                      "scope": 600,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bytes4",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bytes4",
+                          "type": "bytes4"
+                        },
+                        "id": 584,
+                        "name": "ElementaryTypeName",
+                        "src": "1891:6:7"
+                      }
+                    ],
+                    "id": 585,
+                    "name": "VariableDeclaration",
+                    "src": "1891:18:7"
+                  }
+                ],
+                "id": 586,
+                "name": "ParameterList",
+                "src": "1890:20:7"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "constant": false,
+                      "name": "",
+                      "scope": 600,
+                      "stateVariable": false,
+                      "storageLocation": "default",
+                      "type": "bool",
+                      "value": null,
+                      "visibility": "internal"
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "name": "bool",
+                          "type": "bool"
+                        },
+                        "id": 587,
+                        "name": "ElementaryTypeName",
+                        "src": "1932:4:7"
+                      }
+                    ],
+                    "id": 588,
+                    "name": "VariableDeclaration",
+                    "src": "1932:4:7"
+                  }
+                ],
+                "id": 589,
+                "name": "ParameterList",
+                "src": "1931:6:7"
+              },
+              {
+                "children": [
+                  {
+                    "attributes": {
+                      "functionReturnParameters": 589
+                    },
+                    "children": [
+                      {
+                        "attributes": {
+                          "argumentTypes": null,
+                          "commonType": {
+                            "typeIdentifier": "t_bool",
+                            "typeString": "bool"
+                          },
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "operator": "||",
+                          "type": "bool"
+                        },
+                        "children": [
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "commonType": {
+                                "typeIdentifier": "t_bytes4",
+                                "typeString": "bytes4"
+                              },
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "lValueRequested": false,
+                              "operator": "==",
+                              "type": "bool"
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 585,
+                                  "type": "bytes4",
+                                  "value": "interfaceID"
+                                },
+                                "id": 590,
+                                "name": "Identifier",
+                                "src": "1967:11:7"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 483,
+                                  "type": "bytes4",
+                                  "value": "ISSUERS_INTERFACE_ID"
+                                },
+                                "id": 591,
+                                "name": "Identifier",
+                                "src": "1982:20:7"
+                              }
+                            ],
+                            "id": 592,
+                            "name": "BinaryOperation",
+                            "src": "1967:35:7"
+                          },
+                          {
+                            "attributes": {
+                              "argumentTypes": null,
+                              "isConstant": false,
+                              "isLValue": false,
+                              "isPure": false,
+                              "isStructConstructorCall": false,
+                              "lValueRequested": false,
+                              "names": [
+                                null
+                              ],
+                              "type": "bool",
+                              "type_conversion": false
+                            },
+                            "children": [
+                              {
+                                "attributes": {
+                                  "argumentTypes": [
+                                    {
+                                      "typeIdentifier": "t_bytes4",
+                                      "typeString": "bytes4"
+                                    }
+                                  ],
+                                  "isConstant": false,
+                                  "isLValue": false,
+                                  "isPure": false,
+                                  "lValueRequested": false,
+                                  "member_name": "supportsInterface",
+                                  "referencedDeclaration": 3136,
+                                  "type": "function (bytes4) pure returns (bool)"
+                                },
+                                "children": [
+                                  {
+                                    "attributes": {
+                                      "argumentTypes": null,
+                                      "overloadedDeclarations": [
+                                        null
+                                      ],
+                                      "referencedDeclaration": 4479,
+                                      "type": "contract super IssuersResolver",
+                                      "value": "super"
+                                    },
+                                    "id": 593,
+                                    "name": "Identifier",
+                                    "src": "2018:5:7"
+                                  }
+                                ],
+                                "id": 594,
+                                "name": "MemberAccess",
+                                "src": "2018:23:7"
+                              },
+                              {
+                                "attributes": {
+                                  "argumentTypes": null,
+                                  "overloadedDeclarations": [
+                                    null
+                                  ],
+                                  "referencedDeclaration": 585,
+                                  "type": "bytes4",
+                                  "value": "interfaceID"
+                                },
+                                "id": 595,
+                                "name": "Identifier",
+                                "src": "2042:11:7"
+                              }
+                            ],
+                            "id": 596,
+                            "name": "FunctionCall",
+                            "src": "2018:36:7"
+                          }
+                        ],
+                        "id": 597,
+                        "name": "BinaryOperation",
+                        "src": "1967:87:7"
+                      }
+                    ],
+                    "id": 598,
+                    "name": "Return",
+                    "src": "1948:106:7"
+                  }
+                ],
+                "id": 599,
+                "name": "Block",
+                "src": "1938:123:7"
+              }
+            ],
+            "id": 600,
+            "name": "FunctionDefinition",
+            "src": "1864:197:7"
+          }
+        ],
+        "id": 601,
+        "name": "ContractDefinition",
+        "src": "216:1847:7"
+      }
+    ],
+    "id": 602,
+    "name": "SourceUnit",
+    "src": "0:2064:7"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.5.17+commit.d19bba13.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.3.4",
+  "updatedAt": "2021-04-07T10:49:07.900Z",
+  "devdoc": {
+    "methods": {
+      "issuers(bytes32)": {
+        "params": {
+          "node": "The ENS node to query."
+        },
+        "return": "The associated issuers."
+      },
+      "setIssuerDids(bytes32,address[])": {
+        "params": {
+          "dids": "The dids to set.",
+          "node": "The node to update."
+        }
+      },
+      "setIssuerRole(bytes32,bytes32)": {
+        "params": {
+          "node": "The node to update.",
+          "role": "The role to set."
+        }
+      }
+    }
+  },
+  "userdoc": {
+    "methods": {
+      "issuers(bytes32)": {
+        "notice": "Returns the issuers associated with an ENS node."
+      },
+      "setIssuerDids(bytes32,address[])": {
+        "notice": "Sets the dids associated with a role. Clears the role associated with a role. May only be called by the owner of that node in the ENS registry."
+      },
+      "setIssuerRole(bytes32,bytes32)": {
+        "notice": "Sets the dids associated with a role. Clears the role associated with a role. May only be called by the owner of that node in the ENS registry."
+      }
+    },
+    "notice": "Profile for resolving identities (by did or by role) which can issue a role definition"
+  }
+}
