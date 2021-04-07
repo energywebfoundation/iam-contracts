@@ -73,7 +73,4 @@ typechain
 
 # Build outputs
 dist
-contract-types
-
-# not needed as rush provides shrinkwrap file
-package-lock.json
+typechain
