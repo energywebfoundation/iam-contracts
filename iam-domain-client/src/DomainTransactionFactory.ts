@@ -1,11 +1,11 @@
-import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver";
+import { RoleDefinitionResolver } from "../contract-types/RoleDefinitionResolver";
 import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, IIssuerDefinition, PreconditionType } from "./types/DomainDefinitions"
 import { DID } from "./types/DID";
 import { EncodedCall } from "./types/Transaction";
 import { namehash } from "ethers/utils";
 
-export class DomainDefinitionTransactionFactory {
-  constructor(private readonly roleDefinitionResolver: RoleDefinitionResolver) { }
+export class DomainTransactionFactory {
+  constructor(protected readonly roleDefinitionResolver: RoleDefinitionResolver) { }
 
   /**
    * Creates transaction to set role definition and reverse name in resolver contract 
@@ -29,14 +29,17 @@ export class DomainDefinitionTransactionFactory {
   public newDomain({ domain, domainDefinition }: { domain: string, domainDefinition: IAppDefinition | IOrganizationDefinition }) {
     const setDomainNameTx = this.setDomainNameTx({ domain });
     const setDomainDefinitionTx = this.setTextTx({ data: domainDefinition, domain });
-    return this.createMultiCallTx({ transactionsToCombine: [setDomainNameTx, setDomainDefinitionTx] });
+    const domainUpdated = this.domainUpdated({ domain });
+    return this.createMultiCallTx({ transactionsToCombine: [setDomainNameTx, setDomainDefinitionTx, domainUpdated] });
   }
 
   /**
    * Creates transaction to update app/org definition in resolver contract 
    */
   public editDomain({ domain, domainDefinition }: { domain: string, domainDefinition: IAppDefinition | IOrganizationDefinition }) {
-    return this.setTextTx({ data: domainDefinition, domain });
+    const setDomainDefinitionTx = this.setTextTx({ data: domainDefinition, domain });
+    const domainUpdated = this.domainUpdated({ domain });
+    return this.createMultiCallTx({ transactionsToCombine: [setDomainDefinitionTx, domainUpdated] });
   }
 
   public setDomainNameTx({ domain }: { domain: string }): EncodedCall {
@@ -102,7 +105,9 @@ export class DomainDefinitionTransactionFactory {
     })(data);
     const setTextTx = this.setTextTx({ domain, data: textProps });
 
-    return this.createMultiCallTx({ transactionsToCombine: [setVersionTx, setIssuersTx, setIssuerTypeTx, setTextTx, prerequisiteRolesTx] });
+    const domainUpdatedTx = this.domainUpdated({ domain })
+
+    return this.createMultiCallTx({ transactionsToCombine: [setVersionTx, setIssuersTx, setIssuerTypeTx, setTextTx, prerequisiteRolesTx, domainUpdatedTx] });
   }
 
   protected setTextTx({
@@ -118,6 +123,19 @@ export class DomainDefinitionTransactionFactory {
         namehash(domain),
         "metadata",
         JSON.stringify(data)
+      ])
+    };
+  }
+
+  protected domainUpdated({
+    domain,
+  }: {
+    domain: string;
+  }): EncodedCall {
+    return {
+      to: this.roleDefinitionResolver.address,
+      data: this.roleDefinitionResolver.interface.functions.domainUpdated.encode([
+        namehash(domain),
       ])
     };
   }

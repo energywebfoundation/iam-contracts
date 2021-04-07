@@ -7,19 +7,21 @@ import chaiAsPromised from "chai-as-promised";
 import { ContractFactory, ContractTransaction, utils } from "ethers";
 import { ENSRegistry } from "../typechain/ENSRegistry";
 import { RoleDefinitionResolver } from "../typechain/RoleDefinitionResolver";
+import { DomainNotifier } from "../typechain/DomainNotifier";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 const hashLabel = (label: string): string => utils.keccak256(utils.toUtf8Bytes(label));
+
 const getTransactionEventArgs = async (tx: ContractTransaction) => {
   const receipt = await tx.wait();
   if (!receipt.events) {
     throw new Error("receipt should contain events");
   }
   expect(receipt.events.length).to.equal(1);
-  const eventArgs = receipt.events[0].args;
-  return eventArgs;
+  const event = receipt.events[0];
+  return event;
 }
 
 const ewcDomain = "ewc";
@@ -45,14 +47,17 @@ const solidityDefaultString = "0x".padEnd(64 + "0x".length, "0");
 
 let ENS: ContractFactory;
 let RoleDefinitionResolverFactory: ContractFactory;
+let DomainNotifierFactory: ContractFactory;
 let ens: ENSRegistry;
 let roleDefinitionResolver: RoleDefinitionResolver;
+let domainNotifier: DomainNotifier;
 let accounts: SignerWithAddress[];
 let rootOwner: SignerWithAddress;
 
 before(async () => {
   ENS = await hre.ethers.getContractFactory("ENSRegistry");
   RoleDefinitionResolverFactory = await hre.ethers.getContractFactory("RoleDefinitionResolver");
+  DomainNotifierFactory = await hre.ethers.getContractFactory("DomainNotifier");
   accounts = await hre.ethers.getSigners();
   rootOwner = accounts[0];
 });
@@ -61,7 +66,9 @@ beforeEach(async () => {
   // Deploy contracts
   ens = await ENS.deploy() as ENSRegistry;
   await ens.deployed();
-  roleDefinitionResolver = await RoleDefinitionResolverFactory.deploy(ens.address) as RoleDefinitionResolver;
+  domainNotifier = await DomainNotifierFactory.deploy(ens.address) as DomainNotifier;
+  await domainNotifier.deployed();
+  roleDefinitionResolver = await RoleDefinitionResolverFactory.deploy(ens.address, domainNotifier.address) as RoleDefinitionResolver;
   await roleDefinitionResolver.deployed();
 
   // Set owner of "role" node hierarchy
@@ -78,7 +85,7 @@ beforeEach(async () => {
 describe("upgrading resolver", async () => {
   it("org owner can take over ownership", async () => {
     const roleOwner = accounts[1];
-    const anotherRoleDefResolver = await RoleDefinitionResolverFactory.deploy(ens.address) as RoleDefinitionResolver;
+    const anotherRoleDefResolver = await RoleDefinitionResolverFactory.deploy(ens.address, domainNotifier.address) as RoleDefinitionResolver;
     await anotherRoleDefResolver.deployed();
 
     // Give ownership of org and role node to another account
@@ -111,6 +118,24 @@ describe("upgrading resolver", async () => {
   });
 });
 
+describe('domain updated', async () => {
+  it('permits triggering update event by owner', async () => {
+    await ens.connect(rootOwner).setResolver(roleNode, roleDefinitionResolver.address);
+    const tx = await roleDefinitionResolver.domainUpdated(roleNode);
+    const event = await getTransactionEventArgs(tx);
+    expect(event.topics[1]).to.equal(roleNode);
+  });
+
+  it('prevents triggering update event directly', async () => {
+    await expect(domainNotifier.connect(rootOwner).domainUpdated(roleNode)).to.eventually.be.rejected;
+  });
+
+  it('prevents triggering update event by non-owner', async () => {
+    await expect(roleDefinitionResolver.connect(accounts[1]).domainUpdated(roleNode)).to.eventually.be.rejected;
+  });
+});
+
+
 describe('issuers', async () => {
   const dids = ['0xC7010B2e2408847760bF18E695Ba3aFf02299a3b']; // Arbitrary address
   const anotherRoleNode = utils.namehash("anotherRole.anotherOrg.iam.ewc");
@@ -121,10 +146,10 @@ describe('issuers', async () => {
     expect(issuers.dids).to.eql(dids);
     expect(issuers.role).to.equal(solidityDefaultString, "role should be cleared when setting dids");
 
-    const eventArgs = await getTransactionEventArgs(tx);
-    expect(eventArgs?.newIssuers.dids).to.eql(dids);
-    expect(eventArgs?.newIssuers.role).to.equal(solidityDefaultString);
-    expect(eventArgs?.node).to.equal(roleNode);
+    const event = await getTransactionEventArgs(tx);
+    expect(event.args?.newIssuers.dids).to.eql(dids);
+    expect(event.args?.newIssuers.role).to.equal(solidityDefaultString);
+    expect(event.args?.node).to.equal(roleNode);
   });
 
   it('permits updating issuer dids by owner', async () => {
@@ -144,10 +169,10 @@ describe('issuers', async () => {
     expect(issuers.role).to.equal(anotherRoleNode);
     expect(issuers.dids.length).to.equal(0, "dids should be cleared when setting the role");
 
-    const eventArgs = await getTransactionEventArgs(tx);
-    expect(eventArgs?.newIssuers.dids).to.eql([]);
-    expect(eventArgs?.newIssuers.role).to.equal(anotherRoleNode);
-    expect(eventArgs?.node).to.equal(roleNode);
+    const event = await getTransactionEventArgs(tx);
+    expect(event.args?.newIssuers.dids).to.eql([]);
+    expect(event.args?.newIssuers.role).to.equal(anotherRoleNode);
+    expect(event.args?.node).to.equal(roleNode);
   });
 
   it('prevents updating issuers by non-owner', async () => {
@@ -165,9 +190,9 @@ describe('versionNumbers', async () => {
     const changedVersionNumber = await roleDefinitionResolver.versionNumber(roleNode);
     expect(changedVersionNumber).to.equal(newVersionNumber);
 
-    const eventArgs = await getTransactionEventArgs(tx);
-    expect(eventArgs?.newVersion).to.equal(newVersionNumber);
-    expect(eventArgs?.node).to.equal(roleNode);
+    const event = await getTransactionEventArgs(tx);
+    expect(event.args?.newVersion).to.equal(newVersionNumber);
+    expect(event.args?.node).to.equal(roleNode);
   });
 
   it('prevents updating version number by non-owner', async () => {
@@ -184,9 +209,9 @@ describe('issuerTypes', async () => {
     const changedType = await roleDefinitionResolver.issuerType(roleNode);
     expect(changedType).to.equal(newType);
 
-    const eventArgs = await getTransactionEventArgs(tx);
-    expect(eventArgs?.newType).to.equal(newType);
-    expect(eventArgs?.node).to.equal(roleNode);
+    const event = await getTransactionEventArgs(tx);
+    expect(event.args?.newType).to.equal(newType);
+    expect(event.args?.node).to.equal(roleNode);
   });
 
   it('prevents updating version number by non-owner', async () => {
@@ -203,9 +228,9 @@ describe('enrolmentPrerequisiteRoles', async () => {
     const changedRoles = await roleDefinitionResolver.prerequisiteRoles(roleNode);
     expect(changedRoles).to.eql(newRoles);
 
-    const eventArgs = await getTransactionEventArgs(tx);
-    expect(eventArgs?.newPrerequisiteRoles).to.eql(newRoles);
-    expect(eventArgs?.node).to.equal(roleNode);
+    const event = await getTransactionEventArgs(tx);
+    expect(event.args?.newPrerequisiteRoles).to.eql(newRoles);
+    expect(event.args?.node).to.equal(roleNode);
   });
 
   it('prevents updating prerequisite roles by non-owner', async () => {
@@ -220,6 +245,7 @@ describe("supportsInterface function", async () => {
     expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('issuers(bytes32)'))).to.be.true;
     expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('requiresConditionType(bytes32,uint256)'))).to.be.true;
     expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('prerequisiteRoles(bytes32)'))).to.be.true;
+    expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('domainUpdated(bytes32)'))).to.be.true;
   });
 
   it("supports interfaces of resolver profiles from PublicResolver", async () => {

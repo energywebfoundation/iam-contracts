@@ -3,6 +3,7 @@ pragma experimental ABIEncoderV2;
 
 import "@ensdomains/ens/contracts/ENS.sol";
 import "@ensdomains/resolver/contracts/PublicResolver.sol";
+import "./DomainNotifier.sol";
 import "./profiles/enrolment-conditions/EnrolmentConditionTypeResolver.sol";
 import "./profiles/enrolment-conditions/EnrolmentPrerequisiteRolesResolver.sol";
 import "./profiles/issuance/IssuersResolver.sol";
@@ -20,5 +21,24 @@ contract RoleDefinitionResolver is
     EnrolmentConditionTypeResolver,
     EnrolmentPrerequisiteRolesResolver
 {
-    constructor(ENS _ens) public PublicResolver(_ens) {}
+    bytes4 private constant DOMAIN_UPDATED_INTERFACE_ID = 0x61610164;
+
+    DomainNotifier private notifier;
+
+    constructor(ENS _ens, DomainNotifier _notifier)
+        public
+        PublicResolver(_ens)
+    {
+        notifier = _notifier;
+    }
+
+    function domainUpdated(bytes32 node) external authorised(node) {
+        notifier.domainUpdated(node);
+    }
+
+    function supportsInterface(bytes4 interfaceID) public pure returns (bool) {
+        return
+            interfaceID == DOMAIN_UPDATED_INTERFACE_ID ||
+            super.supportsInterface(interfaceID);
+    }
 }
