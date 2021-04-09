@@ -75,7 +75,7 @@
         "id": 2,
         "nodeType": "ImportDirective",
         "scope": 44,
-        "sourceUnit": 2552,
+        "sourceUnit": 2549,
         "src": "25:43:0",
         "symbolAliases": [],
         "unitAlias": ""
@@ -145,7 +145,7 @@
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_contract$_ENS_$2551",
+              "typeIdentifier": "t_contract$_ENS_$2548",
               "typeString": "contract ENS"
             },
             "typeName": {
@@ -153,10 +153,10 @@
               "id": 7,
               "name": "ENS",
               "nodeType": "UserDefinedTypeName",
-              "referencedDeclaration": 2551,
+              "referencedDeclaration": 2548,
               "src": "148:3:0",
               "typeDescriptions": {
-                "typeIdentifier": "t_contract$_ENS_$2551",
+                "typeIdentifier": "t_contract$_ENS_$2548",
                 "typeString": "contract ENS"
               }
             },
@@ -186,7 +186,7 @@
                       "referencedDeclaration": 8,
                       "src": "201:4:0",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_ENS_$2551",
+                        "typeIdentifier": "t_contract$_ENS_$2548",
                         "typeString": "contract ENS"
                       }
                     },
@@ -201,13 +201,13 @@
                       "referencedDeclaration": 10,
                       "src": "208:3:0",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_contract$_ENS_$2551",
+                        "typeIdentifier": "t_contract$_ENS_$2548",
                         "typeString": "contract ENS"
                       }
                     },
                     "src": "201:10:0",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_ENS_$2551",
+                      "typeIdentifier": "t_contract$_ENS_$2548",
                       "typeString": "contract ENS"
                     }
                   },
@@ -238,7 +238,7 @@
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_contract$_ENS_$2551",
+                    "typeIdentifier": "t_contract$_ENS_$2548",
                     "typeString": "contract ENS"
                   },
                   "typeName": {
@@ -246,10 +246,10 @@
                     "id": 9,
                     "name": "ENS",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 2551,
+                    "referencedDeclaration": 2548,
                     "src": "175:3:0",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_contract$_ENS_$2551",
+                      "typeIdentifier": "t_contract$_ENS_$2548",
                       "typeString": "contract ENS"
                     }
                   },
@@ -344,7 +344,7 @@
                         "referencedDeclaration": 8,
                         "src": "299:4:0",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_ENS_$2551",
+                          "typeIdentifier": "t_contract$_ENS_$2548",
                           "typeString": "contract ENS"
                         }
                       },
@@ -355,7 +355,7 @@
                       "lValueRequested": false,
                       "memberName": "resolver",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 2527,
+                      "referencedDeclaration": 2524,
                       "src": "299:13:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_view$_t_bytes32_$returns$_t_address_$",
@@ -417,7 +417,7 @@
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 4430,
+                            "referencedDeclaration": 4033,
                             "src": "348:3:0",
                             "typeDescriptions": {
                               "typeIdentifier": "t_magic_message",
@@ -456,10 +456,10 @@
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
-                        4433,
-                        4434
+                        4036,
+                        4037
                       ],
-                      "referencedDeclaration": 4433,
+                      "referencedDeclaration": 4036,
                       "src": "328:7:0",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_require_pure$_t_bool_$returns$__$",
@@ -623,7 +623,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 2552,
+          "SourceUnit": 2549,
           "absolutePath": "@ensdomains/ens/contracts/ENS.sol",
           "file": "@ensdomains/ens/contracts/ENS.sol",
           "scope": 44,
@@ -716,7 +716,7 @@
                 "attributes": {
                   "contractScope": null,
                   "name": "ENS",
-                  "referencedDeclaration": 2551,
+                  "referencedDeclaration": 2548,
                   "type": "contract ENS"
                 },
                 "id": 7,
@@ -762,7 +762,7 @@
                         "attributes": {
                           "contractScope": null,
                           "name": "ENS",
-                          "referencedDeclaration": 2551,
+                          "referencedDeclaration": 2548,
                           "type": "contract ENS"
                         },
                         "id": 9,
@@ -977,7 +977,7 @@
                               "isPure": false,
                               "lValueRequested": false,
                               "member_name": "resolver",
-                              "referencedDeclaration": 2527,
+                              "referencedDeclaration": 2524,
                               "type": "function (bytes32) view external returns (address)"
                             },
                             "children": [
@@ -1050,10 +1050,10 @@
                                 }
                               ],
                               "overloadedDeclarations": [
-                                4433,
-                                4434
+                                4036,
+                                4037
                               ],
-                              "referencedDeclaration": 4433,
+                              "referencedDeclaration": 4036,
                               "type": "function (bool) pure",
                               "value": "require"
                             },
@@ -1108,7 +1108,7 @@
                                       "overloadedDeclarations": [
                                         null
                                       ],
-                                      "referencedDeclaration": 4430,
+                                      "referencedDeclaration": 4033,
                                       "type": "msg",
                                       "value": "msg"
                                     },
@@ -1222,7 +1222,7 @@
   },
   "networks": {},
   "schemaVersion": "3.3.4",
-  "updatedAt": "2021-04-07T19:06:43.425Z",
+  "updatedAt": "2021-04-09T21:29:55.745Z",
   "devdoc": {
     "methods": {}
   },
