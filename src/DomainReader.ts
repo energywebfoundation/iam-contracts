@@ -8,6 +8,7 @@ import { ResolverContractType } from "./types/ResolverContractType";
 import { PublicResolver } from "../typechain/PublicResolver";
 import { PublicResolver__factory } from "../typechain/factories/PublicResolver__factory";
 import { ERROR_MESSAGES } from "./types/ErrorMessages";
+import { namehash } from "ethers/utils";
 
 export class DomainReader {
   public static isOrgDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IOrganizationDefinition =>
@@ -22,21 +23,35 @@ export class DomainReader {
   constructor(private readonly provider: Provider) {
   }
 
+  /**
+   * Reads the reverse name for a node from its registered ENS resolver contract 
+   * @param node 
+   * @returns The name associated with the node.
+   */
   public async readName(node: string): Promise<string> {
+    const checkName = (name: string) => {
+      if (node !== namehash(name)) {
+        throw Error(`${ERROR_MESSAGES.NAME_NODE_MISMATCH}, node: ${node}`)
+      }
+      return name;
+    }
+
     const { resolverAddress, resolverType } = await this.getResolverInfo(node);
     if (resolverType === ResolverContractType.PublicResolver) {
       const ensResolver = PublicResolver__factory.connect(resolverAddress, this.provider);
-      return await ensResolver.name(node);
+      const name = await ensResolver.name(node);
+      return checkName(name)
     }
     if (resolverType === ResolverContractType.RoleDefinitionResolver_v1) {
       const ensResolver = RoleDefinitionResolver__factory.connect(resolverAddress, this.provider);
-      return await ensResolver.name(node);
+      const name = await ensResolver.name(node);
+      return checkName(name)
     }
-    throw Error(`${ERROR_MESSAGES.NAME_NOT_REGISTERED}, node: ${node}`)
+    throw Error(`${ERROR_MESSAGES.RESOLVER_NOT_SUPPORTED}, node: ${node}`)
   }
 
   /**
-   * Reads the App, Org or Role Definition from the registered ENS resolver 
+   * Reads the App, Org or Role Definition from the registered ENS resolver contract
    * @param node the ENS node hash of a domain name
    * @returns
    */
@@ -70,7 +85,7 @@ export class DomainReader {
       if (DomainReader.isRoleDefinition(textProps)) {
         return await this.readRoleDefResolver_v1(node, textProps, ensResolver)
       }
-      throw Error(ERROR_MESSAGES.DOMAIN_TYPE_UNKNWN)
+      throw Error(ERROR_MESSAGES.DOMAIN_TYPE_UNKNOWN)
     }
     throw Error(ERROR_MESSAGES.RESOLVER_NOT_SUPPORTED)
   }
