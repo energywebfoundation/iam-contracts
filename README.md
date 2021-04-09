@@ -13,8 +13,6 @@ In other words, this custom ENS resolver allows some properties of a role defini
 
 ## Development
 
-**Use node < v14** due to an error with ganache-cli while running test-rpc
-
 Install dependencies:
 
 ```sh
