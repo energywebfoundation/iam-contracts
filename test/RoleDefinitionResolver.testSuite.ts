@@ -4,7 +4,7 @@ import { ContractFactory, ContractTransaction, utils } from "ethers";
 import { ENSRegistry } from "../typechain/ENSRegistry";
 import { RoleDefinitionResolver } from "../typechain/RoleDefinitionResolver";
 import { DomainNotifier } from "../typechain/DomainNotifier";
-import { JsonRpcProvider, JsonRpcSigner } from "ethers/providers";
+import { JsonRpcSigner } from "ethers/providers";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;

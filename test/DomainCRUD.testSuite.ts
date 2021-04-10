@@ -3,13 +3,19 @@ import chaiAsPromised from "chai-as-promised";
 import { ContractFactory } from "ethers";
 import { keccak256, namehash, toUtf8Bytes } from "ethers/utils";
 import { JsonRpcProvider, JsonRpcSigner } from "ethers/providers";
-import { DomainReader } from "../src/DomainReader";
-import { DomainTransactionFactory } from "../src/DomainTransactionFactory"
-import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, PreconditionType } from "../src/types/DomainDefinitions";
-import { LegacyDomainDefTransactionFactory } from "./LegacyDomainDefTransactionFactory";
-import { addKnownResolver, setRegistryAddress } from "../src/resolverConfig";
-import { ResolverContractType } from "../src/types/ResolverContractType";
+import {
+  DomainReader,
+  DomainTransactionFactory,
+  IAppDefinition,
+  IOrganizationDefinition,
+  IRoleDefinition,
+  addKnownResolver,
+  setRegistryAddress,
+  ResolverContractType
+} from "../src/index";
+import { PreconditionType } from "../src/types/DomainDefinitions";
 import { ERROR_MESSAGES } from "../src/types/ErrorMessages";
+import { LegacyDomainDefTransactionFactory } from "./LegacyDomainDefTransactionFactory";
 import { ENSRegistry } from "../typechain/ENSRegistry";
 import { RoleDefinitionResolver } from "../typechain/RoleDefinitionResolver";
 import { DomainNotifier } from "../typechain/DomainNotifier";

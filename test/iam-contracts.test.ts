@@ -8,9 +8,6 @@ import { domainCrudTestSuite } from './DomainCRUD.testSuite';
 
 const { JsonRpcProvider } = providers;
 
-// To disable "WARNING: Multiple definitions for addr" that is triggered by ENS Registry
-errors.setLogLevel("error");
-
 describe('[IAM CONTRACTS]', function () {
   this.timeout(0);
   const provider = new JsonRpcProvider('http://localhost:8544');
