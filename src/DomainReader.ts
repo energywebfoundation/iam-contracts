@@ -94,6 +94,9 @@ export class DomainReader {
     const network = await this.provider.getNetwork();
     const chainId = network.chainId
     const ensRegistryAddress = ensRegistryAddresses[chainId]
+    if (!ensRegistryAddress) {
+      throw Error(ERROR_MESSAGES.REGISTRY_NOT_SET)
+    }
     const ensRegistry = ENSRegistry__factory.connect(ensRegistryAddress, this.provider);
 
     // Get resolver from registry
