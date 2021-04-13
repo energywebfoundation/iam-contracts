@@ -1,3 +1,4 @@
+import { DomainReader } from "./DomainReader";
 import { RoleDefinitionResolver } from "../typechain/RoleDefinitionResolver";
 import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, IIssuerDefinition, PreconditionType } from "./types/DomainDefinitions"
 import { DID } from "./types/DID";
@@ -17,10 +18,17 @@ export class DomainTransactionFactory {
   }
 
   /**
-   * Creates transaction to update role definition in resolver contract 
+   * Creates transaction to update domain definition in resolver contract 
    */
-  public editRole({ domain, roleDefinition }: { domain: string, roleDefinition: IRoleDefinition }): EncodedCall {
-    return this.setRoleDefinitionTx({ data: roleDefinition, domain });
+  public editDomain({ domain, domainDefinition }: { domain: string, domainDefinition: IRoleDefinition | IAppDefinition | IOrganizationDefinition }): EncodedCall {
+    if (DomainReader.isRoleDefinition(domainDefinition)) {
+      return this.setRoleDefinitionTx({ data: domainDefinition, domain });
+    }
+    else {
+      const setDomainDefinitionTx = this.setTextTx({ data: domainDefinition, domain });
+      const domainUpdated = this.domainUpdated({ domain });
+      return this.createMultiCallTx({ transactionsToCombine: [setDomainDefinitionTx, domainUpdated] });
+    }
   }
 
   /**
@@ -31,15 +39,6 @@ export class DomainTransactionFactory {
     const setDomainDefinitionTx = this.setTextTx({ data: domainDefinition, domain });
     const domainUpdated = this.domainUpdated({ domain });
     return this.createMultiCallTx({ transactionsToCombine: [setDomainNameTx, setDomainDefinitionTx, domainUpdated] });
-  }
-
-  /**
-   * Creates transaction to update app/org definition in resolver contract 
-   */
-  public editDomain({ domain, domainDefinition }: { domain: string, domainDefinition: IAppDefinition | IOrganizationDefinition }) {
-    const setDomainDefinitionTx = this.setTextTx({ data: domainDefinition, domain });
-    const domainUpdated = this.domainUpdated({ domain });
-    return this.createMultiCallTx({ transactionsToCombine: [setDomainDefinitionTx, domainUpdated] });
   }
 
   public setDomainNameTx({ domain }: { domain: string }): EncodedCall {

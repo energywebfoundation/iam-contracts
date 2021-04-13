@@ -123,7 +123,7 @@ export function domainCrudTestSuite(): void {
       expect(reverseName).to.equal(domain);
 
       role.version = role.version + "updated"
-      const updateRole = domainDefTxFactory.editRole({ domain: domain, roleDefinition: role });
+      const updateRole = domainDefTxFactory.editDomain({ domain: domain, domainDefinition: role });
       await (await owner.sendTransaction(updateRole)).wait()
       const updatedRoleDef = await domainReader.read(node);
       expect(updatedRoleDef).to.eql(role);
