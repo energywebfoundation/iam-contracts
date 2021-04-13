@@ -1,4 +1,4 @@
-import { providers, ContractFactory, errors } from 'ethers';
+import { providers, ContractFactory } from 'ethers';
 import { abi as RoleDefAbi, bytecode as RoleDefBytecode } from '../build/contracts/RoleDefinitionResolver.json';
 import { abi as PublicResolverAbi, bytecode as PublicResolverBytecode } from '../build/contracts/PublicResolver.json';
 import { abi as DomainNotifierAbi, bytecode as DomainNotiferBytecode } from '../build/contracts/DomainNotifier.json';

@@ -105,7 +105,11 @@ export class DomainReader {
       throw Error(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED)
     }
 
-    const resolverType = knownEnsResolvers[chainId][resolverAddress]
+    const resolversForChain = knownEnsResolvers[chainId]
+    if (resolversForChain === undefined) {
+      throw Error(ERROR_MESSAGES.RESOLVER_NOT_KNOWN)
+    }
+    const resolverType = resolversForChain[resolverAddress]
     if (resolverType === undefined) {
       throw Error(ERROR_MESSAGES.RESOLVER_NOT_KNOWN)
     }

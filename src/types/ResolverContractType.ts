@@ -1,4 +1,4 @@
 export enum ResolverContractType {
-  PublicResolver,
-  RoleDefinitionResolver_v1
+  PublicResolver = "public",
+  RoleDefinitionResolver_v1 = "roledefv1"
 }
