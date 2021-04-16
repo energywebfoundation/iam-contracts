@@ -2,7 +2,7 @@ import { errors } from "ethers";
 import { DomainReader } from "./DomainReader"
 import { DomainTransactionFactory } from "./DomainTransactionFactory"
 import { addKnownResolver, setRegistryAddress } from "./resolverConfig";
-import { IOrganizationDefinition, IAppDefinition, IRoleDefinition, IRoleDefinitionText } from "./types/DomainDefinitions"
+import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText } from "./types/DomainDefinitions"
 import { ResolverContractType } from "./types/ResolverContractType";
 import { EncodedCall } from "./types/Transaction"
 
