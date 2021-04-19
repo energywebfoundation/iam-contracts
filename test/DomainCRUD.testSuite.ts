@@ -1,7 +1,7 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { ContractFactory } from "ethers";
-import { keccak256, namehash, toUtf8Bytes } from "ethers/utils";
+import { namehash } from "ethers/utils";
 import { JsonRpcProvider, JsonRpcSigner } from "ethers/providers";
 import {
   DomainReader,
@@ -20,13 +20,13 @@ import { ENSRegistry } from "../typechain/ENSRegistry";
 import { RoleDefinitionResolver } from "../typechain/RoleDefinitionResolver";
 import { DomainNotifier } from "../typechain/DomainNotifier";
 import { PublicResolver } from "../typechain/PublicResolver";
+import { hashLabel } from "./iam-contracts.test";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 export const rpcUrl = `http://localhost:8544`;
 
-const hashLabel = (label: string): string => keccak256(toUtf8Bytes(label));
 const domain = "mydomain";
 const node = namehash(domain);
 
@@ -67,6 +67,7 @@ const getDomainUpdatedLogs = async () => {
 }
 
 let ensFactory: ContractFactory;
+let publicResolverFactory: ContractFactory;
 let roleDefResolverFactory: ContractFactory;
 let domainNotifierFactory: ContractFactory;
 let ensRegistry: ENSRegistry;
@@ -81,7 +82,7 @@ export function domainCrudTestSuite(): void {
   describe("Domain CRUD tests", () => {
     before(async function () {
       ({
-        roleDefResolverFactory, ensFactory, domainNotifierFactory, provider, owner
+        publicResolverFactory, roleDefResolverFactory, ensFactory, domainNotifierFactory, provider, owner
       } = this);
     });
 
@@ -92,7 +93,7 @@ export function domainCrudTestSuite(): void {
       await domainNotifier.deployed();
       ensRoleDefResolver = await roleDefResolverFactory.deploy(ensRegistry.address, domainNotifier.address) as RoleDefinitionResolver;
       await ensRoleDefResolver.deployed();
-      ensPublicResolver = await roleDefResolverFactory.deploy(ensRegistry.address, domainNotifier.address) as RoleDefinitionResolver;
+      ensPublicResolver = await publicResolverFactory.deploy(ensRegistry.address) as PublicResolver;
       await ensRoleDefResolver.deployed();
 
       const chainId = await (await provider.getNetwork()).chainId;

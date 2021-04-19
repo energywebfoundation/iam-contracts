@@ -6,7 +6,7 @@ import { EncodedCall, IRoleDefinition } from "../src/index";
  * Initially, Switchboard role data was only maintained in the text resolver
  */
 export class LegacyDomainDefTransactionFactory {
-  constructor(protected readonly roleDefinitionResolver: PublicResolver) {
+  constructor(protected readonly publicResolver: PublicResolver) {
   }
 
   public newRole({ domain, roleDefinition }: { domain: string, roleDefinition: IRoleDefinition }): EncodedCall {
@@ -18,8 +18,8 @@ export class LegacyDomainDefTransactionFactory {
   protected setDomainNameTx({ domain }: { domain: string }): EncodedCall {
     const namespaceHash = namehash(domain) as string;
     return {
-      to: this.roleDefinitionResolver.address,
-      data: this.roleDefinitionResolver.interface.functions.setName.encode([namespaceHash, domain])
+      to: this.publicResolver.address,
+      data: this.publicResolver.interface.functions.setName.encode([namespaceHash, domain])
     };
   }
 
@@ -29,8 +29,8 @@ export class LegacyDomainDefTransactionFactory {
     transactionsToCombine: EncodedCall[]
   }): EncodedCall {
     return {
-      to: this.roleDefinitionResolver.address,
-      data: this.roleDefinitionResolver.interface.functions.multicall.encode([transactionsToCombine.map(t => t.data)])
+      to: this.publicResolver.address,
+      data: this.publicResolver.interface.functions.multicall.encode([transactionsToCombine.map(t => t.data)])
     };
   }
 
@@ -42,8 +42,8 @@ export class LegacyDomainDefTransactionFactory {
     data: IRoleDefinition;
   }): EncodedCall {
     return {
-      to: this.roleDefinitionResolver.address,
-      data: this.roleDefinitionResolver.interface.functions.setText.encode([
+      to: this.publicResolver.address,
+      data: this.publicResolver.interface.functions.setText.encode([
         namehash(domain),
         "metadata",
         JSON.stringify(data)
