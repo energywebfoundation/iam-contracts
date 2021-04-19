@@ -1,7 +1,7 @@
 import { errors } from "ethers";
 import { DomainReader } from "./DomainReader"
 import { DomainTransactionFactory } from "./DomainTransactionFactory"
-import { getSubdomainsUsingRegistry } from "./getSubDomains"
+import { getSubdomainsUsingResolver } from "./getSubDomains"
 import { addKnownResolver, setRegistryAddress } from "./resolverConfig";
 import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText } from "./types/DomainDefinitions"
 import { ResolverContractType } from "./types/ResolverContractType";
@@ -16,4 +16,4 @@ export { IOrganizationDefinition, IAppDefinition, IRoleDefinition, IRoleDefiniti
 export { EncodedCall }
 export { addKnownResolver, setRegistryAddress }
 export { ResolverContractType }
-export { getSubdomainsUsingRegistry as getSubdomains }
+export { getSubdomainsUsingResolver as getSubdomains }

@@ -55,9 +55,9 @@ xdescribe('[getSubDomains]', async function () {
   it("getSubdomains using ENS Registry", async () => {
     subDomains_usingRegistry = await getSubdomainsUsingRegistry({
       domain: domain,
-      domainReader: publicResolver,
+      domainReader: domainReader,
       ensRegistry: ensRegistry,
     })
-    console.log(subDomains_usingRegistry.size)
+    console.log(subDomains_usingRegistry.length)
   })
 });

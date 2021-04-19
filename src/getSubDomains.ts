@@ -13,7 +13,7 @@ import { DomainNotifier } from "../typechain/DomainNotifier";
  * Retrieves list of subdomains from on-chain for a given parent domain
  * based on the logs from the ENS resolver contracts.
  * By default, queries from the DomainNotifier contract.
- * If provided, also queries from PublicResolver contract.
+ * If publicResolver provided, also queries from PublicResolver contract.
  */
 export const getSubdomainsUsingResolver = async ({
   domain,
@@ -87,6 +87,70 @@ export const getSubdomainsUsingResolver = async ({
   return [...singleLevel]
 };
 
+/**
+ * Retrieves list of subdomains from on-chain for a given parent domain
+ * based on the ENS Registry contract logs.
+ * For multi-level queries with many domains, querying the registry is slower than
+ * using the resolver contract because of the repeated RPC call.
+ */
+export const getSubdomainsUsingRegistry = async ({
+  domain,
+  domainReader,
+  ensRegistry,
+}: {
+  domain: string;
+  domainReader: DomainReader;
+  ensRegistry: ENSRegistry;
+}): Promise<string[]> => {
+  if (!domain) throw new Error("You need to pass a domain name");
+  if (!ensRegistry) throw new Error("You need to pass an ensRegistry ethers contract");
+  if (!domainReader) throw new Error("You need to pass an ensResolver ethers contract");
+
+  const notRelevantDomainEndings = ["roles", "apps"]
+
+  const parser = async ({ node, label, owner }: { node: string, label: string, owner: string }) => {
+    if (owner === emptyAddress) return "";
+    const namehash = utils.keccak256(node + label.slice(2));
+    const [name, ownerAddress] = await Promise.all([
+      domainReader.readName(namehash),
+      ensRegistry.owner(namehash)
+    ]);
+    if (ownerAddress === emptyAddress) return "";
+    return name;
+  }
+  const queue: string[][] = []
+  const subDomains: Set<string> = new Set();
+  queue.push([domain])
+  subDomains.add(domain)
+
+  // Breadth-first search down subdomain tree
+  while (queue.length > 0) {
+    const currentNodes = queue[0]
+    const currentNameHashes = currentNodes.map(node => utils.namehash(node));
+    const event = ensRegistry.filters.NewOwner(null, null, null)
+    // topics should be able to accept an array: https://docs.ethers.io/v5/concepts/events/
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    event.topics[1] = currentNameHashes
+    const uniqueDomains = await getDomainsFromLogs({
+      provider: ensRegistry.provider,
+      parser,
+      event,
+      contractInterface: new utils.Interface(ensRegistryContract)
+    })
+    if (uniqueDomains.size > 0) {
+      queue.push([...uniqueDomains])
+    }
+    for (const domain of uniqueDomains) {
+      const leafLabel = domain.split(".")[0]
+      if (notRelevantDomainEndings.includes(leafLabel)) continue
+      subDomains.add(domain)
+    }
+    queue.shift()
+  }
+  return [...subDomains].filter(Boolean); // Boolean filter to remove empty string
+};
+
 const getDomainsFromLogs = async ({
   provider,
   parser,
@@ -111,78 +175,4 @@ const getDomainsFromLogs = async ({
   });
   const domains = await Promise.all(rawLogs.map(parser));
   return new Set(domains);
-};
-
-/**
- * Retrieves list of subdomains from on-chain for a given parent domain
- * based on the ENS Registry contract logs.
- * For multi-level queries with many domains, querying the registry is slower than
- * using the resolver contract because of the repeated RPC call.
- */
-export const getSubdomainsUsingRegistry = async ({
-  domain,
-  domainReader,
-  ensRegistry,
-}: {
-  domain: string;
-  domainReader: PublicResolver;
-  ensRegistry: ENSRegistry;
-}): Promise<Set<string>> => {
-  if (!domain) throw new Error("You need to pass a domain name");
-  if (!ensRegistry) throw new Error("You need to pass an ensRegistry ethers contract");
-  if (!domainReader) throw new Error("You need to pass an ensResolver ethers contract");
-
-  const notRelevantDomainEndings = ["roles", "apps"]
-
-  const parser = async ({ node, label, owner }: { node: string, label: string, owner: string }) => {
-    if (owner === emptyAddress) return "";
-    const namehash = utils.keccak256(node + label.slice(2));
-    const [name, ownerAddress] = await Promise.all([
-      domainReader.name(namehash),
-      ensRegistry.owner(namehash)
-    ]);
-    if (ownerAddress === emptyAddress) return "";
-    return name;
-  }
-  const queue: string[][] = []
-  const list: Set<string> = new Set();
-  queue.push([domain])
-  list.add(domain)
-
-  // Breadth-first search down subdomain tree
-  while (queue.length > 0) {
-    const currentNodes = queue[0]
-    const currentNameHashes = currentNodes.map(node => utils.namehash(node));
-    const event = ensRegistry.filters.NewOwner(null, null, null)
-    const topics = event.topics ?? [];
-    // topics should be able to accept an array: https://docs.ethers.io/v5/concepts/events/
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    topics[1] = currentNameHashes
-    const provider = ensRegistry.provider
-    const filter = {
-      fromBlock: 0,
-      toBlock: "latest",
-      address: event.address,
-      topics: topics || []
-    };
-    const logs = await provider.getLogs(filter);
-    const rawLogs = logs.map(log => {
-      const contractInterface = new utils.Interface(ensRegistryContract)
-      const parsedLog = contractInterface.parseLog(log);
-      return parsedLog.values;
-    });
-    const domains = await Promise.all(rawLogs.map(parser));
-    const uniqueDomains = [...new Set(domains)];
-    if (uniqueDomains.length > 0) {
-      queue.push(uniqueDomains)
-    }
-    for (const domain of uniqueDomains) {
-      const leafLabel = domain.split(".")[0]
-      if (notRelevantDomainEndings.includes(leafLabel)) continue
-      list.add(domain)
-    }
-    queue.shift()
-  }
-  return list
 };
