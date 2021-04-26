@@ -3,7 +3,7 @@ name: Publish packages
 on:
   push:
     branches:
-      - 'DOI-768-*'
+      - 'master'
 
 jobs:
   cancel-previous:
