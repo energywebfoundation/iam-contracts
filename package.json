@@ -64,7 +64,7 @@
 
   },
   "release": {
-    "branch": "master",
+    "branch": "DOI-768-*",
     "plugins": [
         "@semantic-release/commit-analyzer",
         "@semantic-release/release-notes-generator",
