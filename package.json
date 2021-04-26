@@ -2,7 +2,8 @@
   "name": "@energyweb/iam-contracts",
   "version": "0.0.1",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "description": "Smart contracts related to EnergyWeb IAM",
   "main": "dist/src/index.js",
@@ -17,7 +18,16 @@
     "build:typechain:domainnotifier": "typechain --target ethers-v4 --outDir typechain './build/contracts/DomainNotifier.json'",
     "build:typechain:resolver": "typechain --target ethers-v4 --outDir typechain './build/contracts/RoleDefinitionResolver.json'",
     "build:typechain:registry": "typechain --target ethers-v4 --outDir typechain './node_modules/@ensdomains/ens/build/contracts/ENSRegistry.json'",
-    "build:typechain:publicresolver": "typechain --target ethers-v4 --outDir typechain './node_modules/@ensdomains/resolver/build/contracts/PublicResolver.json'"
+    "build:typechain:publicresolver": "typechain --target ethers-v4 --outDir typechain './node_modules/@ensdomains/resolver/build/contracts/PublicResolver.json'",
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+  },
+  "homepage": "https://github.com/energywebfoundation/iam-contracts/#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/energywebfoundation/iam-contracts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/energywebfoundation/iam-contracts/issues"
   },
   "author": {
     "name": "EnergyWeb",
@@ -45,6 +55,35 @@
     "truffle": "^5.3.0",
     "ts-node": "^9.1.1",
     "typechain": "^4.0.3",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "semantic-release": "^17.4.2"
+  },
+  "release": {
+    "branch": "master",
+    "prepare": [
+      "@semantic-release/changelog",
+      "@semantic-release/npm",
+      {
+        "path": "@semantic-release/git",
+        "assets": [
+          "package.json",
+          "package-lock.json",
+          "CHANGELOG.md"
+        ],
+        "message": "Release: ${nextRelease.version}\n\n${nextRelease.notes}"
+      }
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "eslint"
+        }
+      ],
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      "@semantic-release/git",
+      "@semantic-release/changelog"
+    ]
   }
 }
