@@ -18,8 +18,7 @@
     "build:typechain:domainnotifier": "typechain --target ethers-v4 --outDir typechain './build/contracts/DomainNotifier.json'",
     "build:typechain:resolver": "typechain --target ethers-v4 --outDir typechain './build/contracts/RoleDefinitionResolver.json'",
     "build:typechain:registry": "typechain --target ethers-v4 --outDir typechain './node_modules/@ensdomains/ens/build/contracts/ENSRegistry.json'",
-    "build:typechain:publicresolver": "typechain --target ethers-v4 --outDir typechain './node_modules/@ensdomains/resolver/build/contracts/PublicResolver.json'",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "build:typechain:publicresolver": "typechain --target ethers-v4 --outDir typechain './node_modules/@ensdomains/resolver/build/contracts/PublicResolver.json'"
   },
   "homepage": "https://github.com/energywebfoundation/iam-contracts/#readme",
   "repository": {
