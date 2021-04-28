@@ -2,7 +2,8 @@
   "name": "@energyweb/iam-contracts",
   "version": "0.0.1",
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   },
   "description": "Smart contracts related to EnergyWeb IAM",
   "main": "dist/src/index.js",
@@ -18,6 +19,14 @@
     "build:typechain:resolver": "typechain --target ethers-v4 --outDir typechain './build/contracts/RoleDefinitionResolver.json'",
     "build:typechain:registry": "typechain --target ethers-v4 --outDir typechain './node_modules/@ensdomains/ens/build/contracts/ENSRegistry.json'",
     "build:typechain:publicresolver": "typechain --target ethers-v4 --outDir typechain './node_modules/@ensdomains/resolver/build/contracts/PublicResolver.json'"
+  },
+  "homepage": "https://github.com/energywebfoundation/iam-contracts/#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/energywebfoundation/iam-contracts.git"
+  },
+  "bugs": {
+    "url": "https://github.com/energywebfoundation/iam-contracts/issues"
   },
   "author": {
     "name": "EnergyWeb",
@@ -45,6 +54,23 @@
     "truffle": "^5.3.0",
     "ts-node": "^9.1.1",
     "typechain": "^4.0.3",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "semantic-release": "^17.4.2",
+    "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/release-notes-generator": "^9.0.2",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/npm": "^7.1.1",
+    "@semantic-release/git": "^9.0.0"
+
+  },
+  "release": {
+    "branches": "master",
+    "plugins": [
+        "@semantic-release/commit-analyzer",
+        "@semantic-release/release-notes-generator",
+        "@semantic-release/changelog",
+        "@semantic-release/npm",
+        "@semantic-release/git"
+    ]
   }
 }
