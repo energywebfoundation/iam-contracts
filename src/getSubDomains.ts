@@ -1,5 +1,5 @@
 import { EventFilter, utils, providers } from "ethers";
-import { ENSRegistry } from "../typechain/EnsRegistry";
+import { ENSRegistry } from "../typechain/ENSRegistry";
 import { abi as ensRegistryContract } from "../build/contracts/ENS.json";
 import { abi as ensResolverContract } from "../build/contracts/PublicResolver.json";
 import { abi as domainNotifierContract } from '../build/contracts/DomainNotifier.json';
