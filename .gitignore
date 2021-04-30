@@ -74,3 +74,4 @@ typechain
 # Build outputs
 dist
 typechain
+build/contracts
