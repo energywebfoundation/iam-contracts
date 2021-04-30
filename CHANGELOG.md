@@ -1,3 +1,16 @@
+# [1.1.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.0.0...v1.1.0) (2021-04-30)
+
+
+### Bug Fixes
+
+* **getSubDomains:** ENSRegistry reference ([b51bd9e](https://github.com/energywebfoundation/iam-contracts/commit/b51bd9e110883d6b23cedb6af72219cf6ae32a66))
+* **publish workflow:** need to compile contracts ([5314542](https://github.com/energywebfoundation/iam-contracts/commit/531454274c50deac0f78a0b2749c6202a41c652c))
+
+
+### Features
+
+* copy getSubDomains from iam-client-lib ([2617e69](https://github.com/energywebfoundation/iam-contracts/commit/2617e69d4ebde2d320b6c4da90cb2265494d2e15))
+
 # 1.0.0 (2021-04-28)
 
 
