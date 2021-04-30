@@ -9,9 +9,9 @@ import {
   IAppDefinition,
   IOrganizationDefinition,
   IRoleDefinition,
+  ResolverContractType,
   addKnownResolver,
-  setRegistryAddress,
-  ResolverContractType
+  setRegistryAddress
 } from "../src/index";
 import { PreconditionType } from "../src/types/DomainDefinitions";
 import { ERROR_MESSAGES } from "../src/types/ErrorMessages";
@@ -69,14 +69,11 @@ const getDomainUpdatedLogs = async () => {
 let ensFactory: ContractFactory;
 let roleDefResolverFactory: ContractFactory;
 let domainNotifierFactory: ContractFactory;
-let publicResolverFactory: ContractFactory;
 let ensRegistry: ENSRegistry;
 let ensRoleDefResolver: RoleDefinitionResolver;
 let domainNotifier: DomainNotifier;
 let ensPublicResolver: PublicResolver;
 let owner: JsonRpcSigner;
-let ownerAddr: string;
-let anotherAccount: JsonRpcSigner;
 let provider: JsonRpcProvider
 
 
@@ -84,9 +81,8 @@ export function domainCrudTestSuite(): void {
   describe("Domain CRUD tests", () => {
     before(async function () {
       ({
-        publicResolverFactory, roleDefResolverFactory, ensFactory, domainNotifierFactory, provider, owner, anotherAccount
+        roleDefResolverFactory, ensFactory, domainNotifierFactory, provider, owner
       } = this);
-      ownerAddr = await owner.getAddress();
     });
 
     beforeEach(async () => {
@@ -198,6 +194,7 @@ export function domainCrudTestSuite(): void {
     it("domain with not supported resolver throws error", async () => {
       const resolverAddress = '0x0000000000000000000000000000000000000123';
       const chainId = await (await provider.getNetwork()).chainId;
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       addKnownResolver(chainId, resolverAddress, "999");
       await ensRegistry.setResolver(node, resolverAddress);

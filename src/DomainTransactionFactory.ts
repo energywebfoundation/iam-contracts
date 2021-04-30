@@ -1,6 +1,6 @@
 import { DomainReader } from "./DomainReader";
 import { RoleDefinitionResolver } from "../typechain/RoleDefinitionResolver";
-import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, IIssuerDefinition, PreconditionType } from "./types/DomainDefinitions"
+import { IAppDefinition, IIssuerDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from "./types/DomainDefinitions"
 import { DID } from "./types/DID";
 import { EncodedCall } from "./types/Transaction";
 import { namehash } from "ethers/utils";

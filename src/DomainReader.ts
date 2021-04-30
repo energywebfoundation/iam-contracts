@@ -1,14 +1,14 @@
-import { Provider } from "ethers/providers";
-import { IIssuerDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType, IAppDefinition, IOrganizationDefinition } from './types/DomainDefinitions'
-import { RoleDefinitionResolver__factory } from "../typechain/factories/RoleDefinitionResolver__factory";
-import { RoleDefinitionResolver } from "../typechain/RoleDefinitionResolver"
-import { ENSRegistry__factory } from "../typechain/factories/ENSRegistry__factory";
+import { IAppDefinition, IIssuerDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from './types/DomainDefinitions'
 import { ensRegistryAddresses, knownEnsResolvers } from "./resolverConfig";
-import { ResolverContractType } from "./types/ResolverContractType";
+import { ENSRegistry__factory } from "../typechain/factories/ENSRegistry__factory";
+import { Provider } from "ethers/providers";
 import { PublicResolver } from "../typechain/PublicResolver";
 import { PublicResolver__factory } from "../typechain/factories/PublicResolver__factory";
-import { ERROR_MESSAGES } from "./types/ErrorMessages";
+import { RoleDefinitionResolver } from "../typechain/RoleDefinitionResolver"
 import { namehash } from "ethers/utils";
+import { RoleDefinitionResolver__factory } from "../typechain/factories/RoleDefinitionResolver__factory";
+import { ResolverContractType } from "./types/ResolverContractType";
+import { ERROR_MESSAGES } from "./types/ErrorMessages";
 
 export class DomainReader {
   public static isOrgDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IOrganizationDefinition =>
@@ -118,7 +118,7 @@ export class DomainReader {
   }
 
   // TODO: Muliticalify (make all the queries in one)
-  protected async readRoleDefResolver_v1(node: string, roleDefinitionText: IRoleDefinitionText, ensResolver: RoleDefinitionResolver) {
+  protected async readRoleDefResolver_v1(node: string, roleDefinitionText: IRoleDefinitionText, ensResolver: RoleDefinitionResolver): Promise<IRoleDefinition> {
     const issuersData = await ensResolver.issuers(node);
     let issuer: IIssuerDefinition;
     if (issuersData.dids.length > 0) {
@@ -153,7 +153,7 @@ export class DomainReader {
     };
   }
 
-  protected reviveDates(key: string, value: string | number | Date) {
+  protected reviveDates(key: string, value: string | number | Date): string | number | Date {
     if (key === "minDate" || key === "maxDate") {
       return new Date(value);
     }
