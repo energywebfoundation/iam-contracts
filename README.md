@@ -19,7 +19,7 @@ Install dependencies:
 $ npm install
 ```
 
-Generate contract types and compile typescript:
+Compile contracts, generate contract types and compile typescript:
 
 ```sh
 $ npm run build
@@ -29,12 +29,6 @@ Run tests:
 
 ```sh
 $ npm test
-```
-
-If making changes to the contracts, they can be compiled with:
-
-```sh
-$ npm run compile:contracts
 ```
 
 #### Debugging Tests

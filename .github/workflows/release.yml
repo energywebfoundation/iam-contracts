@@ -30,7 +30,7 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build packages (Generate contract types and compile typescript)
+      - name: Build packages (Compile contracts, generate contract types and compile typescript)
         run: npm run build
 
       - name: Run test
