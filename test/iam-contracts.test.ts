@@ -1,12 +1,16 @@
 import { providers, ContractFactory } from 'ethers';
+import { keccak256, toUtf8Bytes } from 'ethers/utils';
 import { abi as RoleDefAbi, bytecode as RoleDefBytecode } from '../build/contracts/RoleDefinitionResolver.json';
 import { abi as PublicResolverAbi, bytecode as PublicResolverBytecode } from '../build/contracts/PublicResolver.json';
 import { abi as DomainNotifierAbi, bytecode as DomainNotiferBytecode } from '../build/contracts/DomainNotifier.json';
 import { abi as ensAbi, bytecode as ensBytecode } from '@ensdomains/ens/build/contracts/ENSRegistry.json';
 import { roleDefinitionResolverTestSuite } from './RoleDefinitionResolver.testSuite';
 import { domainCrudTestSuite } from './DomainCRUD.testSuite';
+import { getSubDomainsTestSuite } from './getSubDomains.testSuite';
 
 const { JsonRpcProvider } = providers;
+
+export const hashLabel = (label: string): string => keccak256(toUtf8Bytes(label));
 
 describe('[IAM CONTRACTS]', function () {
   this.timeout(0);
@@ -29,4 +33,5 @@ describe('[IAM CONTRACTS]', function () {
 
   describe('RoleDefinitionResolver Test', roleDefinitionResolverTestSuite);
   describe('DomainCRUD Test', domainCrudTestSuite);
+  describe('getSubDomains Test', getSubDomainsTestSuite);
 });
