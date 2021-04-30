@@ -75,3 +75,4 @@ typechain
 dist
 typechain
 build/contracts
+bin/contracts
