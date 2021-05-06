@@ -193,14 +193,14 @@ function testSuit() {
     expect(await claimManager.hasRole(installerAddr, namehash(installerRole), version)).true;
   });
 
-  it('When prerequisities are not met, enrolment request must be rejected', async () => {
+  it('When prerequisites are not met, enrolment request must be rejected', async () => {
     return expect(
       requestRole(activeDeviceRole, device, installer)
     )
       .rejectedWith('ClaimManager: Enrollment prerequisites are not met');
   });
 
-  it('When prerequisities are met, enrolment request must be approved', async () => {
+  it('When prerequisites are met, enrolment request must be approved', async () => {
     await requestRole(deviceRole, device, installer);
     await requestRole(activeDeviceRole, device, installer);
 

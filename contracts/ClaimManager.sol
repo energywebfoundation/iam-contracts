@@ -13,6 +13,8 @@ contract ClaimManager {
     string version;
   }
   
+  event RoleAssigned(bytes32 role, address account);
+  
   mapping(bytes32 => mapping(address => Record)) roles;
   address didRegistry;
   address roleResolver;
@@ -57,11 +59,13 @@ contract ClaimManager {
     Record storage r = roles[role][requester];
     r.expireDate = block.timestamp + expiry;
     r.version = VersionNumberResolver(roleResolver).versionNumber(role);
+    
+    emit RoleAssigned(role, requester);
   }
   
   function verifyPreconditions(address requester, bytes32 role) internal {
     string memory version = VersionNumberResolver(roleResolver).versionNumber(role);
-    // if (EnrolmentConditionTypeResolver(roleResolver).requiresConditionType(role, 0)) {
+    if (EnrolmentConditionTypeResolver(roleResolver).requiresConditionType(role, 0)) {
       bytes32[] memory prerequisites = EnrolmentPrerequisiteRolesResolver(roleResolver).prerequisiteRoles(role);
       for (uint i = 0; i < prerequisites.length; i++) {
         require(
@@ -69,7 +73,7 @@ contract ClaimManager {
           "ClaimManager: Enrollment prerequisites are not met"
         );
       }
-    // }
+    }
   }
 
   function verifyIssuer(address issuer, bytes32 role) internal {
