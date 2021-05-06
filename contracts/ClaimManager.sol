@@ -6,8 +6,14 @@ interface EthereumDIDRegistry {
   function identityOwner(address identity) external view returns(address);
 }
 
+//todo: enrol to version, fire events, include type preconditions checking
 contract ClaimManager {
-  mapping(bytes32 => mapping(address => uint)) roles;
+  struct Record {
+    uint expireDate;
+    string version;
+  }
+  
+  mapping(bytes32 => mapping(address => Record)) roles;
   address didRegistry;
   address roleResolver;
   
@@ -16,8 +22,9 @@ contract ClaimManager {
     roleResolver = _roleResolver;
   }
   
-  function hasRole(address requester, bytes32 role) public view returns(bool) {
-    return roles[role][requester] > block.timestamp;
+  function hasRole(address requester, bytes32 role, string memory version) public view returns(bool) {
+    Record memory r = roles[role][requester];
+    return r.expireDate > block.timestamp && compareStrings(r.version, version);
   }
   
   function register(
@@ -47,15 +54,18 @@ contract ClaimManager {
     
     verifyIssuer(issuer, role);
     
-    roles[role][requester] = block.timestamp + expiry;
+    Record storage r = roles[role][requester];
+    r.expireDate = block.timestamp + expiry;
+    r.version = VersionNumberResolver(roleResolver).versionNumber(role);
   }
   
   function verifyPreconditions(address requester, bytes32 role) internal {
+    string memory version = VersionNumberResolver(roleResolver).versionNumber(role);
     // if (EnrolmentConditionTypeResolver(roleResolver).requiresConditionType(role, 0)) {
       bytes32[] memory prerequisites = EnrolmentPrerequisiteRolesResolver(roleResolver).prerequisiteRoles(role);
       for (uint i = 0; i < prerequisites.length; i++) {
         require(
-          this.hasRole(requester, prerequisites[i]),
+          this.hasRole(requester, prerequisites[i], version),
           "ClaimManager: Enrollment prerequisites are not met"
         );
       }
@@ -72,7 +82,8 @@ contract ClaimManager {
       }
       revert("Claim Manager: Issuer does not listed in role issuers list");
     } else if(issuer_role != "") {
-      require(hasRole(issuer, issuer_role), "Claim Manager: Issuer does not have required role");
+      string memory version = VersionNumberResolver(roleResolver).versionNumber(issuer_role);
+      require(hasRole(issuer, issuer_role, version), "Claim Manager: Issuer does not have required role");
     } else {
       revert("Claim Manager: Role issuers are not specified");
     }
@@ -119,4 +130,9 @@ contract ClaimManager {
       return ecrecover(hash, v, r, s);
     }
   }  
+  
+  function compareStrings(string memory a, string memory b) public view returns (bool) {
+    return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
+  }
 }
+

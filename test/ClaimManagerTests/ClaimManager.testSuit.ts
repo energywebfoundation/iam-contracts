@@ -19,6 +19,7 @@ const activeDeviceRole = 'active-device'
 const installerRole = 'installer';
 
 const expiry = 60 * 60; // in secs
+const version = '1';
 
 const hashLabel = (label: string): string => keccak256(toUtf8Bytes(label));
 
@@ -129,7 +130,7 @@ function testSuit() {
           issuer: { issuerType: "DID", did: [`did:ethr:${await authority.getAddress()}`] },
           metadata: [],
           roleType: '',
-          version: '1'
+          version
         }
       })
     })).wait();
@@ -144,7 +145,7 @@ function testSuit() {
           issuer: { issuerType: "ROLE", roleName: namehash(installerRole) },
           metadata: [],
           roleType: '',
-          version: '1'
+          version
         }
       })
     })).wait();
@@ -159,7 +160,7 @@ function testSuit() {
           issuer: { issuerType: "ROLE", roleName: namehash(installerRole) },
           metadata: [],
           roleType: '',
-          version: '1'
+          version
         }
       })
     })).wait();
@@ -183,13 +184,13 @@ function testSuit() {
   it('Role can be assigned when issuer is DID', async () => {
     await requestRole(authorityRole, authority, authority);
 
-    expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole))).true;
+    expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), version)).true;
   });
 
   it('Role can be assigned when issuer is ROLE', async () => {
     await requestRole(installerRole, installer, authority);
 
-    expect(await claimManager.hasRole(installerAddr, namehash(installerRole))).true;
+    expect(await claimManager.hasRole(installerAddr, namehash(installerRole), version)).true;
   });
 
   it('When prerequisities are not met, enrolment request must be rejected', async () => {
@@ -203,6 +204,6 @@ function testSuit() {
     await requestRole(deviceRole, device, installer);
     await requestRole(activeDeviceRole, device, installer);
 
-    expect(await claimManager.hasRole(deviceAddr, namehash(activeDeviceRole))).true;
+    expect(await claimManager.hasRole(deviceAddr, namehash(activeDeviceRole), version)).true;
   });
 }
