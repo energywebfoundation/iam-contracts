@@ -7,6 +7,7 @@ import { abi as ensAbi, bytecode as ensBytecode } from '@ensdomains/ens/build/co
 import { roleDefinitionResolverTestSuite } from './RoleDefinitionResolver.testSuite';
 import { domainCrudTestSuite } from './DomainCRUD.testSuite';
 import { getSubDomainsTestSuite } from './getSubDomains.testSuite';
+import { claimManagerTests } from './ClaimManagerTests/ClaimManager.testSuit';
 
 const { JsonRpcProvider } = providers;
 
@@ -34,4 +35,5 @@ describe('[IAM CONTRACTS]', function () {
   describe('RoleDefinitionResolver Test', roleDefinitionResolverTestSuite);
   describe('DomainCRUD Test', domainCrudTestSuite);
   describe('getSubDomains Test', getSubDomainsTestSuite);
+  describe.only('ClaimManager Test', claimManagerTests);
 });
