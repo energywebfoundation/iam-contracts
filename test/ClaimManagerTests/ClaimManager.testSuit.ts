@@ -63,6 +63,9 @@ function testsOnGanache() {
     device = provider.getSigner(3);
     installer = provider.getSigner(4);
     authority = provider.getSigner(5);
+    deviceAddr = await device.getAddress();
+    installerAddr = await installer.getAddress();
+    authorityAddr = await authority.getAddress();
   });
 
   testSuit();
@@ -94,18 +97,18 @@ function testSuit() {
     )).wait();
   }
 
-  before(async function () {
-    deviceAddr = await device.getAddress();
-    installerAddr = await installer.getAddress();
-    authorityAddr = await authority.getAddress();
-
+  beforeEach(async function () {
     const erc1056Factory = new ContractFactory(erc1056Abi, erc1056Bytecode, deployer);
     const erc1056 = await (await erc1056Factory.deploy()).deployed();
+    
     const { ensFactory, domainNotifierFactory, roleDefResolverFactory } = this;
     const ensRegistry: ENSRegistry = await (await ensFactory.connect(deployer).deploy()).deployed();
 
     const notifier = await (await domainNotifierFactory.connect(deployer).deploy(ensRegistry.address)).deployed();
     roleResolver = await (await (roleDefResolverFactory.connect(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
+    
+    claimManager = await (await new ClaimManagerFactory(deployer).deploy(erc1056.address, roleResolver.address)).deployed();
+    roleFactory = new DomainTransactionFactory(roleResolver);
 
     await ensRegistry.setSubnodeOwner(root, hashLabel(authorityRole), await deployer.getAddress());
     await ensRegistry.setSubnodeOwner(root, hashLabel(deviceRole), await deployer.getAddress());
@@ -116,10 +119,7 @@ function testSuit() {
     await ensRegistry.setResolver(namehash(deviceRole), roleResolver.address);
     await ensRegistry.setResolver(namehash(activeDeviceRole), roleResolver.address);
     await ensRegistry.setResolver(namehash(installerRole), roleResolver.address);
-
-    claimManager = await (await new ClaimManagerFactory(deployer).deploy(erc1056.address, roleResolver.address)).deployed();
-    roleFactory = new DomainTransactionFactory(roleResolver);
-
+    
     await (await deployer.sendTransaction({
       ...roleFactory.newRole({
         domain: authorityRole,
@@ -181,19 +181,22 @@ function testSuit() {
     })).wait();
   });
 
-  it('Role can be assigned when issuer is DID', async () => {
+  it('Role can be assigned when issuer type is DID', async () => {
     await requestRole(authorityRole, authority, authority);
 
     expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), version)).true;
   });
 
-  it('Role can be assigned when issuer is ROLE', async () => {
+  it('Role can be assigned when issuer type is ROLE', async () => {
+    await requestRole(authorityRole, authority, authority);
     await requestRole(installerRole, installer, authority);
 
     expect(await claimManager.hasRole(installerAddr, namehash(installerRole), version)).true;
   });
 
   it('When prerequisites are not met, enrolment request must be rejected', async () => {
+    await requestRole(authorityRole, authority, authority);
+    await requestRole(installerRole, installer, authority);
     return expect(
       requestRole(activeDeviceRole, device, installer)
     )
@@ -201,6 +204,8 @@ function testSuit() {
   });
 
   it('When prerequisites are met, enrolment request must be approved', async () => {
+    await requestRole(authorityRole, authority, authority);
+    await requestRole(installerRole, installer, authority);
     await requestRole(deviceRole, device, installer);
     await requestRole(activeDeviceRole, device, installer);
 

@@ -6,7 +6,6 @@ interface EthereumDIDRegistry {
   function identityOwner(address identity) external view returns(address);
 }
 
-//todo: enrol to version, fire events, include type preconditions checking
 contract ClaimManager {
   struct Record {
     uint expireDate;
@@ -65,7 +64,7 @@ contract ClaimManager {
   
   function verifyPreconditions(address requester, bytes32 role) internal {
     string memory version = VersionNumberResolver(roleResolver).versionNumber(role);
-    if (EnrolmentConditionTypeResolver(roleResolver).requiresConditionType(role, 0)) {
+    // if (EnrolmentConditionTypeResolver(roleResolver).requiresConditionType(role, 0)) {
       bytes32[] memory prerequisites = EnrolmentPrerequisiteRolesResolver(roleResolver).prerequisiteRoles(role);
       for (uint i = 0; i < prerequisites.length; i++) {
         require(
@@ -73,7 +72,7 @@ contract ClaimManager {
           "ClaimManager: Enrollment prerequisites are not met"
         );
       }
-    }
+    // }
   }
 
   function verifyIssuer(address issuer, bytes32 role) internal {
