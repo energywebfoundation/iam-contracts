@@ -100,13 +100,13 @@ function testSuit() {
   beforeEach(async function () {
     const erc1056Factory = new ContractFactory(erc1056Abi, erc1056Bytecode, deployer);
     const erc1056 = await (await erc1056Factory.deploy()).deployed();
-    
+
     const { ensFactory, domainNotifierFactory, roleDefResolverFactory } = this;
     const ensRegistry: ENSRegistry = await (await ensFactory.connect(deployer).deploy()).deployed();
 
     const notifier = await (await domainNotifierFactory.connect(deployer).deploy(ensRegistry.address)).deployed();
     roleResolver = await (await (roleDefResolverFactory.connect(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
-    
+
     claimManager = await (await new ClaimManagerFactory(deployer).deploy(erc1056.address, roleResolver.address)).deployed();
     roleFactory = new DomainTransactionFactory(roleResolver);
 
@@ -119,7 +119,7 @@ function testSuit() {
     await ensRegistry.setResolver(namehash(deviceRole), roleResolver.address);
     await ensRegistry.setResolver(namehash(activeDeviceRole), roleResolver.address);
     await ensRegistry.setResolver(namehash(installerRole), roleResolver.address);
-    
+
     await (await deployer.sendTransaction({
       ...roleFactory.newRole({
         domain: authorityRole,
@@ -192,6 +192,16 @@ function testSuit() {
     await requestRole(installerRole, installer, authority);
 
     expect(await claimManager.hasRole(installerAddr, namehash(installerRole), version)).true;
+  });
+
+  it('Role proof signed by not authorized issuer should be reject', async () => {
+    expect(
+      requestRole(authorityRole, authority, provider.getSigner(10))
+    ).rejectedWith("Claim Manager: Issuer does not listed in role issuers list")
+
+    expect(
+      requestRole(deviceRole, device, provider.getSigner(10))
+    ).rejectedWith("Claim Manager: Issuer does not have required role")
   });
 
   it('When prerequisites are not met, enrolment request must be rejected', async () => {
