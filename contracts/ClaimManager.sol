@@ -15,9 +15,9 @@ contract ClaimManager {
   
   event RoleRegistered(bytes32 role, address account);
   
-  mapping(bytes32 => mapping(address => Record)) roles;
-  address didRegistry;
-  address ensRegistry;
+  mapping(bytes32 => mapping(address => Record)) private roles;
+  address private didRegistry;
+  address private ensRegistry;
   
   constructor(address _didRegistry, address _ensRegistry) public {
     didRegistry = _didRegistry;
@@ -63,7 +63,7 @@ contract ClaimManager {
     emit RoleRegistered(role, subject);
   }
   
-  function verifyPreconditions(address subject, bytes32 role) internal {
+  function verifyPreconditions(address subject, bytes32 role) internal view{
     address resolver = ENSRegistry(ensRegistry).resolver(role);
     string memory version = VersionNumberResolver(resolver).versionNumber(role);
     // if (EnrollmentConditionTypeRolesResolver(resolver).requiresConditionType(role, 0)) {
@@ -77,7 +77,7 @@ contract ClaimManager {
     // }
   }
 
-  function verifyIssuer(address issuer, bytes32 role) internal {
+  function verifyIssuer(address issuer, bytes32 role) internal view{
     address resolver = ENSRegistry(ensRegistry).resolver(role);
     (address[] memory dids, bytes32 issuer_role) = IssuersResolver(resolver).issuers(role);
     if (dids.length > 0) {
