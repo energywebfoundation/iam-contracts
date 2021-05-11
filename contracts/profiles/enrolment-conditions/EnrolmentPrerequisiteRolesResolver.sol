@@ -1,4 +1,5 @@
 pragma solidity ^0.5.0;
+pragma experimental ABIEncoderV2;
 
 import "@ensdomains/resolver/contracts/ResolverBase.sol";
 
@@ -8,12 +9,17 @@ import "@ensdomains/resolver/contracts/ResolverBase.sol";
 contract EnrolmentPrerequisiteRolesResolver is ResolverBase {
     bytes4 private constant PREREQUISITE_ROLES_INTERFACE_ID = 0xc986c404;
 
+    struct PrerequisiteRoles {
+        bytes32[] roles;
+        bool[] mandatory;
+    }
+
     event PrerequisiteRolesChanged(
         bytes32 indexed node,
-        bytes32[] newPrerequisiteRoles
+        PrerequisiteRoles newPrerequisiteRoles
     );
 
-    mapping(bytes32 => bytes32[]) prerequisiteRolesMap;
+    mapping(bytes32 => PrerequisiteRoles) prerequisiteRolesMap;
 
     /**
      * Sets the prerequisite role required to be eligible for a role claim.
@@ -21,11 +27,13 @@ contract EnrolmentPrerequisiteRolesResolver is ResolverBase {
      * @param node The node to update.
      * @param roles The prerequisite roles to set.
      */
-    function setPrerequisiteRoles(bytes32 node, bytes32[] calldata roles)
-        external
-        authorised(node)
-    {
-        prerequisiteRolesMap[node] = roles;
+    function setPrerequisiteRoles(
+        bytes32 node,
+        bytes32[] calldata roles,
+        bool[] calldata mandatory
+    ) external authorised(node) {
+        assert(roles.length == mandatory.length);
+        prerequisiteRolesMap[node] = PrerequisiteRoles(roles, mandatory);
         emit PrerequisiteRolesChanged(node, prerequisiteRolesMap[node]);
     }
 
@@ -37,9 +45,12 @@ contract EnrolmentPrerequisiteRolesResolver is ResolverBase {
     function prerequisiteRoles(bytes32 node)
         external
         view
-        returns (bytes32[] memory roles)
+        returns (bytes32[] memory roles, bool[] memory mandatory)
     {
-        return (prerequisiteRolesMap[node]);
+        return (
+            prerequisiteRolesMap[node].roles,
+            prerequisiteRolesMap[node].mandatory
+        );
     }
 
     function supportsInterface(bytes4 interfaceID) public pure returns (bool) {

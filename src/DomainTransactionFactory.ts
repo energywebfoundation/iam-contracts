@@ -236,7 +236,8 @@ export class DomainTransactionFactory {
       to: this.roleDefinitionResolver.address,
       data: this.roleDefinitionResolver.interface.functions.setPrerequisiteRoles.encode([
         namehash(domain),
-        prequisiteRoleDomains
+        prequisiteRoleDomains,
+        prequisiteRoleDomains.map(() => false) // Set all roles to optional
       ])
     };
   }
