@@ -208,22 +208,6 @@ export class DomainTransactionFactory {
     };
   }
 
-  protected addEnrolmentConditionTypeTx({
-    domain,
-    enrolmentConditionType
-  }: {
-    domain: string;
-    enrolmentConditionType: number;
-  }): EncodedCall {
-    return {
-      to: this.roleDefinitionResolver.address,
-      data: this.roleDefinitionResolver.interface.functions.addConditionType.encode([
-        namehash(domain),
-        enrolmentConditionType
-      ])
-    };
-  }
-
   protected setPrerequisiteRolesTx({
     domain,
     prerequisiteRoles
