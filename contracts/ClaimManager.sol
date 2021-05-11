@@ -24,53 +24,53 @@ contract ClaimManager {
     ensRegistry = _ensRegistry;
   }
   
-  function hasRole(address requester, bytes32 role, string memory version) public view returns(bool) {
-    Record memory r = roles[role][requester];
+  function hasRole(address subject, bytes32 role, string memory version) public view returns(bool) {
+    Record memory r = roles[role][subject];
     return r.expireDate > block.timestamp && compareStrings(r.version, version);
   }
   
   function register(
-    address requester, 
+    address subject, 
     bytes32 role,
     uint expiry,
     address issuer,
-    bytes calldata requester_agreement,
+    bytes calldata subject_agreement,
     bytes calldata role_proof
     ) external {
-    bytes32 agreementHash = toEthSignedMessageHash(keccak256(abi.encodePacked(requester, role)));
-    address requesterController = recover(agreementHash, requester_agreement);
-    bytes32 proofHash = toEthSignedMessageHash(keccak256(abi.encodePacked(requester, role, expiry, issuer)));
+    bytes32 agreementHash = toEthSignedMessageHash(keccak256(abi.encodePacked(subject, role)));
+    address subjectController = recover(agreementHash, subject_agreement);
+    bytes32 proofHash = toEthSignedMessageHash(keccak256(abi.encodePacked(subject, role, expiry, issuer)));
     address issuerController = recover(proofHash, role_proof);
     
     EthereumDIDRegistry registry = EthereumDIDRegistry(didRegistry);
     require(
-      registry.identityOwner(requester) == requesterController,
-       "ClaimManager: Requester agreement was not signed by requester controller"
+      registry.identityOwner(subject) == subjectController,
+       "ClaimManager: subject agreement was not signed by subject controller"
     );
     require(
       registry.identityOwner(issuer) == issuerController,
        "ClaimManager: Role proof was not signed by issuer controller"
     );
     
-    verifyPreconditions(requester, role);
+    verifyPreconditions(subject, role);
     
     verifyIssuer(issuer, role);
     
-    Record storage r = roles[role][requester];
+    Record storage r = roles[role][subject];
     r.expireDate = block.timestamp + expiry;
     r.version = VersionNumberResolver(ENSRegistry(ensRegistry).resolver(role)).versionNumber(role);
     
-    emit RoleRegistered(role, requester);
+    emit RoleRegistered(role, subject);
   }
   
-  function verifyPreconditions(address requester, bytes32 role) internal {
+  function verifyPreconditions(address subject, bytes32 role) internal {
     address resolver = ENSRegistry(ensRegistry).resolver(role);
     string memory version = VersionNumberResolver(resolver).versionNumber(role);
     // if (EnrollmentConditionTypeRolesResolver(resolver).requiresConditionType(role, 0)) {
       bytes32[] memory prerequisites = EnrolmentPrerequisiteRolesResolver(resolver).prerequisiteRoles(role);
       for (uint i = 0; i < prerequisites.length; i++) {
         require(
-          this.hasRole(requester, prerequisites[i], version),
+          this.hasRole(subject, prerequisites[i], version),
           "ClaimManager: Enrollment prerequisites are not met"
         );
       }
