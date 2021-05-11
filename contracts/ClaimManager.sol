@@ -1,5 +1,6 @@
 pragma solidity 0.5.17;
 
+import "@ensdomains/ens/contracts/ENSRegistry.sol";
 import "./RoleDefinitionResolver.sol";
 
 interface EthereumDIDRegistry {
@@ -16,11 +17,11 @@ contract ClaimManager {
   
   mapping(bytes32 => mapping(address => Record)) roles;
   address didRegistry;
-  address roleResolver;
+  address ensRegistry;
   
-  constructor(address _didRegistry, address _roleResolver) public {
+  constructor(address _didRegistry, address _ensRegistry) public {
     didRegistry = _didRegistry;
-    roleResolver = _roleResolver;
+    ensRegistry = _ensRegistry;
   }
   
   function hasRole(address requester, bytes32 role, string memory version) public view returns(bool) {
@@ -57,15 +58,16 @@ contract ClaimManager {
     
     Record storage r = roles[role][requester];
     r.expireDate = block.timestamp + expiry;
-    r.version = VersionNumberResolver(roleResolver).versionNumber(role);
+    r.version = VersionNumberResolver(ENSRegistry(ensRegistry).resolver(role)).versionNumber(role);
     
-    emit RoleAssigned(role, requester);
+    emit RoleRegistered(role, requester);
   }
   
   function verifyPreconditions(address requester, bytes32 role) internal {
-    string memory version = VersionNumberResolver(roleResolver).versionNumber(role);
-    // if (EnrolmentConditionTypeResolver(roleResolver).requiresConditionType(role, 0)) {
-      bytes32[] memory prerequisites = EnrolmentPrerequisiteRolesResolver(roleResolver).prerequisiteRoles(role);
+    address resolver = ENSRegistry(ensRegistry).resolver(role);
+    string memory version = VersionNumberResolver(resolver).versionNumber(role);
+    // if (EnrollmentConditionTypeRolesResolver(resolver).requiresConditionType(role, 0)) {
+      bytes32[] memory prerequisites = EnrolmentPrerequisiteRolesResolver(resolver).prerequisiteRoles(role);
       for (uint i = 0; i < prerequisites.length; i++) {
         require(
           this.hasRole(requester, prerequisites[i], version),
@@ -76,7 +78,8 @@ contract ClaimManager {
   }
 
   function verifyIssuer(address issuer, bytes32 role) internal {
-    (address[] memory dids, bytes32 issuer_role) = IssuersResolver(roleResolver).issuers(role);
+    address resolver = ENSRegistry(ensRegistry).resolver(role);
+    (address[] memory dids, bytes32 issuer_role) = IssuersResolver(resolver).issuers(role);
     if (dids.length > 0) {
       for (uint i = 0; i < dids.length; i++) {
         if (dids[i] == issuer) {
@@ -85,7 +88,7 @@ contract ClaimManager {
       }
       revert("Claim Manager: Issuer does not listed in role issuers list");
     } else if(issuer_role != "") {
-      string memory version = VersionNumberResolver(roleResolver).versionNumber(issuer_role);
+      string memory version = VersionNumberResolver(resolver).versionNumber(issuer_role);
       require(hasRole(issuer, issuer_role, version), "Claim Manager: Issuer does not have required role");
     } else {
       revert("Claim Manager: Role issuers are not specified");

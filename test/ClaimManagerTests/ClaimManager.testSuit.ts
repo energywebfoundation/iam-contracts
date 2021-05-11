@@ -107,7 +107,7 @@ function testSuit() {
     const notifier = await (await domainNotifierFactory.connect(deployer).deploy(ensRegistry.address)).deployed();
     roleResolver = await (await (roleDefResolverFactory.connect(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
 
-    claimManager = await (await new ClaimManagerFactory(deployer).deploy(erc1056.address, roleResolver.address)).deployed();
+    claimManager = await (await new ClaimManagerFactory(deployer).deploy(erc1056.address, ensRegistry.address)).deployed();
     roleFactory = new DomainTransactionFactory(roleResolver);
 
     await ensRegistry.setSubnodeOwner(root, hashLabel(authorityRole), await deployer.getAddress());
