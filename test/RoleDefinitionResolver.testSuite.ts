@@ -235,19 +235,23 @@ export function roleDefinitionResolverTestSuite(): void {
   describe('enrolmentPrerequisiteRoles', async () => {
     it('permits setting prerequisite roles by owner', async () => {
       const initialRoles = await roleDefinitionResolver.prerequisiteRoles(roleNode);
-      expect(initialRoles).to.be.empty;
+      expect(initialRoles[0]).to.be.empty; // role names array should be empty
+      expect(initialRoles[1]).to.be.false; // mustHaveAll should be false 
       const newRoles = [utils.namehash("anotherRole.iam.ewc")];
-      const tx = await roleDefinitionResolver.setPrerequisiteRoles(roleNode, newRoles);
+      const mustHaveAll = true;
+      const tx = await roleDefinitionResolver.setPrerequisiteRoles(roleNode, newRoles, mustHaveAll);
       const changedRoles = await roleDefinitionResolver.prerequisiteRoles(roleNode);
-      expect(changedRoles).to.eql(newRoles);
+      expect(changedRoles[0]).to.eql(newRoles);
+      expect(changedRoles[1]).to.eql(mustHaveAll);
 
       const event = await getTransactionEventArgs(tx);
-      expect(event.args?.newPrerequisiteRoles).to.eql(newRoles);
+      expect(event.args?.newPrerequisiteRoles?.[0]).to.eql(newRoles);
+      expect(event.args?.newPrerequisiteRoles?.[1]).to.eql(mustHaveAll);
       expect(event.args?.node).to.equal(roleNode);
     });
 
     it('prevents updating prerequisite roles by non-owner', async () => {
-      await expect(roleDefinitionResolver.connect(anotherAccount).setPrerequisiteRoles(roleNode, [])).to.eventually.be.rejected;
+      await expect(roleDefinitionResolver.connect(anotherAccount).setPrerequisiteRoles(roleNode, [], false)).to.eventually.be.rejected;
     });
   });
 
