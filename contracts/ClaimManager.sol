@@ -12,7 +12,7 @@ contract ClaimManager {
     string version;
   }
   
-  event RoleAssigned(bytes32 role, address account);
+  event RoleRegistered(bytes32 role, address account);
   
   mapping(bytes32 => mapping(address => Record)) roles;
   address didRegistry;
@@ -138,4 +138,3 @@ contract ClaimManager {
     return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
   }
 }
-
