@@ -197,11 +197,11 @@ function testSuit() {
   it('Role proof signed by not authorized issuer should be reject', async () => {
     expect(
       requestRole(authorityRole, authority, provider.getSigner(10))
-    ).rejectedWith("Claim Manager: Issuer does not listed in role issuers list")
+    ).rejectedWith("ClaimManager: Issuer does not listed in role issuers list")
 
     expect(
       requestRole(deviceRole, device, provider.getSigner(10))
-    ).rejectedWith("Claim Manager: Issuer does not have required role")
+    ).rejectedWith("ClaimManager: Issuer does not have required role")
   });
 
   it('When prerequisites are not met, enrolment request must be rejected', async () => {

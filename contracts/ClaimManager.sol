@@ -1,6 +1,7 @@
 pragma solidity 0.5.17;
 
 import "@ensdomains/ens/contracts/ENSRegistry.sol";
+import "./utils/cryptography/ECDSA.sol";
 import "./RoleDefinitionResolver.sol";
 
 interface EthereumDIDRegistry {
@@ -37,10 +38,10 @@ contract ClaimManager {
     bytes calldata subject_agreement,
     bytes calldata role_proof
     ) external {
-    bytes32 agreementHash = toEthSignedMessageHash(keccak256(abi.encodePacked(subject, role)));
-    address subjectController = recover(agreementHash, subject_agreement);
-    bytes32 proofHash = toEthSignedMessageHash(keccak256(abi.encodePacked(subject, role, expiry, issuer)));
-    address issuerController = recover(proofHash, role_proof);
+    bytes32 agreementHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(subject, role)));
+    address subjectController = ECDSA.recover(agreementHash, subject_agreement);
+    bytes32 proofHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(subject, role, expiry, issuer)));
+    address issuerController = ECDSA.recover(proofHash, role_proof);
     
     EthereumDIDRegistry registry = EthereumDIDRegistry(didRegistry);
     require(
@@ -63,7 +64,7 @@ contract ClaimManager {
     emit RoleRegistered(role, subject);
   }
   
-  function verifyPreconditions(address subject, bytes32 role) internal view{
+  function verifyPreconditions(address subject, bytes32 role) internal view {
     address resolver = ENSRegistry(ensRegistry).resolver(role);
     string memory version = VersionNumberResolver(resolver).versionNumber(role);
     // if (EnrollmentConditionTypeRolesResolver(resolver).requiresConditionType(role, 0)) {
@@ -77,7 +78,7 @@ contract ClaimManager {
     // }
   }
 
-  function verifyIssuer(address issuer, bytes32 role) internal view{
+  function verifyIssuer(address issuer, bytes32 role) internal view {
     address resolver = ENSRegistry(ensRegistry).resolver(role);
     (address[] memory dids, bytes32 issuer_role) = IssuersResolver(resolver).issuers(role);
     if (dids.length > 0) {
@@ -86,56 +87,14 @@ contract ClaimManager {
           return;
         }
       }
-      revert("Claim Manager: Issuer does not listed in role issuers list");
+      revert("ClaimManager: Issuer does not listed in role issuers list");
     } else if(issuer_role != "") {
       string memory version = VersionNumberResolver(resolver).versionNumber(issuer_role);
-      require(hasRole(issuer, issuer_role, version), "Claim Manager: Issuer does not have required role");
+      require(hasRole(issuer, issuer_role, version), "ClaimManager: Issuer does not have required role");
     } else {
-      revert("Claim Manager: Role issuers are not specified");
+      revert("ClaimManager: Role issuers are not specified");
     }
   }
-  
-  function toEthSignedMessageHash(bytes32 hash)
-    internal
-    pure
-    returns (bytes32)
-  {
-    return keccak256(
-      abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)
-    );
-  }
-  
-  function recover(bytes32 hash, bytes memory signature)
-    internal
-    pure
-    returns (address)
-  {
-    bytes32 r;
-    bytes32 s;
-    uint8 v;
-
-    if (signature.length != 65) {
-      return (address(0));
-    }
-
-    // Divide the signature in r, s and v variables with inline assembly.
-    assembly {
-      r := mload(add(signature, 0x20))
-      s := mload(add(signature, 0x40))
-      v := byte(0, mload(add(signature, 0x60)))
-    }
-
-    if (v < 27) {
-      v += 27;
-    }
-
-    if (v != 27 && v != 28) {
-      return (address(0));
-    } else {
-      // solium-disable-next-line arg-overflow
-      return ecrecover(hash, v, r, s);
-    }
-  }  
   
   function compareStrings(string memory a, string memory b) public view returns (bool) {
     return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
