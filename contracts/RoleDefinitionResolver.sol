@@ -4,7 +4,6 @@ pragma experimental ABIEncoderV2;
 import "@ensdomains/ens/contracts/ENS.sol";
 import "@ensdomains/resolver/contracts/PublicResolver.sol";
 import "./DomainNotifier.sol";
-import "./profiles/enrolment-conditions/EnrolmentConditionTypeResolver.sol";
 import "./profiles/enrolment-conditions/EnrolmentPrerequisiteRolesResolver.sol";
 import "./profiles/issuance/IssuersResolver.sol";
 import "./profiles/issuance/IssuerTypeResolver.sol";
@@ -18,7 +17,6 @@ contract RoleDefinitionResolver is
     VersionNumberResolver,
     IssuerTypeResolver,
     IssuersResolver,
-    EnrolmentConditionTypeResolver,
     EnrolmentPrerequisiteRolesResolver
 {
     bytes4 private constant DOMAIN_UPDATED_INTERFACE_ID = 0x61610164;

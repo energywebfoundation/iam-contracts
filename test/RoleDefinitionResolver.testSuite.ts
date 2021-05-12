@@ -260,7 +260,6 @@ export function roleDefinitionResolverTestSuite(): void {
       expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('versionNumber(bytes32)'))).to.be.true;
       expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('issuerType(bytes32)'))).to.be.true;
       expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('issuers(bytes32)'))).to.be.true;
-      expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('requiresConditionType(bytes32,uint256)'))).to.be.true;
       expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('prerequisiteRoles(bytes32)'))).to.be.true;
       expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('domainUpdated(bytes32)'))).to.be.true;
     });
