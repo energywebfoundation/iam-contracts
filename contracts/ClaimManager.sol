@@ -67,7 +67,6 @@ contract ClaimManager {
   function verifyPreconditions(address subject, bytes32 role) internal view {
     address resolver = ENSRegistry(ensRegistry).resolver(role);
     string memory version = VersionNumberResolver(resolver).versionNumber(role);
-    // if (EnrollmentConditionTypeRolesResolver(resolver).requiresConditionType(role, 0)) {
       bytes32[] memory prerequisites = EnrolmentPrerequisiteRolesResolver(resolver).prerequisiteRoles(role);
       for (uint i = 0; i < prerequisites.length; i++) {
         require(
@@ -75,7 +74,6 @@ contract ClaimManager {
           "ClaimManager: Enrollment prerequisites are not met"
         );
       }
-    // }
   }
 
   function verifyIssuer(address issuer, bytes32 role) internal view {
@@ -96,7 +94,7 @@ contract ClaimManager {
     }
   }
   
-  function compareStrings(string memory a, string memory b) public view returns (bool) {
+  function compareStrings(string memory a, string memory b) public pure returns (bool) {
     return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
   }
 }
