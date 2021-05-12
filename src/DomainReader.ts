@@ -65,7 +65,7 @@ export class DomainReader {
       try {
         definition = JSON.parse(textData, this.reviveDates) as IRoleDefinition | IAppDefinition | IOrganizationDefinition;
       } catch (err) {
-        throw Error(`unable to parse resolved textData for node: ${node}. ${JSON.stringify(err)}`)
+        throw Error(`unable to parse resolved textData for node: ${node}. textData: ${textData}. error: ${JSON.stringify(err)}`)
       }
       return definition
     }
@@ -76,7 +76,7 @@ export class DomainReader {
       try {
         textProps = JSON.parse(textData, this.reviveDates) as IRoleDefinitionText | IAppDefinition | IOrganizationDefinition;
       } catch (err) {
-        throw Error(`unable to parse resolved textData for node: ${node}. ${JSON.stringify(err)}`)
+        throw Error(`unable to parse resolved textData for node: ${node}. textData: ${textData}. error: ${JSON.stringify(err)}`)
       }
 
       if (DomainReader.isOrgDefinition(textProps) || DomainReader.isAppDefinition(textProps)) {
@@ -137,8 +137,8 @@ export class DomainReader {
       issuer = {}
     }
 
-    const prerequisiteRoleNodes = await ensResolver.prerequisiteRoles(node)
-    const prerequisiteRoles = await Promise.all(prerequisiteRoleNodes.map(node => ensResolver.name(node)))
+    const prerequisiteRolesNodes = await ensResolver.prerequisiteRoles(node)
+    const prerequisiteRoles = await Promise.all(prerequisiteRolesNodes[0].map(node => ensResolver.name(node)))
     const enrolmentPreconditions = prerequisiteRoles.length >= 1
       ? [{ type: PreconditionType.Role, conditions: prerequisiteRoles }]
       : []
