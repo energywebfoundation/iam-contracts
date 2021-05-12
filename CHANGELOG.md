@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.1.0...v1.2.0) (2021-05-12)
+
+
+### Features
+
+* **EnrolementPrequisiteRolesResolver:** add mustHaveAll ([88323d2](https://github.com/energywebfoundation/iam-contracts/commit/88323d2a371c9a3e24cb86c1b5a2f7a42beecfd9))
+
 # [1.1.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.0.0...v1.1.0) (2021-04-30)
 
 

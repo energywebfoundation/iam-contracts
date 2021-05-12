@@ -208,22 +208,6 @@ export class DomainTransactionFactory {
     };
   }
 
-  protected addEnrolmentConditionTypeTx({
-    domain,
-    enrolmentConditionType
-  }: {
-    domain: string;
-    enrolmentConditionType: number;
-  }): EncodedCall {
-    return {
-      to: this.roleDefinitionResolver.address,
-      data: this.roleDefinitionResolver.interface.functions.addConditionType.encode([
-        namehash(domain),
-        enrolmentConditionType
-      ])
-    };
-  }
-
   protected setPrerequisiteRolesTx({
     domain,
     prerequisiteRoles
@@ -236,7 +220,8 @@ export class DomainTransactionFactory {
       to: this.roleDefinitionResolver.address,
       data: this.roleDefinitionResolver.interface.functions.setPrerequisiteRoles.encode([
         namehash(domain),
-        prequisiteRoleDomains
+        prequisiteRoleDomains,
+        false // mustHaveAll = false so only need to have one of the set
       ])
     };
   }
