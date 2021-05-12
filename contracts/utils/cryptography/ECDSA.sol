@@ -32,7 +32,7 @@ library ECDSA {
     function recover(bytes32 hash, uint8 v, bytes32 r, bytes32 s) internal pure returns (address) {
         require(uint256(s) <= 0x7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5D576E7357A4501DDFE92F46681B20A0, "ECDSA: invalid signature 's' value");
         // Added according to https://github.com/OpenZeppelin/openzeppelin-contracts/blob/23869e5b2a7c6b9c3e27dee4289615b8cf50e36b/contracts/utils/cryptography/ECDSA.sol#L73
-        // because `ethers` library gennerate signature with recover parameter 0/1 
+        // because `ethers` library gennerates signature with recover parameter 0/1 
         if (v == 0 || v == 1) {
           v = v + 27;
         }

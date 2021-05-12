@@ -194,7 +194,7 @@ function testSuit() {
     expect(await claimManager.hasRole(installerAddr, namehash(installerRole), version)).true;
   });
 
-  it('Role proof signed by not authorized issuer should be reject', async () => {
+  it('Role proof signed by not authorized issuer should be rejected', async () => {
     expect(
       requestRole(authorityRole, authority, provider.getSigner(10))
     ).rejectedWith("ClaimManager: Issuer does not listed in role issuers list")

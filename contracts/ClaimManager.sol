@@ -67,13 +67,22 @@ contract ClaimManager {
   function verifyPreconditions(address subject, bytes32 role) internal view {
     address resolver = ENSRegistry(ensRegistry).resolver(role);
     string memory version = VersionNumberResolver(resolver).versionNumber(role);
-      bytes32[] memory prerequisites = EnrolmentPrerequisiteRolesResolver(resolver).prerequisiteRoles(role);
-      for (uint i = 0; i < prerequisites.length; i++) {
-        require(
-          this.hasRole(subject, prerequisites[i], version),
-          "ClaimManager: Enrollment prerequisites are not met"
-        );
+    
+    (bytes32[] memory roles, bool mustHaveAll) = EnrolmentPrerequisiteRolesResolver(resolver).prerequisiteRoles(role);
+    if (roles.length == 0) {
+      return;
+    }
+    uint numberOfRequiredRoles = mustHaveAll ? roles.length : 1;
+    uint numberOfRoles = 0;
+    for (uint i = 0; i < roles.length && numberOfRoles < numberOfRequiredRoles; i++) {
+      if (this.hasRole(subject, roles[i], version)) {
+        numberOfRoles++;
       }
+    }
+    require(
+      numberOfRoles == numberOfRequiredRoles,
+      "ClaimManager: Enrollment prerequisites are not met"
+    );
   }
 
   function verifyIssuer(address issuer, bytes32 role) internal view {
@@ -86,7 +95,7 @@ contract ClaimManager {
         }
       }
       revert("ClaimManager: Issuer does not listed in role issuers list");
-    } else if(issuer_role != "") {
+    } else if (issuer_role != "") {
       string memory version = VersionNumberResolver(resolver).versionNumber(issuer_role);
       require(hasRole(issuer, issuer_role, version), "ClaimManager: Issuer does not have required role");
     } else {
