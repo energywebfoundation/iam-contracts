@@ -1,4 +1,4 @@
-pragma solidity 0.5.17;
+pragma solidity 0.7.6;
 
 import "@ensdomains/ens/contracts/ENS.sol";
 
@@ -7,7 +7,7 @@ contract DomainNotifier {
 
     ENS _ens;
 
-    constructor(ENS ens) public {
+    constructor(ENS ens) {
         _ens = ens;
     }
 
