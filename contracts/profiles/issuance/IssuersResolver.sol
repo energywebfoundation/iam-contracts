@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "@ensdomains/resolver/contracts/ResolverBase.sol";
@@ -6,7 +6,7 @@ import "@ensdomains/resolver/contracts/ResolverBase.sol";
 /**
  * Profile for resolving identities (by did or by role) which can issue a role definition
  */
-contract IssuersResolver is ResolverBase {
+abstract contract IssuersResolver is ResolverBase {
     bytes4 private constant ISSUERS_INTERFACE_ID = 0xc53a4413;
 
     struct Issuers {
@@ -53,7 +53,7 @@ contract IssuersResolver is ResolverBase {
     /**
      * Returns the issuers associated with an ENS node.
      * @param node The ENS node to query.
-     * @return The associated issuers.
+     * @return dids or role of eligible issuers.
      */
     function issuers(bytes32 node)
         external
@@ -63,7 +63,13 @@ contract IssuersResolver is ResolverBase {
         return (issuersMap[node].dids, issuersMap[node].role);
     }
 
-    function supportsInterface(bytes4 interfaceID) public pure returns (bool) {
+    function supportsInterface(bytes4 interfaceID)
+        public
+        pure
+        virtual
+        override
+        returns (bool)
+    {
         return
             interfaceID == ISSUERS_INTERFACE_ID ||
             super.supportsInterface(interfaceID);

@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "@ensdomains/resolver/contracts/ResolverBase.sol";
@@ -6,7 +6,7 @@ import "@ensdomains/resolver/contracts/ResolverBase.sol";
 /**
  * Profile for resolving roles which an identity must have to be eligible for a role claim
  */
-contract EnrolmentPrerequisiteRolesResolver is ResolverBase {
+abstract contract EnrolmentPrerequisiteRolesResolver is ResolverBase {
     bytes4 private constant PREREQUISITE_ROLES_INTERFACE_ID = 0xc986c404;
 
     struct PrerequisiteRoles {
@@ -39,7 +39,7 @@ contract EnrolmentPrerequisiteRolesResolver is ResolverBase {
     /**
      * Returns the prerequisite roles required to be eligible for a role claim.
      * @param node The ENS node to query.
-     * @return The prequisite roles.
+     * @return roles and whether or not the requester mustHaveAll roles
      */
     function prerequisiteRoles(bytes32 node)
         external
@@ -52,7 +52,13 @@ contract EnrolmentPrerequisiteRolesResolver is ResolverBase {
         );
     }
 
-    function supportsInterface(bytes4 interfaceID) public pure returns (bool) {
+    function supportsInterface(bytes4 interfaceID)
+        public
+        pure
+        virtual
+        override
+        returns (bool)
+    {
         return
             interfaceID == PREREQUISITE_ROLES_INTERFACE_ID ||
             super.supportsInterface(interfaceID);
