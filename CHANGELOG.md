@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.2.0...v1.3.0) (2021-05-13)
+
+
+### Features
+
+* upgrade contracts to solidity 0.7.6 ([f1fc7b3](https://github.com/energywebfoundation/iam-contracts/commit/f1fc7b3e9ed346034bd5160e87ac32d8c0a23f54))
+
 # [1.2.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.1.0...v1.2.0) (2021-05-12)
 
 
