@@ -160,7 +160,7 @@ export function roleDefinitionResolverTestSuite(): void {
     });
   });
 
-  describe('domain updated notificactions', async () => {
+  describe('domain updated notifications', async () => {
     it('permits triggering update event by owner', async () => {
       await ens.connect(owner).setResolver(roleNode, roleDefinitionResolver.address);
       const tx = await roleDefinitionResolver.domainUpdated(roleNode);
