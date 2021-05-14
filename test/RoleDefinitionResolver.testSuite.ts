@@ -132,7 +132,7 @@ export function roleDefinitionResolverTestSuite(): void {
   });
 
   describe('domain delegation', async () => {
-    it('permits permits delegation of role creation', async () => {
+    it('permits delegation of role creation', async () => {
       const delegate = anotherAccount;
       const delegateAddress = await delegate.getAddress();
       // Add delegate and "create" new role 
