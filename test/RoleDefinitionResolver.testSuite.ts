@@ -146,7 +146,7 @@ export function roleDefinitionResolverTestSuite(): void {
       expect(await ens.owner(newRoleNode)).to.equal(ownerAddr);
       // Assumption is that if can update one resolver profile then can update them all
       const newVersionNumber = "2.0.0";
-      await roleDefinitionResolver.connect(anotherAccount).setVersionNumber(roleNode, newVersionNumber);
+      await roleDefinitionResolver.connect(delegate).setVersionNumber(roleNode, newVersionNumber);
 
       // Remove delegate and confirm that can not longer create role 
       const anotherRoleLabel = "anotherrole";
