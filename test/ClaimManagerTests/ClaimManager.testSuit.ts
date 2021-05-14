@@ -41,6 +41,10 @@ export function claimManagerTests(): void {
   describe('Tests on ganache', testsOnGanache);
 }
 
+function canonizeSig(sig: string) {
+  return sig.substr(0, 130) + (sig.substr(130) == "00" ? "1b" : "1c");
+}
+
 function testsOnVolta() {
   before(async function () {
     provider = new JsonRpcProvider('https://volta-rpc-vkn5r5zx4ke71f9hcu0c.energyweb.org/');
@@ -92,8 +96,8 @@ function testSuit() {
       namehash(roleName),
       expiry,
       issuerAddr,
-      requester_agreement,
-      role_proof
+      canonizeSig(requester_agreement),
+      canonizeSig(role_proof)
     )).wait();
   }
 
