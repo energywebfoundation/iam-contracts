@@ -1,7 +1,7 @@
-pragma solidity 0.5.17;
+pragma solidity 0.7.6;
 
 import "@ensdomains/ens/contracts/ENSRegistry.sol";
-import "./utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/cryptography/ECDSA.sol";
 import "./RoleDefinitionResolver.sol";
 
 interface EthereumDIDRegistry {
