@@ -1,4 +1,4 @@
-pragma solidity 0.5.17;
+pragma solidity 0.7.6;
 pragma experimental ABIEncoderV2;
 
 import "@ensdomains/ens/contracts/ENS.sol";
@@ -23,10 +23,7 @@ contract RoleDefinitionResolver is
 
     DomainNotifier private notifier;
 
-    constructor(ENS _ens, DomainNotifier _notifier)
-        public
-        PublicResolver(_ens)
-    {
+    constructor(ENS _ens, DomainNotifier _notifier) PublicResolver(_ens) {
         notifier = _notifier;
     }
 
@@ -34,7 +31,18 @@ contract RoleDefinitionResolver is
         notifier.domainUpdated(node);
     }
 
-    function supportsInterface(bytes4 interfaceID) public pure returns (bool) {
+    function supportsInterface(bytes4 interfaceID)
+        public
+        pure
+        override(
+            PublicResolver,
+            VersionNumberResolver,
+            IssuerTypeResolver,
+            IssuersResolver,
+            EnrolmentPrerequisiteRolesResolver
+        )
+        returns (bool)
+    {
         return
             interfaceID == DOMAIN_UPDATED_INTERFACE_ID ||
             super.supportsInterface(interfaceID);

@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "@ensdomains/resolver/contracts/ResolverBase.sol";
@@ -10,7 +10,7 @@ import "@ensdomains/resolver/contracts/ResolverBase.sol";
  * 00: Approval by some identity (i.e. an identity from a list of DIDs, or an identity with a given role)
  * 10: “Real-time” approval by a smart contract.
  */
-contract IssuerTypeResolver is ResolverBase {
+abstract contract IssuerTypeResolver is ResolverBase {
     bytes4 private constant ISSUER_TYPE_INTERFACE_ID = 0xc585f697;
 
     event IssuerTypeChanged(bytes32 indexed node, uint8 newType);
@@ -22,13 +22,13 @@ contract IssuerTypeResolver is ResolverBase {
      * Sets the issuerType associated with a role def.
      * May only be called by the owner of that node in the ENS registry.
      * @param node The node to update.
-     * @param issuerType The issuerType to set.
+     * @param newIssuerType The issuerType to set.
      */
-    function setIssuerType(bytes32 node, uint8 issuerType)
+    function setIssuerType(bytes32 node, uint8 newIssuerType)
         external
         authorised(node)
     {
-        issuerTypes[node] = issuerType;
+        issuerTypes[node] = newIssuerType;
         emit IssuerTypeChanged(node, issuerTypes[node]);
     }
 
@@ -41,7 +41,13 @@ contract IssuerTypeResolver is ResolverBase {
         return (issuerTypes[node]);
     }
 
-    function supportsInterface(bytes4 interfaceID) public pure returns (bool) {
+    function supportsInterface(bytes4 interfaceID)
+        public
+        pure
+        virtual
+        override
+        returns (bool)
+    {
         return
             interfaceID == ISSUER_TYPE_INTERFACE_ID ||
             super.supportsInterface(interfaceID);

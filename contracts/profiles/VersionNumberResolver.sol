@@ -1,4 +1,4 @@
-pragma solidity ^0.5.0;
+pragma solidity ^0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "@ensdomains/resolver/contracts/ResolverBase.sol";
@@ -6,7 +6,7 @@ import "@ensdomains/resolver/contracts/ResolverBase.sol";
 /**
  * Profile for resolving version number of role definition.
  */
-contract VersionNumberResolver is ResolverBase {
+abstract contract VersionNumberResolver is ResolverBase {
     bytes4 private constant VERSION_NUMBER_INTERFACE_ID = 0x338bc8fa;
 
     event VersionNumberChanged(bytes32 indexed node, string newVersion);
@@ -17,13 +17,13 @@ contract VersionNumberResolver is ResolverBase {
      * Sets the version number associated with a role def.
      * May only be called by the owner of that node in the ENS registry.
      * @param node The node to update.
-     * @param versionNumber The versionNumber to set.
+     * @param newVersionNumber The versionNumber to set.
      */
-    function setVersionNumber(bytes32 node, string calldata versionNumber)
+    function setVersionNumber(bytes32 node, string calldata newVersionNumber)
         external
         authorised(node)
     {
-        versionNumbers[node] = versionNumber;
+        versionNumbers[node] = newVersionNumber;
         emit VersionNumberChanged(node, versionNumbers[node]);
     }
 
@@ -36,7 +36,13 @@ contract VersionNumberResolver is ResolverBase {
         return (versionNumbers[node]);
     }
 
-    function supportsInterface(bytes4 interfaceID) public pure returns (bool) {
+    function supportsInterface(bytes4 interfaceID)
+        public
+        pure
+        virtual
+        override
+        returns (bool)
+    {
         return
             interfaceID == VERSION_NUMBER_INTERFACE_ID ||
             super.supportsInterface(interfaceID);
