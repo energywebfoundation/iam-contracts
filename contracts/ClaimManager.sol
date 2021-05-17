@@ -13,7 +13,7 @@ contract ClaimManager {
   /**
   * @dev `veriKey` delegation type from EthereumDIDRegistry
    */
-  bytes32 ASSERTION_DELEGATE_TYPE = 0x766572694b657900000000000000000000000000000000000000000000000000;
+  bytes32 private ASSERTION_DELEGATE_TYPE = 0x766572694b657900000000000000000000000000000000000000000000000000;
   
   struct Record {
     uint expireDate;
