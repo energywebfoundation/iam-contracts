@@ -7,6 +7,11 @@
   },
   "description": "Smart contracts related to EnergyWeb IAM",
   "main": "dist/src/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "npm run compile:contracts && npm run build:typechain && npm run compile:ts && copyfiles \"typechain/**/*.d.ts\" dist",
