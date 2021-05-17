@@ -4,9 +4,24 @@ import { IAppDefinition, IIssuerDefinition, IOrganizationDefinition, IRoleDefini
 import { DID } from "./types/DID";
 import { EncodedCall } from "./types/Transaction";
 import { namehash } from "ethers/utils";
+import { RoleDefinitionResolver__factory } from "../typechain/factories/RoleDefinitionResolver__factory";
+import { getPrimaryResolver } from "./resolverConfig";
+import { ResolverContractType } from "./types/ResolverContractType";
+import { Provider } from "ethers/providers";
+import { ERROR_MESSAGES } from "./types/ErrorMessages";
 
 export class DomainTransactionFactory {
-  constructor(protected readonly roleDefinitionResolver: RoleDefinitionResolver) { }
+  protected readonly _roleDefinitionResolver: RoleDefinitionResolver
+
+  constructor(provider: Provider, chainId: number,) {
+    const resolverAddress = getPrimaryResolver(chainId, ResolverContractType.RoleDefinitionResolver_v1);
+    if (resolverAddress) {
+      this._roleDefinitionResolver = RoleDefinitionResolver__factory.connect(resolverAddress, provider)
+    }
+    else {
+      throw new Error(`${ERROR_MESSAGES.PRIMARY_RESOLVER_NOT_SET}, type: ${ResolverContractType.RoleDefinitionResolver_v1}, chainId: ${chainId}`);
+    }
+  }
 
   /**
    * Creates transaction to set role definition and reverse name in resolver contract 
@@ -34,7 +49,7 @@ export class DomainTransactionFactory {
   /**
    * Creates transaction to set app/org definition and reverse name in resolver contract 
    */
-  public newDomain({ domain, domainDefinition }: { domain: string, domainDefinition: IAppDefinition | IOrganizationDefinition }) {
+  public newDomain({ domain, domainDefinition }: { domain: string, domainDefinition: IAppDefinition | IOrganizationDefinition }): EncodedCall {
     const setDomainNameTx = this.setDomainNameTx({ domain });
     const setDomainDefinitionTx = this.setTextTx({ data: domainDefinition, domain });
     const domainUpdated = this.domainUpdated({ domain });
@@ -44,8 +59,8 @@ export class DomainTransactionFactory {
   public setDomainNameTx({ domain }: { domain: string }): EncodedCall {
     const namespaceHash = namehash(domain) as string;
     return {
-      to: this.roleDefinitionResolver.address,
-      data: this.roleDefinitionResolver.interface.functions.setName.encode([namespaceHash, domain])
+      to: this._roleDefinitionResolver.address,
+      data: this._roleDefinitionResolver.interface.functions.setName.encode([namespaceHash, domain])
     };
   }
 
@@ -60,8 +75,8 @@ export class DomainTransactionFactory {
     transactionsToCombine: EncodedCall[]
   }): EncodedCall {
     return {
-      to: this.roleDefinitionResolver.address,
-      data: this.roleDefinitionResolver.interface.functions.multicall.encode([transactionsToCombine.map(t => t.data)])
+      to: this._roleDefinitionResolver.address,
+      data: this._roleDefinitionResolver.interface.functions.multicall.encode([transactionsToCombine.map(t => t.data)])
     };
   }
 
@@ -117,8 +132,8 @@ export class DomainTransactionFactory {
     data: IAppDefinition | IOrganizationDefinition | IRoleDefinitionText;
   }): EncodedCall {
     return {
-      to: this.roleDefinitionResolver.address,
-      data: this.roleDefinitionResolver.interface.functions.setText.encode([
+      to: this._roleDefinitionResolver.address,
+      data: this._roleDefinitionResolver.interface.functions.setText.encode([
         namehash(domain),
         "metadata",
         JSON.stringify(data)
@@ -132,8 +147,8 @@ export class DomainTransactionFactory {
     domain: string;
   }): EncodedCall {
     return {
-      to: this.roleDefinitionResolver.address,
-      data: this.roleDefinitionResolver.interface.functions.domainUpdated.encode([
+      to: this._roleDefinitionResolver.address,
+      data: this._roleDefinitionResolver.interface.functions.domainUpdated.encode([
         namehash(domain),
       ])
     };
@@ -147,8 +162,8 @@ export class DomainTransactionFactory {
     versionNumber: number;
   }): EncodedCall {
     return {
-      to: this.roleDefinitionResolver.address,
-      data: this.roleDefinitionResolver.interface.functions.setVersionNumber.encode([
+      to: this._roleDefinitionResolver.address,
+      data: this._roleDefinitionResolver.interface.functions.setVersionNumber.encode([
         namehash(domain),
         versionNumber
       ])
@@ -170,8 +185,8 @@ export class DomainTransactionFactory {
       }
       const addresses = issuers.did.map((didString) => new DID(didString).id);
       return {
-        to: this.roleDefinitionResolver.address,
-        data: this.roleDefinitionResolver.interface.functions.setIssuerDids.encode([
+        to: this._roleDefinitionResolver.address,
+        data: this._roleDefinitionResolver.interface.functions.setIssuerDids.encode([
           namehash(domain),
           addresses
         ])
@@ -182,8 +197,8 @@ export class DomainTransactionFactory {
         throw Error("IssuerType set to roleName but no roleName provided");
       }
       return {
-        to: this.roleDefinitionResolver.address,
-        data: this.roleDefinitionResolver.interface.functions.setIssuerRole.encode([
+        to: this._roleDefinitionResolver.address,
+        data: this._roleDefinitionResolver.interface.functions.setIssuerRole.encode([
           namehash(domain),
           issuers.roleName
         ])
@@ -200,8 +215,8 @@ export class DomainTransactionFactory {
     issuerType: number;
   }): EncodedCall {
     return {
-      to: this.roleDefinitionResolver.address,
-      data: this.roleDefinitionResolver.interface.functions.setIssuerType.encode([
+      to: this._roleDefinitionResolver.address,
+      data: this._roleDefinitionResolver.interface.functions.setIssuerType.encode([
         namehash(domain),
         issuerType
       ])
@@ -217,14 +232,13 @@ export class DomainTransactionFactory {
   }): EncodedCall {
     const prequisiteRoleDomains = prerequisiteRoles.map(role => namehash(role));
     return {
-      to: this.roleDefinitionResolver.address,
-      data: this.roleDefinitionResolver.interface.functions.setPrerequisiteRoles.encode([
+      to: this._roleDefinitionResolver.address,
+      data: this._roleDefinitionResolver.interface.functions.setPrerequisiteRoles.encode([
         namehash(domain),
         prequisiteRoleDomains,
         false // mustHaveAll = false so only need to have one of the set
       ])
     };
   }
-
 
 }

@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "npm run compile:contracts && npm run build:typechain && npm run compile:ts && copyfiles \"typechain/**/*.d.ts\" dist",
+    "build": "npm run compile:contracts && npm run build:typechain && npm run compile:ts",
     "compile:ts": "bili",
     "test": "run-with-testrpc -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000 \"npm run test-ganache\" ",
     "ganache": "ganache-cli -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000",
@@ -63,7 +63,6 @@
     "chai": "4.2.0",
     "chai-arrays": "2.2.0",
     "chai-as-promised": "7.1.1",
-    "copyfiles": "^2.4.1",
     "eslint": "^7.24.0",
     "ganache-cli": "^6.12.2",
     "mocha": "7.1.0",

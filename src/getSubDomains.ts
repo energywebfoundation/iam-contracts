@@ -3,37 +3,55 @@ import { ENSRegistry } from "../typechain/ENSRegistry";
 import { abi as ensRegistryContract } from "../build/contracts/ENS.json";
 import { abi as ensResolverContract } from "../build/contracts/PublicResolver.json";
 import { abi as domainNotifierContract } from '../build/contracts/DomainNotifier.json';
-
 import { emptyAddress } from "./constants";
 import { DomainReader } from "./DomainReader";
-import { PublicResolver } from "../typechain/PublicResolver";
 import { DomainNotifier } from "../typechain/DomainNotifier";
+import { getDomainNotifer, getPrimaryResolver } from "./resolverConfig";
+import { ResolverContractType } from "./types/ResolverContractType";
+import { PublicResolver__factory } from "../typechain/factories/PublicResolver__factory";
+import { DomainNotifier__factory } from "../typechain/factories/DomainNotifier__factory";
+import { Provider } from "ethers/providers";
+import { PublicResolver } from "../typechain/PublicResolver";
+import { ERROR_MESSAGES } from "./types/ErrorMessages";
 
 /**
  * Retrieves list of subdomains from on-chain for a given parent domain
  * based on the logs from the ENS resolver contracts.
  * By default, queries from the DomainNotifier contract.
- * If publicResolver provided, also queries from PublicResolver contract.
+ * If publicResolver available, also queries from PublicResolver contract.
  */
 export const getSubdomainsUsingResolver = async ({
   domain,
   ensRegistry,
-  domainNotifier,
-  domainReader,
-  publicResolver,
+  provider,
+  chainId,
   mode
 }: {
   domain: string;
   ensRegistry: ENSRegistry;
-  domainNotifier: DomainNotifier;
-  domainReader: DomainReader
-  publicResolver?: PublicResolver;
+  provider: Provider,
+  chainId: number,
   mode: "ALL" | "FIRSTLEVEL";
 }): Promise<string[]> => {
   if (!domain) throw new Error("You need to pass a domain name");
   if (!ensRegistry) throw new Error("You need to pass an ensRegistry ethers contract");
-  if (!domainNotifier) throw new Error("You need to pass an domainNotifier ethers contract");
-  if (!domainReader) throw new Error("You need to pass a domainReader");
+
+  let publicResolver: PublicResolver | undefined
+  const publicResolverAddress = getPrimaryResolver(chainId, ResolverContractType.PublicResolver);
+  if (publicResolverAddress) {
+    publicResolver = PublicResolver__factory.connect(publicResolverAddress, provider);
+  }
+
+  const domainNotifierAddress = getDomainNotifer(chainId)
+  let domainNotifier: DomainNotifier
+  if (domainNotifierAddress) {
+    domainNotifier = DomainNotifier__factory.connect(domainNotifierAddress, provider)
+  }
+  else {
+    throw new Error(`${ERROR_MESSAGES.PRIMARY_RESOLVER_NOT_SET}, type: ${ResolverContractType.RoleDefinitionResolver_v1}, chainId: ${chainId}`);
+  }
+
+  const domainReader = new DomainReader(provider);
 
   if (mode === "ALL") {
     const getParser = (nameReader: (node: string) => Promise<string>) => {
@@ -95,16 +113,17 @@ export const getSubdomainsUsingResolver = async ({
  */
 export const getSubdomainsUsingRegistry = async ({
   domain,
-  domainReader,
+  provider,
   ensRegistry,
 }: {
   domain: string;
-  domainReader: DomainReader;
+  provider: Provider;
   ensRegistry: ENSRegistry;
 }): Promise<string[]> => {
   if (!domain) throw new Error("You need to pass a domain name");
   if (!ensRegistry) throw new Error("You need to pass an ensRegistry ethers contract");
-  if (!domainReader) throw new Error("You need to pass an ensResolver ethers contract");
+  if (!provider) throw new Error("You need to pass a provider");
+  const domainReader = new DomainReader(provider);
 
   const notRelevantDomainEndings = ["roles", "apps"]
 
