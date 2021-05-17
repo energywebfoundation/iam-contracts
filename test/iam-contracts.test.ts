@@ -35,5 +35,5 @@ describe('[IAM CONTRACTS]', function () {
   describe('RoleDefinitionResolver Test', roleDefinitionResolverTestSuite);
   describe('DomainCRUD Test', domainCrudTestSuite);
   describe('getSubDomains Test', getSubDomainsTestSuite);
-  describe('ClaimManager Test', claimManagerTests);
+  describe.only('ClaimManager Test', claimManagerTests);
 });

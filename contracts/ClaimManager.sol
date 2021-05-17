@@ -2,6 +2,7 @@ pragma solidity 0.7.6;
 
 import "@ensdomains/ens/contracts/ENSRegistry.sol";
 import "@openzeppelin/contracts/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/drafts/EIP712.sol";
 import "./RoleDefinitionResolver.sol";
 
 interface EthereumDIDRegistry {
@@ -9,16 +10,38 @@ interface EthereumDIDRegistry {
   function validDelegate(address identity, bytes32 delegateType, address delegate) external view returns(bool);
 }
 
-contract ClaimManager {
+contract ClaimManager is EIP712 {
   /**
   * @dev `veriKey` delegation type from EthereumDIDRegistry
    */
-  bytes32 private ASSERTION_DELEGATE_TYPE = 0x766572694b657900000000000000000000000000000000000000000000000000;
+  bytes32 constant private ASSERTION_DELEGATE_TYPE = 0x766572694b657900000000000000000000000000000000000000000000000000;
+  string constant private ERC712_DOMAIN_NAME = "Claim Manager";
+  string constant private ERC712_DOMAIN_VERSION = "1.0";
   
   struct Record {
     uint expireDate;
     string version;
   }
+  
+  struct Agreement {
+    address subject;
+    bytes32 role;
+  }
+  
+  struct Proof {
+    address subject;
+    bytes32 role;
+    uint256 expiry;
+    address issuer;
+  }
+  
+  bytes32 constant AGREEMENT_TYPEHASH = keccak256(
+    "Agreement(address subject,bytes32 role)"
+  );
+
+  bytes32 constant public PROOF_TYPEHASH = keccak256(
+    "Proof(address subject,bytes32 role,uint expiry,address issuer)"
+  );
   
   event RoleRegistered(bytes32 role, address subject);
   
@@ -26,7 +49,7 @@ contract ClaimManager {
   address private didRegistry;
   address private ensRegistry;
   
-  constructor(address _didRegistry, address _ensRegistry) public {
+  constructor(address _didRegistry, address _ensRegistry) EIP712(ERC712_DOMAIN_NAME, ERC712_DOMAIN_VERSION) {
     didRegistry = _didRegistry;
     ensRegistry = _ensRegistry;
   }
@@ -44,9 +67,22 @@ contract ClaimManager {
     bytes calldata subject_agreement,
     bytes calldata role_proof
     ) external {
-    bytes32 agreementHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(subject, role)));
+    bytes32 agreementHash = ECDSA.toEthSignedMessageHash(
+      _hashTypedDataV4(keccak256(abi.encode(
+      AGREEMENT_TYPEHASH,
+      subject,
+      role
+    ))));
     address agreementSigner = ECDSA.recover(agreementHash, subject_agreement);
-    bytes32 proofHash = ECDSA.toEthSignedMessageHash(keccak256(abi.encodePacked(subject, role, expiry, issuer)));
+    
+    bytes32 proofHash = ECDSA.toEthSignedMessageHash(
+      _hashTypedDataV4(keccak256(abi.encode(
+      PROOF_TYPEHASH,
+      subject,
+      role,
+      expiry,
+      issuer
+    ))));
     address proofSigner = ECDSA.recover(proofHash, role_proof);
     
     EthereumDIDRegistry registry = EthereumDIDRegistry(didRegistry);

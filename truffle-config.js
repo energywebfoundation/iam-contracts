@@ -94,7 +94,7 @@ module.exports = {
           runs: 200,
         },
         //  evmVersion: "byzantium"
-        evmVersion: "constantinople",
+        evmVersion: "istanbul",
       },
     },
   },

@@ -1,16 +1,16 @@
-import { utils, Wallet, ContractFactory, Signer, Contract } from 'ethers';
+import { utils, ContractFactory, Signer, Contract, Wallet } from 'ethers';
 import { JsonRpcProvider } from 'ethers/providers';
 import { expect } from 'chai';
 import { abi as erc1056Abi, bytecode as erc1056Bytecode } from './ERC1056.json';
 import { ClaimManager__factory as ClaimManagerFactory } from '../../typechain/factories/ClaimManager__factory';
 import { ClaimManager } from '../../typechain/ClaimManager';
 import { DomainTransactionFactory } from '../../src';
-import { namehash, keccak256, toUtf8Bytes } from 'ethers/utils';
+import { namehash, keccak256, toUtf8Bytes, id } from 'ethers/utils';
 import { ENSRegistry } from '../../typechain/ENSRegistry';
 import { RoleDefinitionResolver } from '../../typechain/RoleDefinitionResolver';
 import { PreconditionType } from '../../src/types/DomainDefinitions';
 
-const { solidityKeccak256, arrayify } = utils;
+const { solidityKeccak256, arrayify, defaultAbiCoder } = utils;
 
 const root = `0x${'0'.repeat(64)}`;
 const authorityRole = 'authority';
@@ -30,6 +30,7 @@ let erc1056: Contract;
 let provider: JsonRpcProvider;
 
 let deployer: Signer;
+let deployerAddr: string;
 let device: Signer;
 let deviceAddr: string;
 let installer: Signer;
@@ -37,20 +38,63 @@ let installerAddr: string;
 let authority: Signer;
 let authorityAddr: string;
 
+let chainId: number;
+
 function canonizeSig(sig: string) {
-  return sig.substr(0, 130) + (sig.substr(130) == "00" ? "1b" : "1c");
+  let suffix = sig.substr(130);
+  if (suffix === '00') {
+    suffix = '1b';
+  } else if (suffix === '01') {
+    suffix = '1c';
+  }
+  return sig.substr(0, 130) + suffix;
 }
 
 export function claimManagerTests(): void {
+  // takes very long time, but can be useful sometimes
+  describe.skip('Tests on Volta', testsOnVolta);
+  describe('Tests on ganache', testsOnGanache);
+}
+
+export function testsOnGanache(): void {
   before(async function () {
     ({ provider } = this);
     deployer = provider.getSigner(1);
+    deployerAddr = await deployer.getAddress();
     device = provider.getSigner(3);
     installer = provider.getSigner(4);
     authority = provider.getSigner(5);
     deviceAddr = await device.getAddress();
     installerAddr = await installer.getAddress();
     authorityAddr = await authority.getAddress();
+
+    // set it manually because ganache returns chainId same as network id 
+    chainId = 1;
+  });
+
+  testSuit();
+}
+
+function testsOnVolta() {
+  before(async function () {
+    provider = new JsonRpcProvider('https://volta-rpc-vkn5r5zx4ke71f9hcu0c.energyweb.org/');
+    const faucet = new Wallet(
+      'df66a89721aab9508a5004192e8f0a7670141bdbcf7bd59cf5a20c4efd0daef3',
+      provider
+    );
+    deployer = faucet;
+    deployerAddr = await deployer.getAddress();
+    device = new Wallet('7f88210c2baeff4983b08cf31b08ba35f01a99cb442f1db830e91496c0d5a314',
+      provider);
+    installer = new Wallet('9b67937b814668c30b947f6644fc4d3c64ec59129ba0b090d7f6cdfb82c25f0b',
+      provider);
+    authority = new Wallet('7925db23d51b76302941c445f7a5470aa6054aaf09bb63eb365dbacc05112264',
+      provider);
+    deviceAddr = await device.getAddress();
+    installerAddr = await installer.getAddress();
+    authorityAddr = await authority.getAddress();
+
+    chainId = (await provider.getNetwork()).chainId;
   });
 
   testSuit();
@@ -81,16 +125,50 @@ function testSuit() {
     const issuerAddr = await issuer.getAddress();
     const subjectAddr = await subject.getAddress();
 
-    const agreement_hash = solidityKeccak256(
-      ['address', 'bytes32'],
-      [subjectAddr, namehash(roleName)]
-    );
-    const agreement = await agreementSigner.signMessage(arrayify(agreement_hash));
+    const erc712_type_hash = id('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)');
+    const agreement_type_hash = id('Agreement(address subject,bytes32 role)');
+    const proof_type_hash = id('Proof(address subject,bytes32 role,uint expiry,address issuer)');
 
-    const proof = await proofSigner.signMessage(arrayify(solidityKeccak256(
-      ['address', 'bytes32', 'uint', 'address'],
-      [subjectAddr, namehash(roleName), expiry, issuerAddr]
-    )));
+    const domainSeparator = keccak256(
+      defaultAbiCoder.encode(
+        ['bytes32', 'bytes32', 'bytes32', 'uint256', 'address'],
+        [erc712_type_hash, id('Claim Manager'), id("1.0"), chainId, claimManager.address]
+      )
+    );
+
+    const messageId = Buffer.from('1901', 'hex');
+
+    const agreementHash = solidityKeccak256(
+      ['bytes', 'bytes32', 'bytes32'],
+      [
+        messageId,
+        domainSeparator,
+        keccak256(defaultAbiCoder.encode(
+          ['bytes32', 'address', 'bytes32'],
+          [agreement_type_hash, subjectAddr, namehash(roleName)]
+        ))
+      ]
+    );
+
+    const agreement = await agreementSigner.signMessage(arrayify(
+      agreementHash
+    ));
+
+    const proofHash = solidityKeccak256(
+      ['bytes', 'bytes32', 'bytes32'],
+      [
+        messageId,
+        domainSeparator,
+        keccak256(defaultAbiCoder.encode(
+          ['bytes32', 'address', 'bytes32', 'uint', 'address'],
+          [proof_type_hash, subjectAddr, namehash(roleName), expiry, issuerAddr]
+        ))
+      ]
+    );
+
+    const proof = await proofSigner.signMessage(arrayify(
+      proofHash
+    ));
 
     await (await claimManager.register(
       subjectAddr,
@@ -99,7 +177,7 @@ function testSuit() {
       issuerAddr,
       canonizeSig(agreement),
       canonizeSig(proof)
-    )).wait();
+    )).wait(); // testing on Volta needs at least 2 confirmation
   }
 
   beforeEach(async function () {
@@ -115,15 +193,15 @@ function testSuit() {
     claimManager = await (await new ClaimManagerFactory(deployer).deploy(erc1056.address, ensRegistry.address)).deployed();
     roleFactory = new DomainTransactionFactory(roleResolver);
 
-    await ensRegistry.setSubnodeOwner(root, hashLabel(authorityRole), await deployer.getAddress());
-    await ensRegistry.setSubnodeOwner(root, hashLabel(deviceRole), await deployer.getAddress());
-    await ensRegistry.setSubnodeOwner(root, hashLabel(activeDeviceRole), await deployer.getAddress());
-    await ensRegistry.setSubnodeOwner(root, hashLabel(installerRole), await deployer.getAddress());
+    await (await ensRegistry.setSubnodeOwner(root, hashLabel(authorityRole), deployerAddr)).wait();
+    await (await ensRegistry.setSubnodeOwner(root, hashLabel(deviceRole), deployerAddr)).wait();
+    await (await ensRegistry.setSubnodeOwner(root, hashLabel(activeDeviceRole), deployerAddr)).wait();
+    await (await ensRegistry.setSubnodeOwner(root, hashLabel(installerRole), deployerAddr)).wait();
 
-    await ensRegistry.setResolver(namehash(authorityRole), roleResolver.address);
-    await ensRegistry.setResolver(namehash(deviceRole), roleResolver.address);
-    await ensRegistry.setResolver(namehash(activeDeviceRole), roleResolver.address);
-    await ensRegistry.setResolver(namehash(installerRole), roleResolver.address);
+    await (await ensRegistry.setResolver(namehash(authorityRole), roleResolver.address)).wait();
+    await (await ensRegistry.setResolver(namehash(deviceRole), roleResolver.address)).wait();
+    await (await ensRegistry.setResolver(namehash(activeDeviceRole), roleResolver.address)).wait();
+    await (await ensRegistry.setResolver(namehash(installerRole), roleResolver.address)).wait();
 
     await (await deployer.sendTransaction({
       ...roleFactory.newRole({
