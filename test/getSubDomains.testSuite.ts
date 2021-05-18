@@ -1,5 +1,5 @@
 import { ContractFactory } from 'ethers';
-import { setRegistryAddress, addKnownResolver } from '../src/resolverConfig'
+import { addKnownResolver } from '../src/resolverConfig'
 import { getSubdomainsUsingResolver } from '../src/getSubDomains';
 import { DomainTransactionFactory, EncodedCall, IRoleDefinition, ResolverContractType } from '../src';
 import { ENSRegistry } from '../typechain/ENSRegistry';
@@ -77,7 +77,6 @@ export function getSubDomainsTestSuite(): void {
       ensPublicResolver = await publicResolverFactory.deploy(ensRegistry.address) as PublicResolver;
       await ensRoleDefResolver.deployed();
 
-      setRegistryAddress({ chainId, address: ensRegistry.address });
       addKnownResolver({ chainId, address: ensRoleDefResolver.address, type: ResolverContractType.RoleDefinitionResolver_v1 });
       addKnownResolver({ chainId, address: ensPublicResolver.address, type: ResolverContractType.PublicResolver });
 

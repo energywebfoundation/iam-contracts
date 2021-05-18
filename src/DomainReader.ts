@@ -1,5 +1,5 @@
 import { IAppDefinition, IIssuerDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from './types/DomainDefinitions'
-import { ensRegistryAddresses, knownEnsResolvers } from "./resolverConfig";
+import { knownEnsResolvers } from "./resolverConfig";
 import { ENSRegistry__factory } from "../typechain/factories/ENSRegistry__factory";
 import { Provider } from "ethers/providers";
 import { PublicResolver } from "../typechain/PublicResolver";
@@ -9,6 +9,7 @@ import { namehash } from "ethers/utils";
 import { RoleDefinitionResolver__factory } from "../typechain/factories/RoleDefinitionResolver__factory";
 import { ResolverContractType } from "./types/ResolverContractType";
 import { ERROR_MESSAGES } from "./types/ErrorMessages";
+import { ENSRegistry } from '../typechain/ENSRegistry';
 
 export class DomainReader {
   public static isOrgDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IOrganizationDefinition =>
@@ -20,7 +21,12 @@ export class DomainReader {
   public static isRoleDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IRoleDefinition =>
     (domainDefinition as IRoleDefinition).roleName !== undefined;
 
-  constructor(private readonly provider: Provider) {
+  private readonly _provider: Provider
+  private readonly _ensRegistry: ENSRegistry;
+
+  constructor({ ensRegistryAddress, provider }: { ensRegistryAddress: string, provider: Provider }) {
+    this._provider = provider;
+    this._ensRegistry = ENSRegistry__factory.connect(ensRegistryAddress, this._provider);
   }
 
   /**
@@ -38,12 +44,12 @@ export class DomainReader {
 
     const { resolverAddress, resolverType } = await this.getResolverInfo(node);
     if (resolverType === ResolverContractType.PublicResolver) {
-      const ensResolver = PublicResolver__factory.connect(resolverAddress, this.provider);
+      const ensResolver = PublicResolver__factory.connect(resolverAddress, this._provider);
       const name = await ensResolver.name(node);
       return checkName(name)
     }
     if (resolverType === ResolverContractType.RoleDefinitionResolver_v1) {
-      const ensResolver = RoleDefinitionResolver__factory.connect(resolverAddress, this.provider);
+      const ensResolver = RoleDefinitionResolver__factory.connect(resolverAddress, this._provider);
       const name = await ensResolver.name(node);
       return checkName(name)
     }
@@ -55,11 +61,11 @@ export class DomainReader {
    * @param node the ENS node hash of a domain name
    * @returns
    */
-  public async read(node: string): Promise<IRoleDefinition | IAppDefinition | IOrganizationDefinition> {
+  public async read({ node }: { node: string }): Promise<IRoleDefinition | IAppDefinition | IOrganizationDefinition> {
     const { resolverAddress, resolverType } = await this.getResolverInfo(node);
 
     if (resolverType === ResolverContractType.PublicResolver) {
-      const ensResolver: PublicResolver = PublicResolver__factory.connect(resolverAddress, this.provider);
+      const ensResolver: PublicResolver = PublicResolver__factory.connect(resolverAddress, this._provider);
       const textData = await ensResolver.text(node, 'metadata');
       let definition
       try {
@@ -70,7 +76,7 @@ export class DomainReader {
       return definition
     }
     else if (resolverType === ResolverContractType.RoleDefinitionResolver_v1) {
-      const ensResolver: RoleDefinitionResolver = RoleDefinitionResolver__factory.connect(resolverAddress, this.provider);
+      const ensResolver: RoleDefinitionResolver = RoleDefinitionResolver__factory.connect(resolverAddress, this._provider);
       const textData = await ensResolver.text(node, 'metadata');
       let textProps
       try {
@@ -91,16 +97,10 @@ export class DomainReader {
   }
 
   protected async getResolverInfo(node: string): Promise<{ resolverAddress: string, resolverType: ResolverContractType }> {
-    const network = await this.provider.getNetwork();
+    const network = await this._provider.getNetwork();
     const chainId = network.chainId
-    const ensRegistryAddress = ensRegistryAddresses[chainId]
-    if (!ensRegistryAddress) {
-      throw Error(ERROR_MESSAGES.REGISTRY_NOT_SET)
-    }
-    const ensRegistry = ENSRegistry__factory.connect(ensRegistryAddress, this.provider);
-
     // Get resolver from registry
-    const resolverAddress = await ensRegistry.resolver(node);
+    const resolverAddress = await this._ensRegistry.resolver(node);
     if (resolverAddress === '0x0000000000000000000000000000000000000000') {
       throw Error(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED)
     }

@@ -1,6 +1,6 @@
 import { providers } from 'ethers';
 import { ENSRegistry__factory } from '../typechain/factories/ENSRegistry__factory'
-import { ensRegistryAddresses, VOLTA_CHAIN_ID, VOLTA_DOMAIN_NOTIFER_ADDRESS } from '../src/resolverConfig'
+import { VOLTA_DOMAIN_NOTIFER_ADDRESS, VOLTA_ENS_REGISTRY_ADDRESS } from '../src/resolverConfig'
 import { getSubdomainsUsingResolver, getSubdomainsUsingRegistry } from '../src/getSubDomains';
 
 const { JsonRpcProvider } = providers;
@@ -13,8 +13,7 @@ xdescribe('[getSubDomains]', async function () {
   this.timeout(0);
   const provider = new JsonRpcProvider('https://volta-rpc.energyweb.org');
 
-  const ensRegistryAddress = ensRegistryAddresses[VOLTA_CHAIN_ID]
-  const ensRegistry = ENSRegistry__factory.connect(ensRegistryAddress, provider)
+  const ensRegistry = ENSRegistry__factory.connect(VOLTA_ENS_REGISTRY_ADDRESS, provider)
 
   const domain = "iam.ewc";
   let subDomains;

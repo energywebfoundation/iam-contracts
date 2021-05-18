@@ -41,7 +41,7 @@ export const getSubdomainsUsingResolver = async ({
   }
 
   const domainNotifier = DomainNotifier__factory.connect(domainNotifierAddress, provider)
-  const domainReader = new DomainReader(provider);
+  const domainReader = new DomainReader({ ensRegistryAddress: ensRegistry.address, provider });
 
   if (mode === "ALL") {
     const getParser = (nameReader: (node: string) => Promise<string>) => {
@@ -113,7 +113,7 @@ export const getSubdomainsUsingRegistry = async ({
   if (!domain) throw new Error("You need to pass a domain name");
   if (!ensRegistry) throw new Error("You need to pass an ensRegistry ethers contract");
   if (!provider) throw new Error("You need to pass a provider");
-  const domainReader = new DomainReader(provider);
+  const domainReader = new DomainReader({ ensRegistryAddress: ensRegistry.address, provider });
 
   const notRelevantDomainEndings = ["roles", "apps"]
 
