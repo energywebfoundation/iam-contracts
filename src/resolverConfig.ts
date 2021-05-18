@@ -35,6 +35,15 @@ const primaryResolvers: Record<number, EnumDictionary<ResolverContractType, stri
   }
 };
 
+/**
+ * Get the primary resolver address for a chainId and type.
+ * The primary resolver is the resolver that will be used when a single
+ * resolver must be selected. For example, when selecting a resolver to mutate
+ * or when needing to query a single resolver
+ * @param chainId 
+ * @param type 
+ * @returns 
+ */
 export function getPrimaryResolver(chainId: number, type: ResolverContractType): string | undefined {
   return primaryResolvers[chainId][type]
 }
