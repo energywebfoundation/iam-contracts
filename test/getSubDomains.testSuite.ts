@@ -1,5 +1,5 @@
 import { ContractFactory } from 'ethers';
-import { setRegistryAddress, addKnownResolver, setDomainNotifier } from '../src/resolverConfig'
+import { setRegistryAddress, addKnownResolver } from '../src/resolverConfig'
 import { getSubdomainsUsingResolver } from '../src/getSubDomains';
 import { DomainTransactionFactory, EncodedCall, IRoleDefinition, ResolverContractType } from '../src';
 import { ENSRegistry } from '../typechain/ENSRegistry';
@@ -78,7 +78,6 @@ export function getSubDomainsTestSuite(): void {
       await ensRoleDefResolver.deployed();
 
       setRegistryAddress({ chainId, address: ensRegistry.address });
-      setDomainNotifier({ chainId, address: domainNotifier.address });
       addKnownResolver({ chainId, address: ensRoleDefResolver.address, type: ResolverContractType.RoleDefinitionResolver_v1 });
       addKnownResolver({ chainId, address: ensPublicResolver.address, type: ResolverContractType.PublicResolver });
 
@@ -98,7 +97,7 @@ export function getSubDomainsTestSuite(): void {
         domain: domain,
         ensRegistry: ensRegistry,
         provider,
-        chainId,
+        domainNotifierAddress: domainNotifier.address,
         mode: "ALL"
       })
       expect(subDomains.length).to.equal(2);
@@ -110,7 +109,7 @@ export function getSubDomainsTestSuite(): void {
         domain: domain,
         ensRegistry: ensRegistry,
         provider,
-        chainId,
+        domainNotifierAddress: domainNotifier.address,
         publicResolverAddress: ensPublicResolver.address,
         mode: "ALL"
       })
@@ -123,7 +122,7 @@ export function getSubDomainsTestSuite(): void {
         domain: domain,
         ensRegistry: ensRegistry,
         provider,
-        chainId,
+        domainNotifierAddress: domainNotifier.address,
         publicResolverAddress: ensPublicResolver.address,
         mode: "ALL"
       })

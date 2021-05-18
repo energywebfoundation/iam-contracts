@@ -1,6 +1,6 @@
 import { providers } from 'ethers';
 import { ENSRegistry__factory } from '../typechain/factories/ENSRegistry__factory'
-import { ensRegistryAddresses, VOLTA_CHAIN_ID } from '../src/resolverConfig'
+import { ensRegistryAddresses, VOLTA_CHAIN_ID, VOLTA_DOMAIN_NOTIFER_ADDRESS } from '../src/resolverConfig'
 import { getSubdomainsUsingResolver, getSubdomainsUsingRegistry } from '../src/getSubDomains';
 
 const { JsonRpcProvider } = providers;
@@ -25,7 +25,7 @@ xdescribe('[getSubDomains]', async function () {
       domain: domain,
       ensRegistry: ensRegistry,
       provider,
-      chainId: VOLTA_CHAIN_ID,
+      domainNotifierAddress: VOLTA_DOMAIN_NOTIFER_ADDRESS,
       mode: "ALL"
     })
     console.log(subDomains.length)
@@ -34,7 +34,7 @@ xdescribe('[getSubDomains]', async function () {
       domain: domain,
       ensRegistry: ensRegistry,
       provider,
-      chainId: VOLTA_CHAIN_ID,
+      domainNotifierAddress: VOLTA_DOMAIN_NOTIFER_ADDRESS,
       mode: "FIRSTLEVEL"
     })
     console.log(subDomains2.length)

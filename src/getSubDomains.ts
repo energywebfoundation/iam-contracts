@@ -5,14 +5,10 @@ import { abi as ensResolverContract } from "../build/contracts/PublicResolver.js
 import { abi as domainNotifierContract } from '../build/contracts/DomainNotifier.json';
 import { emptyAddress } from "./constants";
 import { DomainReader } from "./DomainReader";
-import { DomainNotifier } from "../typechain/DomainNotifier";
-import { getDomainNotifer } from "./resolverConfig";
-import { ResolverContractType } from "./types/ResolverContractType";
 import { PublicResolver__factory } from "../typechain/factories/PublicResolver__factory";
 import { DomainNotifier__factory } from "../typechain/factories/DomainNotifier__factory";
 import { Provider } from "ethers/providers";
 import { PublicResolver } from "../typechain/PublicResolver";
-import { ERROR_MESSAGES } from "./types/ErrorMessages";
 
 /**
  * Retrieves list of subdomains from on-chain for a given parent domain
@@ -24,34 +20,27 @@ export const getSubdomainsUsingResolver = async ({
   domain,
   ensRegistry,
   provider,
-  chainId,
+  domainNotifierAddress,
   publicResolverAddress,
   mode
 }: {
   domain: string;
   ensRegistry: ENSRegistry;
   provider: Provider,
-  chainId: number,
+  domainNotifierAddress: string
   publicResolverAddress?: string,
   mode: "ALL" | "FIRSTLEVEL";
 }): Promise<string[]> => {
   if (!domain) throw new Error("You need to pass a domain name");
   if (!ensRegistry) throw new Error("You need to pass an ensRegistry ethers contract");
+  if (!domainNotifierAddress) throw new Error("You need to pass the address of a domain notifier contract");
 
   let publicResolver: PublicResolver | undefined
   if (publicResolverAddress) {
     publicResolver = PublicResolver__factory.connect(publicResolverAddress, provider);
   }
 
-  const domainNotifierAddress = getDomainNotifer(chainId)
-  let domainNotifier: DomainNotifier
-  if (domainNotifierAddress) {
-    domainNotifier = DomainNotifier__factory.connect(domainNotifierAddress, provider)
-  }
-  else {
-    throw new Error(`${ERROR_MESSAGES.DOMAIN_NOTIFIER_NOT_SET}, type: ${ResolverContractType.RoleDefinitionResolver_v1}, chainId: ${chainId}`);
-  }
-
+  const domainNotifier = DomainNotifier__factory.connect(domainNotifierAddress, provider)
   const domainReader = new DomainReader(provider);
 
   if (mode === "ALL") {

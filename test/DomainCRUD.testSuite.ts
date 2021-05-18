@@ -11,8 +11,7 @@ import {
   IRoleDefinition,
   ResolverContractType,
   addKnownResolver,
-  setRegistryAddress,
-  setDomainNotifier,
+  setRegistryAddress
 } from "../src/index";
 import { PreconditionType } from "../src/types/DomainDefinitions";
 import { ERROR_MESSAGES } from "../src/types/ErrorMessages";
@@ -100,7 +99,6 @@ export function domainCrudTestSuite(): void {
 
       chainId = await (await provider.getNetwork()).chainId;
       setRegistryAddress({ chainId, address: ensRegistry.address });
-      setDomainNotifier({ chainId, address: domainNotifier.address });
       addKnownResolver({ chainId, address: ensRoleDefResolver.address, type: ResolverContractType.RoleDefinitionResolver_v1 });
       addKnownResolver({ chainId, address: ensPublicResolver.address, type: ResolverContractType.PublicResolver });
 
