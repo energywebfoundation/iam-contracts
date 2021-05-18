@@ -6,7 +6,7 @@ import { abi as domainNotifierContract } from '../build/contracts/DomainNotifier
 import { emptyAddress } from "./constants";
 import { DomainReader } from "./DomainReader";
 import { DomainNotifier } from "../typechain/DomainNotifier";
-import { getDomainNotifer, getPrimaryResolver } from "./resolverConfig";
+import { getDomainNotifer } from "./resolverConfig";
 import { ResolverContractType } from "./types/ResolverContractType";
 import { PublicResolver__factory } from "../typechain/factories/PublicResolver__factory";
 import { DomainNotifier__factory } from "../typechain/factories/DomainNotifier__factory";
@@ -25,19 +25,20 @@ export const getSubdomainsUsingResolver = async ({
   ensRegistry,
   provider,
   chainId,
+  publicResolverAddress,
   mode
 }: {
   domain: string;
   ensRegistry: ENSRegistry;
   provider: Provider,
   chainId: number,
+  publicResolverAddress?: string,
   mode: "ALL" | "FIRSTLEVEL";
 }): Promise<string[]> => {
   if (!domain) throw new Error("You need to pass a domain name");
   if (!ensRegistry) throw new Error("You need to pass an ensRegistry ethers contract");
 
   let publicResolver: PublicResolver | undefined
-  const publicResolverAddress = getPrimaryResolver(chainId, ResolverContractType.PublicResolver);
   if (publicResolverAddress) {
     publicResolver = PublicResolver__factory.connect(publicResolverAddress, provider);
   }

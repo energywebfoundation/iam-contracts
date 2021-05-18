@@ -13,7 +13,6 @@ import {
   addKnownResolver,
   setRegistryAddress,
   setDomainNotifier,
-  setPrimaryResolver
 } from "../src/index";
 import { PreconditionType } from "../src/types/DomainDefinitions";
 import { ERROR_MESSAGES } from "../src/types/ErrorMessages";
@@ -102,7 +101,6 @@ export function domainCrudTestSuite(): void {
       chainId = await (await provider.getNetwork()).chainId;
       setRegistryAddress({ chainId, address: ensRegistry.address });
       setDomainNotifier({ chainId, address: domainNotifier.address });
-      setPrimaryResolver({ chainId, type: ResolverContractType.RoleDefinitionResolver_v1, address: ensRoleDefResolver.address })
       addKnownResolver({ chainId, address: ensRoleDefResolver.address, type: ResolverContractType.RoleDefinitionResolver_v1 });
       addKnownResolver({ chainId, address: ensPublicResolver.address, type: ResolverContractType.PublicResolver });
 
@@ -113,7 +111,7 @@ export function domainCrudTestSuite(): void {
 
     it("role can be created, read and updated", async () => {
       await ensRegistry.setResolver(node, ensRoleDefResolver.address);
-      const domainDefTxFactory = new DomainTransactionFactory(provider, chainId);
+      const domainDefTxFactory = new DomainTransactionFactory({ provider, domainResolverAddress: ensRoleDefResolver.address });
       const call = domainDefTxFactory.newRole({ domain: domain, roleDefinition: role });
       await (await owner.sendTransaction(call)).wait()
 
@@ -154,7 +152,7 @@ export function domainCrudTestSuite(): void {
         appName: "myApp"
       }
       await ensRegistry.setResolver(node, ensRoleDefResolver.address);
-      const domainDefTxFactory = new DomainTransactionFactory(provider, chainId);
+      const domainDefTxFactory = new DomainTransactionFactory({ provider, domainResolverAddress: ensRoleDefResolver.address });
       const call = domainDefTxFactory.newDomain({ domain: domain, domainDefinition: app });
       await (await owner.sendTransaction(call)).wait()
 
@@ -175,7 +173,7 @@ export function domainCrudTestSuite(): void {
         orgName: "myOrg"
       }
       await ensRegistry.setResolver(node, ensRoleDefResolver.address);
-      const domainDefTxFactory = new DomainTransactionFactory(provider, chainId);
+      const domainDefTxFactory = new DomainTransactionFactory({ provider, domainResolverAddress: ensRoleDefResolver.address });
       const call = domainDefTxFactory.newDomain({ domain: domain, domainDefinition: org });
       await (await owner.sendTransaction(call)).wait()
 

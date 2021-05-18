@@ -5,22 +5,14 @@ import { DID } from "./types/DID";
 import { EncodedCall } from "./types/Transaction";
 import { namehash } from "ethers/utils";
 import { RoleDefinitionResolver__factory } from "../typechain/factories/RoleDefinitionResolver__factory";
-import { getPrimaryResolver } from "./resolverConfig";
-import { ResolverContractType } from "./types/ResolverContractType";
+import { VOLTA_RESOLVER_V1_ADDRESS } from "./resolverConfig";
 import { Provider } from "ethers/providers";
-import { ERROR_MESSAGES } from "./types/ErrorMessages";
 
 export class DomainTransactionFactory {
   protected readonly _roleDefinitionResolver: RoleDefinitionResolver
 
-  constructor(provider: Provider, chainId: number) {
-    const resolverAddress = getPrimaryResolver(chainId, ResolverContractType.RoleDefinitionResolver_v1);
-    if (resolverAddress) {
-      this._roleDefinitionResolver = RoleDefinitionResolver__factory.connect(resolverAddress, provider)
-    }
-    else {
-      throw new Error(`${ERROR_MESSAGES.PRIMARY_RESOLVER_NOT_SET}, type: ${ResolverContractType.RoleDefinitionResolver_v1}, chainId: ${chainId}`);
-    }
+  constructor({ provider, domainResolverAddress = VOLTA_RESOLVER_V1_ADDRESS }: { provider: Provider, domainResolverAddress: string }) {
+    this._roleDefinitionResolver = RoleDefinitionResolver__factory.connect(domainResolverAddress, provider)
   }
 
   /**
