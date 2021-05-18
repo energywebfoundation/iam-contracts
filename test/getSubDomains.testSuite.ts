@@ -1,7 +1,6 @@
 import { ContractFactory } from 'ethers';
-import { addKnownResolver } from '../src/resolverConfig'
 import { getSubdomainsUsingResolver } from '../src/getSubDomains';
-import { DomainTransactionFactory, EncodedCall, IRoleDefinition, ResolverContractType } from '../src';
+import { DomainReader, DomainTransactionFactory, EncodedCall, IRoleDefinition, ResolverContractType } from '../src';
 import { ENSRegistry } from '../typechain/ENSRegistry';
 import { RoleDefinitionResolver } from '../typechain/RoleDefinitionResolver';
 import { DomainNotifier } from '../typechain/DomainNotifier';
@@ -23,6 +22,8 @@ let ensPublicResolver: PublicResolver;
 let owner: JsonRpcSigner;
 let provider: JsonRpcProvider;
 let chainId: number;
+
+let domainReader: DomainReader;
 
 const domain = "ewc";
 const node = namehash(domain);
@@ -77,8 +78,9 @@ export function getSubDomainsTestSuite(): void {
       ensPublicResolver = await publicResolverFactory.deploy(ensRegistry.address) as PublicResolver;
       await ensRoleDefResolver.deployed();
 
-      addKnownResolver({ chainId, address: ensRoleDefResolver.address, type: ResolverContractType.RoleDefinitionResolver_v1 });
-      addKnownResolver({ chainId, address: ensPublicResolver.address, type: ResolverContractType.PublicResolver });
+      domainReader = new DomainReader({ ensRegistryAddress: ensRegistry.address, provider });
+      domainReader.addKnownResolver({ chainId, address: ensRoleDefResolver.address, type: ResolverContractType.RoleDefinitionResolver_v1 });
+      domainReader.addKnownResolver({ chainId, address: ensPublicResolver.address, type: ResolverContractType.PublicResolver });
 
       // Register and set resolver for parent node
       const rootNameHash = "0x0000000000000000000000000000000000000000000000000000000000000000";
@@ -95,6 +97,7 @@ export function getSubDomainsTestSuite(): void {
       const subDomains = await getSubdomainsUsingResolver({
         domain: domain,
         ensRegistry: ensRegistry,
+        domainReader,
         provider,
         domainNotifierAddress: domainNotifier.address,
         mode: "ALL"
@@ -107,6 +110,7 @@ export function getSubDomainsTestSuite(): void {
       const subDomains = await getSubdomainsUsingResolver({
         domain: domain,
         ensRegistry: ensRegistry,
+        domainReader,
         provider,
         domainNotifierAddress: domainNotifier.address,
         publicResolverAddress: ensPublicResolver.address,
@@ -121,6 +125,7 @@ export function getSubDomainsTestSuite(): void {
         domain: domain,
         ensRegistry: ensRegistry,
         provider,
+        domainReader,
         domainNotifierAddress: domainNotifier.address,
         publicResolverAddress: ensPublicResolver.address,
         mode: "ALL"

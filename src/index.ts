@@ -2,7 +2,7 @@ import { errors } from "ethers";
 import { DomainReader } from "./DomainReader"
 import { DomainTransactionFactory } from "./DomainTransactionFactory"
 import { getSubdomainsUsingResolver } from "./getSubDomains"
-import { addKnownResolver } from "./resolverConfig";
+import { VOLTA_CHAIN_ID, VOLTA_DOMAIN_NOTIFER_ADDRESS, VOLTA_ENS_REGISTRY_ADDRESS, VOLTA_PUBLIC_RESOLVER_ADDRESS, VOLTA_RESOLVER_V1_ADDRESS } from "./resolverConfig";
 import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from "./types/DomainDefinitions"
 import { ResolverContractType } from "./types/ResolverContractType";
 import { EncodedCall } from "./types/Transaction"
@@ -14,6 +14,6 @@ export { DomainReader }
 export { DomainTransactionFactory }
 export { IOrganizationDefinition, IAppDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType }
 export { EncodedCall }
-export { addKnownResolver }
+export { VOLTA_CHAIN_ID, VOLTA_PUBLIC_RESOLVER_ADDRESS, VOLTA_RESOLVER_V1_ADDRESS, VOLTA_DOMAIN_NOTIFER_ADDRESS, VOLTA_ENS_REGISTRY_ADDRESS }
 export { ResolverContractType }
 export { getSubdomainsUsingResolver as getSubdomains }

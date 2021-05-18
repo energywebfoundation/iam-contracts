@@ -18,6 +18,7 @@ import { PublicResolver } from "../typechain/PublicResolver";
  */
 export const getSubdomainsUsingResolver = async ({
   domain,
+  domainReader,
   ensRegistry,
   provider,
   domainNotifierAddress,
@@ -25,7 +26,8 @@ export const getSubdomainsUsingResolver = async ({
   mode
 }: {
   domain: string;
-  ensRegistry: ENSRegistry;
+  domainReader: DomainReader,
+  ensRegistry: ENSRegistry,
   provider: Provider,
   domainNotifierAddress: string
   publicResolverAddress?: string,
@@ -33,6 +35,7 @@ export const getSubdomainsUsingResolver = async ({
 }): Promise<string[]> => {
   if (!domain) throw new Error("You need to pass a domain name");
   if (!ensRegistry) throw new Error("You need to pass an ensRegistry ethers contract");
+  if (!domainReader) throw new Error("You need to pass a DomainReader");
   if (!domainNotifierAddress) throw new Error("You need to pass the address of a domain notifier contract");
 
   let publicResolver: PublicResolver | undefined
@@ -41,7 +44,6 @@ export const getSubdomainsUsingResolver = async ({
   }
 
   const domainNotifier = DomainNotifier__factory.connect(domainNotifierAddress, provider)
-  const domainReader = new DomainReader({ ensRegistryAddress: ensRegistry.address, provider });
 
   if (mode === "ALL") {
     const getParser = (nameReader: (node: string) => Promise<string>) => {

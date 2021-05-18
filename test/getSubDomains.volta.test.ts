@@ -2,6 +2,7 @@ import { providers } from 'ethers';
 import { ENSRegistry__factory } from '../typechain/factories/ENSRegistry__factory'
 import { VOLTA_DOMAIN_NOTIFER_ADDRESS, VOLTA_ENS_REGISTRY_ADDRESS } from '../src/resolverConfig'
 import { getSubdomainsUsingResolver, getSubdomainsUsingRegistry } from '../src/getSubDomains';
+import { DomainReader } from '../src';
 
 const { JsonRpcProvider } = providers;
 
@@ -14,6 +15,7 @@ xdescribe('[getSubDomains]', async function () {
   const provider = new JsonRpcProvider('https://volta-rpc.energyweb.org');
 
   const ensRegistry = ENSRegistry__factory.connect(VOLTA_ENS_REGISTRY_ADDRESS, provider)
+  const domainReader = new DomainReader({ ensRegistryAddress: VOLTA_ENS_REGISTRY_ADDRESS, provider })
 
   const domain = "iam.ewc";
   let subDomains;
@@ -23,6 +25,7 @@ xdescribe('[getSubDomains]', async function () {
     subDomains = await getSubdomainsUsingResolver({
       domain: domain,
       ensRegistry: ensRegistry,
+      domainReader,
       provider,
       domainNotifierAddress: VOLTA_DOMAIN_NOTIFER_ADDRESS,
       mode: "ALL"
@@ -32,6 +35,7 @@ xdescribe('[getSubDomains]', async function () {
     const subDomains2 = await getSubdomainsUsingResolver({
       domain: domain,
       ensRegistry: ensRegistry,
+      domainReader,
       provider,
       domainNotifierAddress: VOLTA_DOMAIN_NOTIFER_ADDRESS,
       mode: "FIRSTLEVEL"

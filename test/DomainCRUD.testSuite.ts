@@ -9,8 +9,7 @@ import {
   IAppDefinition,
   IOrganizationDefinition,
   IRoleDefinition,
-  ResolverContractType,
-  addKnownResolver
+  ResolverContractType
 } from "../src/index";
 import { PreconditionType } from "../src/types/DomainDefinitions";
 import { ERROR_MESSAGES } from "../src/types/ErrorMessages";
@@ -97,10 +96,8 @@ export function domainCrudTestSuite(): void {
       ensPublicResolver = await publicResolverFactory.deploy(ensRegistry.address) as PublicResolver;
       await ensRoleDefResolver.deployed();
       domainReader = new DomainReader({ ensRegistryAddress: ensRegistry.address, provider: owner.provider });
-
-      chainId = await (await provider.getNetwork()).chainId;
-      addKnownResolver({ chainId, address: ensRoleDefResolver.address, type: ResolverContractType.RoleDefinitionResolver_v1 });
-      addKnownResolver({ chainId, address: ensPublicResolver.address, type: ResolverContractType.PublicResolver });
+      domainReader.addKnownResolver({ chainId, address: ensRoleDefResolver.address, type: ResolverContractType.RoleDefinitionResolver_v1 });
+      domainReader.addKnownResolver({ chainId, address: ensPublicResolver.address, type: ResolverContractType.PublicResolver });
 
       const rootNameHash = "0x0000000000000000000000000000000000000000000000000000000000000000";
       await ensRegistry.setSubnodeOwner(rootNameHash, hashLabel(domain), await owner.getAddress());
@@ -193,7 +190,7 @@ export function domainCrudTestSuite(): void {
       const chainId = await (await provider.getNetwork()).chainId;
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      addKnownResolver(chainId, resolverAddress, "999");
+      domainReader.addKnownResolver(chainId, resolverAddress, "999");
       await ensRegistry.setResolver(node, resolverAddress);
       await expect(domainReader.read({ node })).to.eventually.rejectedWith(ERROR_MESSAGES.RESOLVER_NOT_KNOWN);
     });

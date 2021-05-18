@@ -1,5 +1,5 @@
 import { IAppDefinition, IIssuerDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from './types/DomainDefinitions'
-import { knownEnsResolvers } from "./resolverConfig";
+import { VOLTA_CHAIN_ID, VOLTA_PUBLIC_RESOLVER_ADDRESS, VOLTA_RESOLVER_V1_ADDRESS } from "./resolverConfig";
 import { ENSRegistry__factory } from "../typechain/factories/ENSRegistry__factory";
 import { Provider } from "ethers/providers";
 import { PublicResolver } from "../typechain/PublicResolver";
@@ -23,15 +23,28 @@ export class DomainReader {
 
   private readonly _provider: Provider
   private readonly _ensRegistry: ENSRegistry;
+  private readonly _knownEnsResolvers: Record<number, Record<string, ResolverContractType>> = {
+    [VOLTA_CHAIN_ID]: {
+      [VOLTA_PUBLIC_RESOLVER_ADDRESS]: ResolverContractType.PublicResolver,
+      [VOLTA_RESOLVER_V1_ADDRESS]: ResolverContractType.RoleDefinitionResolver_v1
+    }
+  };
 
   constructor({ ensRegistryAddress, provider }: { ensRegistryAddress: string, provider: Provider }) {
     this._provider = provider;
     this._ensRegistry = ENSRegistry__factory.connect(ensRegistryAddress, this._provider);
   }
 
+  public addKnownResolver({ chainId, address, type }: { chainId: number, address: string, type: ResolverContractType }): void {
+    if (!this._knownEnsResolvers[chainId]) {
+      this._knownEnsResolvers[chainId] = {}
+    }
+    this._knownEnsResolvers[chainId][address] = type;
+  }
+
   /**
    * Reads the reverse name for a node from its registered ENS resolver contract 
-   * @param node 
+   * @param node the ENS node hash of a domain name 
    * @returns The name associated with the node.
    */
   public async readName(node: string): Promise<string> {
@@ -105,7 +118,7 @@ export class DomainReader {
       throw Error(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED)
     }
 
-    const resolversForChain = knownEnsResolvers[chainId]
+    const resolversForChain = this._knownEnsResolvers[chainId]
     if (resolversForChain === undefined) {
       throw Error(ERROR_MESSAGES.RESOLVER_NOT_KNOWN)
     }
