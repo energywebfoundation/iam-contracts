@@ -48,7 +48,7 @@ export const getSubdomainsUsingResolver = async ({
     domainNotifier = DomainNotifier__factory.connect(domainNotifierAddress, provider)
   }
   else {
-    throw new Error(`${ERROR_MESSAGES.PRIMARY_RESOLVER_NOT_SET}, type: ${ResolverContractType.RoleDefinitionResolver_v1}, chainId: ${chainId}`);
+    throw new Error(`${ERROR_MESSAGES.DOMAIN_NOTIFIER_NOT_SET}, type: ${ResolverContractType.RoleDefinitionResolver_v1}, chainId: ${chainId}`);
   }
 
   const domainReader = new DomainReader(provider);

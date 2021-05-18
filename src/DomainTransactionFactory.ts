@@ -13,7 +13,7 @@ import { ERROR_MESSAGES } from "./types/ErrorMessages";
 export class DomainTransactionFactory {
   protected readonly _roleDefinitionResolver: RoleDefinitionResolver
 
-  constructor(provider: Provider, chainId: number,) {
+  constructor(provider: Provider, chainId: number) {
     const resolverAddress = getPrimaryResolver(chainId, ResolverContractType.RoleDefinitionResolver_v1);
     if (resolverAddress) {
       this._roleDefinitionResolver = RoleDefinitionResolver__factory.connect(resolverAddress, provider)
