@@ -1,6 +1,6 @@
 import { providers } from 'ethers';
 import { ENSRegistry__factory } from '../typechain/factories/ENSRegistry__factory'
-import { VOLTA_DOMAIN_NOTIFER_ADDRESS, VOLTA_ENS_REGISTRY_ADDRESS } from '../src/resolverConfig'
+import { VOLTA_DOMAIN_NOTIFER_ADDRESS, VOLTA_ENS_REGISTRY_ADDRESS } from '../src/chainConstants'
 import { getSubdomainsUsingResolver, getSubdomainsUsingRegistry } from '../src/getSubDomains';
 import { DomainReader } from '../src';
 

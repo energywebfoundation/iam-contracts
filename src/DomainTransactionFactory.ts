@@ -5,7 +5,7 @@ import { DID } from "./types/DID";
 import { EncodedCall } from "./types/Transaction";
 import { namehash } from "ethers/utils";
 import { RoleDefinitionResolver__factory } from "../typechain/factories/RoleDefinitionResolver__factory";
-import { VOLTA_RESOLVER_V1_ADDRESS } from "./resolverConfig";
+import { VOLTA_RESOLVER_V1_ADDRESS } from "./chainConstants";
 import { Provider } from "ethers/providers";
 
 export class DomainTransactionFactory {

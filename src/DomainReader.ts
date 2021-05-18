@@ -1,5 +1,5 @@
 import { IAppDefinition, IIssuerDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from './types/DomainDefinitions'
-import { VOLTA_CHAIN_ID, VOLTA_PUBLIC_RESOLVER_ADDRESS, VOLTA_RESOLVER_V1_ADDRESS } from "./resolverConfig";
+import { VOLTA_CHAIN_ID, VOLTA_PUBLIC_RESOLVER_ADDRESS, VOLTA_RESOLVER_V1_ADDRESS } from "./chainConstants";
 import { ENSRegistry__factory } from "../typechain/factories/ENSRegistry__factory";
 import { Provider } from "ethers/providers";
 import { PublicResolver } from "../typechain/PublicResolver";
