@@ -131,7 +131,36 @@ export function roleDefinitionResolverTestSuite(): void {
     });
   });
 
-  describe('domain updated', async () => {
+  describe('domain delegation', async () => {
+    it('permits delegation of role creation', async () => {
+      const delegate = anotherAccount;
+      const delegateAddress = await delegate.getAddress();
+      // Add delegate and "create" new role 
+      const newRoleLabel = "newrole";
+      const newRoleLabelHash = hashLabel(newRoleLabel);
+      const newRoleDomain = `${newRoleLabel}.${orgDomain}`;
+      const newRoleNode = utils.namehash(`${newRoleDomain}`);
+      await ens.connect(owner).setApprovalForAll(delegateAddress, true);
+      await ens.connect(delegate).setSubnodeOwner(orgNode, newRoleLabelHash, ownerAddr);
+      await ens.connect(delegate).setResolver(newRoleNode, roleDefinitionResolver.address);
+      expect(await ens.owner(newRoleNode)).to.equal(ownerAddr);
+      // Assumption is that if can update one resolver profile then can update them all
+      const newVersionNumber = "2.0.0";
+      await roleDefinitionResolver.connect(delegate).setVersionNumber(roleNode, newVersionNumber);
+
+      // Remove delegate and confirm that can not longer create role 
+      const anotherRoleLabel = "anotherrole";
+      const anotherRoleLabelHash = hashLabel(anotherRoleLabel);
+      const anotherRoleDomain = `${anotherRoleLabel}.${orgDomain}`;
+      const anotherRoleNode = utils.namehash(`${anotherRoleDomain}`);
+      await ens.connect(owner).setApprovalForAll(delegateAddress, false);
+      await expect(ens.connect(delegate).setSubnodeOwner(orgNode, anotherRoleLabelHash, ownerAddr)).to.eventually.be.rejected;
+      await expect(ens.connect(delegate).setResolver(anotherRoleNode, roleDefinitionResolver.address)).to.eventually.be.rejected;
+      await expect(roleDefinitionResolver.connect(anotherAccount).setVersionNumber(roleNode, newVersionNumber)).to.eventually.be.rejected;
+    });
+  });
+
+  describe('domain updated notifications', async () => {
     it('permits triggering update event by owner', async () => {
       await ens.connect(owner).setResolver(roleNode, roleDefinitionResolver.address);
       const tx = await roleDefinitionResolver.domainUpdated(roleNode);
@@ -147,7 +176,6 @@ export function roleDefinitionResolverTestSuite(): void {
       await expect(roleDefinitionResolver.connect(anotherAccount).domainUpdated(roleNode)).to.eventually.be.rejected;
     });
   });
-
 
   describe('issuers', async () => {
     const dids = ['0xC7010B2e2408847760bF18E695Ba3aFf02299a3b']; // Arbitrary address
