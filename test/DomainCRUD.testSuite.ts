@@ -106,7 +106,7 @@ export function domainCrudTestSuite(): void {
 
     it("role can be created, read and updated", async () => {
       await ensRegistry.setResolver(node, ensRoleDefResolver.address);
-      const domainDefTxFactory = new DomainTransactionFactory({ provider, domainResolverAddress: ensRoleDefResolver.address });
+      const domainDefTxFactory = new DomainTransactionFactory({ domainResolverAddress: ensRoleDefResolver.address });
       const call = domainDefTxFactory.newRole({ domain: domain, roleDefinition: role });
       await (await owner.sendTransaction(call)).wait()
 
@@ -145,7 +145,7 @@ export function domainCrudTestSuite(): void {
         appName: "myApp"
       }
       await ensRegistry.setResolver(node, ensRoleDefResolver.address);
-      const domainDefTxFactory = new DomainTransactionFactory({ provider, domainResolverAddress: ensRoleDefResolver.address });
+      const domainDefTxFactory = new DomainTransactionFactory({ domainResolverAddress: ensRoleDefResolver.address });
       const call = domainDefTxFactory.newDomain({ domain: domain, domainDefinition: app });
       await (await owner.sendTransaction(call)).wait()
 
@@ -165,7 +165,7 @@ export function domainCrudTestSuite(): void {
         orgName: "myOrg"
       }
       await ensRegistry.setResolver(node, ensRoleDefResolver.address);
-      const domainDefTxFactory = new DomainTransactionFactory({ provider, domainResolverAddress: ensRoleDefResolver.address });
+      const domainDefTxFactory = new DomainTransactionFactory({ domainResolverAddress: ensRoleDefResolver.address });
       const call = domainDefTxFactory.newDomain({ domain: domain, domainDefinition: org });
       await (await owner.sendTransaction(call)).wait()
 

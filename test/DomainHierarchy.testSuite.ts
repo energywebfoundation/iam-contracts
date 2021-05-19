@@ -37,7 +37,7 @@ const addSubdomain = async (parentDomain: string, label: string, resolverType: "
   let call: EncodedCall
   if (resolverType === "ROLEDEF") {
     await ensRegistry.setResolver(subNode, ensRoleDefResolver.address);
-    const domainDefTxFactory = new DomainTransactionFactory({ provider, domainResolverAddress: ensRoleDefResolver.address });
+    const domainDefTxFactory = new DomainTransactionFactory({ domainResolverAddress: ensRoleDefResolver.address });
     call = domainDefTxFactory.newRole({ domain: subdomain, roleDefinition: role });
   }
   else {
@@ -96,7 +96,7 @@ export function getSubDomainsTestSuite(): void {
       await ensRegistry.setSubnodeOwner(rootNameHash, hashLabel(domain), await owner.getAddress());
       expect(await ensRegistry.owner(node)).to.equal(await owner.getAddress());
       await ensRegistry.setResolver(node, ensRoleDefResolver.address);
-      const domainDefTxFactory = new DomainTransactionFactory({ provider, domainResolverAddress: ensRoleDefResolver.address });
+      const domainDefTxFactory = new DomainTransactionFactory({ domainResolverAddress: ensRoleDefResolver.address });
       const call = domainDefTxFactory.newRole({ domain: domain, roleDefinition: role });
       await (await owner.sendTransaction(call)).wait()
     });

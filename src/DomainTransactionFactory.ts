@@ -1,18 +1,18 @@
 import { DomainReader } from "./DomainReader";
-import { RoleDefinitionResolver } from "../typechain/RoleDefinitionResolver";
 import { IAppDefinition, IIssuerDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from "./types/DomainDefinitions"
 import { DID } from "./types/DID";
 import { EncodedCall } from "./types/Transaction";
-import { namehash } from "ethers/utils";
-import { RoleDefinitionResolver__factory } from "../typechain/factories/RoleDefinitionResolver__factory";
+import { namehash, Interface } from "ethers/utils";
 import { VOLTA_RESOLVER_V1_ADDRESS } from "./chainConstants";
-import { Provider } from "ethers/providers";
+import { abi } from "../build/contracts/RoleDefinitionResolver.json"
 
 export class DomainTransactionFactory {
-  protected readonly _roleDefinitionResolver: RoleDefinitionResolver
+  protected readonly _roleDefResolverInterface: Interface
+  protected readonly _resolverAddress: string
 
-  constructor({ provider, domainResolverAddress = VOLTA_RESOLVER_V1_ADDRESS }: { provider: Provider, domainResolverAddress: string }) {
-    this._roleDefinitionResolver = RoleDefinitionResolver__factory.connect(domainResolverAddress, provider)
+  constructor({ domainResolverAddress = VOLTA_RESOLVER_V1_ADDRESS }: { domainResolverAddress: string }) {
+    this._resolverAddress = domainResolverAddress;
+    this._roleDefResolverInterface = new Interface(abi)
   }
 
   /**
@@ -51,8 +51,8 @@ export class DomainTransactionFactory {
   public setDomainNameTx({ domain }: { domain: string }): EncodedCall {
     const namespaceHash = namehash(domain) as string;
     return {
-      to: this._roleDefinitionResolver.address,
-      data: this._roleDefinitionResolver.interface.functions.setName.encode([namespaceHash, domain])
+      to: this._resolverAddress,
+      data: this._roleDefResolverInterface.functions.setName.encode([namespaceHash, domain])
     };
   }
 
@@ -67,8 +67,8 @@ export class DomainTransactionFactory {
     transactionsToCombine: EncodedCall[]
   }): EncodedCall {
     return {
-      to: this._roleDefinitionResolver.address,
-      data: this._roleDefinitionResolver.interface.functions.multicall.encode([transactionsToCombine.map(t => t.data)])
+      to: this._resolverAddress,
+      data: this._roleDefResolverInterface.functions.multicall.encode([transactionsToCombine.map(t => t.data)])
     };
   }
 
@@ -124,8 +124,8 @@ export class DomainTransactionFactory {
     data: IAppDefinition | IOrganizationDefinition | IRoleDefinitionText;
   }): EncodedCall {
     return {
-      to: this._roleDefinitionResolver.address,
-      data: this._roleDefinitionResolver.interface.functions.setText.encode([
+      to: this._resolverAddress,
+      data: this._roleDefResolverInterface.functions.setText.encode([
         namehash(domain),
         "metadata",
         JSON.stringify(data)
@@ -139,8 +139,8 @@ export class DomainTransactionFactory {
     domain: string;
   }): EncodedCall {
     return {
-      to: this._roleDefinitionResolver.address,
-      data: this._roleDefinitionResolver.interface.functions.domainUpdated.encode([
+      to: this._resolverAddress,
+      data: this._roleDefResolverInterface.functions.domainUpdated.encode([
         namehash(domain),
       ])
     };
@@ -154,8 +154,8 @@ export class DomainTransactionFactory {
     versionNumber: number;
   }): EncodedCall {
     return {
-      to: this._roleDefinitionResolver.address,
-      data: this._roleDefinitionResolver.interface.functions.setVersionNumber.encode([
+      to: this._resolverAddress,
+      data: this._roleDefResolverInterface.functions.setVersionNumber.encode([
         namehash(domain),
         versionNumber
       ])
@@ -177,8 +177,8 @@ export class DomainTransactionFactory {
       }
       const addresses = issuers.did.map((didString) => new DID(didString).id);
       return {
-        to: this._roleDefinitionResolver.address,
-        data: this._roleDefinitionResolver.interface.functions.setIssuerDids.encode([
+        to: this._resolverAddress,
+        data: this._roleDefResolverInterface.functions.setIssuerDids.encode([
           namehash(domain),
           addresses
         ])
@@ -189,8 +189,8 @@ export class DomainTransactionFactory {
         throw Error("IssuerType set to roleName but no roleName provided");
       }
       return {
-        to: this._roleDefinitionResolver.address,
-        data: this._roleDefinitionResolver.interface.functions.setIssuerRole.encode([
+        to: this._resolverAddress,
+        data: this._roleDefResolverInterface.functions.setIssuerRole.encode([
           namehash(domain),
           issuers.roleName
         ])
@@ -207,8 +207,8 @@ export class DomainTransactionFactory {
     issuerType: number;
   }): EncodedCall {
     return {
-      to: this._roleDefinitionResolver.address,
-      data: this._roleDefinitionResolver.interface.functions.setIssuerType.encode([
+      to: this._resolverAddress,
+      data: this._roleDefResolverInterface.functions.setIssuerType.encode([
         namehash(domain),
         issuerType
       ])
@@ -224,8 +224,8 @@ export class DomainTransactionFactory {
   }): EncodedCall {
     const prequisiteRoleDomains = prerequisiteRoles.map(role => namehash(role));
     return {
-      to: this._roleDefinitionResolver.address,
-      data: this._roleDefinitionResolver.interface.functions.setPrerequisiteRoles.encode([
+      to: this._resolverAddress,
+      data: this._roleDefResolverInterface.functions.setPrerequisiteRoles.encode([
         namehash(domain),
         prequisiteRoleDomains,
         false // mustHaveAll = false so only need to have one of the set
