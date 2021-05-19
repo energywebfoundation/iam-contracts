@@ -49,14 +49,18 @@ contract ClaimManager is EIP712 {
   address private didRegistry;
   address private ensRegistry;
   
-  constructor(address _didRegistry, address _ensRegistry) EIP712(ERC712_DOMAIN_NAME, ERC712_DOMAIN_VERSION) {
+  constructor(address _didRegistry, address _ensRegistry) EIP712(ERC712_DOMAIN_NAME, ERC712_DOMAIN_VERSION) public {
     didRegistry = _didRegistry;
     ensRegistry = _ensRegistry;
   }
   
   function hasRole(address subject, bytes32 role, string memory version) public view returns(bool) {
     Record memory r = roles[role][subject];
-    return r.expireDate > block.timestamp && compareStrings(r.version, version);
+    if (bytes(version).length == 0) {
+      return r.expireDate > block.timestamp;
+    } else {
+      return r.expireDate > block.timestamp && compareStrings(r.version, version);
+    }
   }
   
   function register(
@@ -108,7 +112,6 @@ contract ClaimManager is EIP712 {
   
   function verifyPreconditions(address subject, bytes32 role) internal view {
     address resolver = ENSRegistry(ensRegistry).resolver(role);
-    string memory version = VersionNumberResolver(resolver).versionNumber(role);
     
     (bytes32[] memory roles, bool mustHaveAll) = EnrolmentPrerequisiteRolesResolver(resolver).prerequisiteRoles(role);
     if (roles.length == 0) {
@@ -117,7 +120,7 @@ contract ClaimManager is EIP712 {
     uint numberOfRequiredRoles = mustHaveAll ? roles.length : 1;
     uint numberOfRoles = 0;
     for (uint i = 0; i < roles.length && numberOfRoles < numberOfRequiredRoles; i++) {
-      if (this.hasRole(subject, roles[i], version)) {
+      if (this.hasRole(subject, roles[i], "")) {
         numberOfRoles++;
       }
     }
@@ -139,8 +142,7 @@ contract ClaimManager is EIP712 {
       }
       revert("ClaimManager: Issuer is not listed in role issuers list");
     } else if (issuer_role != "") {
-      string memory version = VersionNumberResolver(resolver).versionNumber(issuer_role);
-      require(hasRole(issuer, issuer_role, version), "ClaimManager: Issuer does not has required role");
+      require(hasRole(issuer, issuer_role, ""), "ClaimManager: Issuer does not has required role");
     } else {
       revert("ClaimManager: Role issuers are not specified");
     }

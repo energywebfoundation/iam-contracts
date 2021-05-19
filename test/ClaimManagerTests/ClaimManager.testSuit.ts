@@ -377,4 +377,27 @@ function testSuit() {
 
     expect(await claimManager.hasRole(installerAddr, namehash(authorityRole), version)).true;
   });
+
+  describe('Role versions tests', () => {
+    it('hasRole() should return true if subject has at some role version', async () => {
+      await requestRole({ roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+
+      expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), "")).true;
+    });
+
+    it('hasRole() should return false if tested against not requested verion', async () => {
+      await requestRole({ roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+
+      expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), "2.0")).false;
+    });
+
+    it('register() should enrol to latest version', async () => {
+      const newVersion = "2.0";
+      await roleResolver.setVersionNumber(namehash(authorityRole), newVersion);
+      await requestRole({ roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+
+      expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), newVersion)).true;
+      expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), version)).false;
+    });
+  });
 }
