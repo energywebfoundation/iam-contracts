@@ -1,7 +1,7 @@
 import { providers } from 'ethers';
 import { ENSRegistry__factory } from '../typechain/factories/ENSRegistry__factory'
-import { VOLTA_DOMAIN_NOTIFER_ADDRESS, VOLTA_ENS_REGISTRY_ADDRESS } from '../src/chainConstants'
-import { getSubdomainsUsingResolver, getSubdomainsUsingRegistry } from '../src/getSubDomains';
+import { VOLTA_DOMAIN_NOTIFER_ADDRESS, VOLTA_ENS_REGISTRY_ADDRESS, VOLTA_PUBLIC_RESOLVER_ADDRESS } from '../src/chainConstants'
+import { DomainHierarchy } from '../src/DomainHierarchy';
 import { DomainReader } from '../src';
 
 const { JsonRpcProvider } = providers;
@@ -16,38 +16,35 @@ xdescribe('[getSubDomains]', async function () {
 
   const ensRegistry = ENSRegistry__factory.connect(VOLTA_ENS_REGISTRY_ADDRESS, provider)
   const domainReader = new DomainReader({ ensRegistryAddress: VOLTA_ENS_REGISTRY_ADDRESS, provider })
+  const domainHierarchy = new DomainHierarchy({
+    domainReader,
+    ensRegistry,
+    provider,
+    domainNotifierAddress: VOLTA_DOMAIN_NOTIFER_ADDRESS,
+    publicResolverAddress: VOLTA_PUBLIC_RESOLVER_ADDRESS
+  })
 
   const domain = "iam.ewc";
   let subDomains;
   let subDomains_usingRegistry;
 
   it("getSubdomains", async () => {
-    subDomains = await getSubdomainsUsingResolver({
+    subDomains = await domainHierarchy.getSubdomainsUsingResolver({
       domain: domain,
-      ensRegistry: ensRegistry,
-      domainReader,
-      provider,
-      domainNotifierAddress: VOLTA_DOMAIN_NOTIFER_ADDRESS,
       mode: "ALL"
     })
     console.log(subDomains.length)
 
-    const subDomains2 = await getSubdomainsUsingResolver({
+    const subDomains2 = await domainHierarchy.getSubdomainsUsingResolver({
       domain: domain,
-      ensRegistry: ensRegistry,
-      domainReader,
-      provider,
-      domainNotifierAddress: VOLTA_DOMAIN_NOTIFER_ADDRESS,
       mode: "FIRSTLEVEL"
     })
     console.log(subDomains2.length)
   })
 
   it("getSubdomains using ENS Registry", async () => {
-    subDomains_usingRegistry = await getSubdomainsUsingRegistry({
+    subDomains_usingRegistry = await domainHierarchy.getSubdomainsUsingRegistry({
       domain: domain,
-      provider,
-      ensRegistry: ensRegistry,
     })
     console.log(subDomains_usingRegistry.length)
   })

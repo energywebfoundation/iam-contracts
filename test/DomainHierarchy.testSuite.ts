@@ -1,5 +1,5 @@
 import { ContractFactory } from 'ethers';
-import { getSubdomainsUsingResolver } from '../src/getSubDomains';
+import { DomainHierarchy } from '../src/DomainHierarchy';
 import { DomainReader, DomainTransactionFactory, EncodedCall, IRoleDefinition, ResolverContractType } from '../src';
 import { ENSRegistry } from '../typechain/ENSRegistry';
 import { RoleDefinitionResolver } from '../typechain/RoleDefinitionResolver';
@@ -24,6 +24,7 @@ let provider: JsonRpcProvider;
 let chainId: number;
 
 let domainReader: DomainReader;
+let domainHierarchy: DomainHierarchy;
 
 const domain = "ewc";
 const node = namehash(domain);
@@ -82,6 +83,14 @@ export function getSubDomainsTestSuite(): void {
       domainReader.addKnownResolver({ chainId, address: ensRoleDefResolver.address, type: ResolverContractType.RoleDefinitionResolver_v1 });
       domainReader.addKnownResolver({ chainId, address: ensPublicResolver.address, type: ResolverContractType.PublicResolver });
 
+      domainHierarchy = new DomainHierarchy({
+        domainReader,
+        provider,
+        ensRegistry,
+        domainNotifierAddress: domainNotifier.address,
+        publicResolverAddress: ensPublicResolver.address
+      })
+
       // Register and set resolver for parent node
       const rootNameHash = "0x0000000000000000000000000000000000000000000000000000000000000000";
       await ensRegistry.setSubnodeOwner(rootNameHash, hashLabel(domain), await owner.getAddress());
@@ -94,12 +103,8 @@ export function getSubDomainsTestSuite(): void {
 
     it("returns subdomains using RoleDefResolver", async () => {
       await Promise.all([addSubdomain("ewc", "test", "ROLEDEF"), addSubdomain("ewc", "iam", "ROLEDEF")]);
-      const subDomains = await getSubdomainsUsingResolver({
+      const subDomains = await domainHierarchy.getSubdomainsUsingResolver({
         domain: domain,
-        ensRegistry: ensRegistry,
-        domainReader,
-        provider,
-        domainNotifierAddress: domainNotifier.address,
         mode: "ALL"
       })
       expect(subDomains.length).to.equal(2);
@@ -107,13 +112,8 @@ export function getSubDomainsTestSuite(): void {
 
     it("returns subdomains using PublicResolver", async () => {
       await Promise.all([addSubdomain("ewc", "test", "PUBLIC"), addSubdomain("ewc", "iam", "PUBLIC")]);
-      const subDomains = await getSubdomainsUsingResolver({
+      const subDomains = await domainHierarchy.getSubdomainsUsingResolver({
         domain: domain,
-        ensRegistry: ensRegistry,
-        domainReader,
-        provider,
-        domainNotifierAddress: domainNotifier.address,
-        publicResolverAddress: ensPublicResolver.address,
         mode: "ALL"
       })
       expect(subDomains.length).to.equal(2);
@@ -121,13 +121,8 @@ export function getSubDomainsTestSuite(): void {
 
     it("returns subdomains using PublicResolver and RoleDefResolver", async () => {
       await Promise.all([addSubdomain("ewc", "test", "ROLEDEF"), addSubdomain("ewc", "iam", "PUBLIC")]);
-      const subDomains = await getSubdomainsUsingResolver({
+      const subDomains = await domainHierarchy.getSubdomainsUsingResolver({
         domain: domain,
-        ensRegistry: ensRegistry,
-        provider,
-        domainReader,
-        domainNotifierAddress: domainNotifier.address,
-        publicResolverAddress: ensPublicResolver.address,
         mode: "ALL"
       })
       expect(subDomains.length).to.equal(2);
