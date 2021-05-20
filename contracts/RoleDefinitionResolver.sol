@@ -27,6 +27,19 @@ contract RoleDefinitionResolver is
         notifier = _notifier;
     }
 
+    function isAuthorised(bytes32 node)
+        internal
+        view
+        override(PublicResolver, ResolverBase)
+        returns (bool)
+    {
+        address owner = ens.owner(node);
+        return
+            owner == msg.sender ||
+            authorisations[node][owner][msg.sender] ||
+            ens.isApprovedForAll(owner, msg.sender);
+    }
+
     function domainUpdated(bytes32 node) external authorised(node) {
         notifier.domainUpdated(node);
     }

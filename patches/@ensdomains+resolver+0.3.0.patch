@@ -1,0 +1,13 @@
+diff --git a/node_modules/@ensdomains/resolver/contracts/PublicResolver.sol b/node_modules/@ensdomains/resolver/contracts/PublicResolver.sol
+index 1b9784a..bf80339 100644
+--- a/node_modules/@ensdomains/resolver/contracts/PublicResolver.sol
++++ b/node_modules/@ensdomains/resolver/contracts/PublicResolver.sol
+@@ -48,7 +48,7 @@ contract PublicResolver is ABIResolver, AddrResolver, ContentHashResolver, DNSRe
+         emit AuthorisationChanged(node, msg.sender, target, isAuthorised);
+     }
+ 
+-    function isAuthorised(bytes32 node) internal override view returns(bool) {
++    function isAuthorised(bytes32 node) internal virtual override view returns(bool) {
+         address owner = ens.owner(node);
+         return owner == msg.sender || authorisations[node][owner][msg.sender];
+     }

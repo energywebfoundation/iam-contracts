@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.3.0...v1.4.0) (2021-05-19)
+
+
+### Features
+
+* **RoleDefResolver:** Consider ens registry delegate for resolver auth ([6fe377f](https://github.com/energywebfoundation/iam-contracts/commit/6fe377f764e15a61987a37de53cef1511af48004))
+
 # [1.3.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.2.0...v1.3.0) (2021-05-13)
 
 
