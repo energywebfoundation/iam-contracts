@@ -143,7 +143,7 @@ export class DomainReader {
       ? [{ type: PreconditionType.Role, conditions: prerequisiteRoles }]
       : []
 
-    const version = await ensResolver.versionNumber(node);
+    const version = (await ensResolver.versionNumber(node)).toNumber();
 
     return {
       ...roleDefinitionText,

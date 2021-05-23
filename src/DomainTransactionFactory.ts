@@ -144,7 +144,7 @@ export class DomainTransactionFactory {
     versionNumber
   }: {
     domain: string;
-    versionNumber: string;
+    versionNumber: number;
   }): EncodedCall {
     return {
       to: this.roleDefinitionResolver.address,
