@@ -145,9 +145,17 @@ export function roleDefinitionResolverTestSuite(): void {
       await ens.connect(delegate).setSubnodeOwner(orgNode, newRoleLabelHash, ownerAddr);
       await ens.connect(delegate).setResolver(newRoleNode, roleDefinitionResolver.address);
       expect(await ens.owner(newRoleNode)).to.equal(ownerAddr);
-      // Assumption is that if can update one resolver profile then can update them all
+      // Set version number as test of a new resolver profile
       const newVersionNumber = 100;
       await roleDefinitionResolver.connect(delegate).setVersionNumber(roleNode, newVersionNumber);
+      const changedVersionNumber = await roleDefinitionResolver.versionNumber(roleNode);
+      expect(changedVersionNumber.toNumber()).to.equal(newVersionNumber);
+      const newText = "new text";
+      // Set text as test of PublicResolver profile
+      const textKey = "metadata";
+      await roleDefinitionResolver.connect(delegate).setText(roleNode, textKey, newText);
+      const changedText = await roleDefinitionResolver.text(roleNode, textKey);
+      expect(changedText).to.equal(newText);
 
       // Remove delegate and confirm that can not longer create role 
       const anotherRoleLabel = "anotherrole";
@@ -157,7 +165,8 @@ export function roleDefinitionResolverTestSuite(): void {
       await ens.connect(owner).setApprovalForAll(delegateAddress, false);
       await expect(ens.connect(delegate).setSubnodeOwner(orgNode, anotherRoleLabelHash, ownerAddr)).to.eventually.be.rejected;
       await expect(ens.connect(delegate).setResolver(anotherRoleNode, roleDefinitionResolver.address)).to.eventually.be.rejected;
-      await expect(roleDefinitionResolver.connect(anotherAccount).setVersionNumber(roleNode, newVersionNumber)).to.eventually.be.rejected;
+      await expect(roleDefinitionResolver.connect(delegate).setVersionNumber(roleNode, newVersionNumber + 1)).to.eventually.be.rejected;
+      await expect(roleDefinitionResolver.connect(delegate).setText(roleNode, textKey, newText + "changed")).to.eventually.be.rejected;
     });
   });
 
