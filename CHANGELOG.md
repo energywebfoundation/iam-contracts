@@ -1,3 +1,18 @@
+# [1.6.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.5.0...v1.6.0) (2021-05-24)
+
+
+### Bug Fixes
+
+* move patch-package to prebuild ([62501ac](https://github.com/energywebfoundation/iam-contracts/commit/62501ac23fd8038d7151624a40ba688fe924818d))
+
+
+### Features
+
+* **DomainTransactionFactory:** remove need for provider ([162c698](https://github.com/energywebfoundation/iam-contracts/commit/162c6984fa816bbf95ce6d98d5e94db9fa411d41))
+* add PreconditionType to package export ([8123d34](https://github.com/energywebfoundation/iam-contracts/commit/8123d34f5fb465e36699a47e733769fd2a5e5c86))
+* change getSubDomains to DomainHierarchy ([f6702cf](https://github.com/energywebfoundation/iam-contracts/commit/f6702cfaf5f03106043220184c9a7dc46f771d40))
+* encapsulating contract objects ([06a474c](https://github.com/energywebfoundation/iam-contracts/commit/06a474c72956c19eab43428adce617c931adba1f))
+
 # [1.5.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.4.0...v1.5.0) (2021-05-24)
 
 
