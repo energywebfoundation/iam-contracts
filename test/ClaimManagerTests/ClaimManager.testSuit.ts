@@ -5,7 +5,7 @@ import { abi as erc1056Abi, bytecode as erc1056Bytecode } from './ERC1056.json';
 import { ClaimManager__factory as ClaimManagerFactory } from '../../typechain/factories/ClaimManager__factory';
 import { ClaimManager } from '../../typechain/ClaimManager';
 import { DomainTransactionFactory } from '../../src';
-import { namehash, keccak256, toUtf8Bytes, id } from 'ethers/utils';
+import { namehash, keccak256, toUtf8Bytes, id, verifyMessage } from 'ethers/utils';
 import { ENSRegistry } from '../../typechain/ENSRegistry';
 import { RoleDefinitionResolver } from '../../typechain/RoleDefinitionResolver';
 import { PreconditionType } from '../../src/types/DomainDefinitions';
@@ -19,7 +19,7 @@ const activeDeviceRole = 'active-device'
 const installerRole = 'installer';
 
 const expiry = 60 * 60; // in secs
-const version = '1';
+const defaultVersion = 1;
 
 const hashLabel = (label: string): string => keccak256(toUtf8Bytes(label));
 
@@ -103,12 +103,14 @@ function testsOnVolta() {
 function testSuit() {
   async function requestRole({
     roleName,
+    version = defaultVersion,
     agreementSigner,
     proofSigner,
     subject,
     issuer
   }: {
     roleName: string,
+    version?: number,
     agreementSigner: Signer,
     proofSigner: Signer,
     subject?: Signer,
@@ -126,8 +128,8 @@ function testSuit() {
     const subjectAddr = await subject.getAddress();
 
     const erc712_type_hash = id('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)');
-    const agreement_type_hash = id('Agreement(address subject,bytes32 role)');
-    const proof_type_hash = id('Proof(address subject,bytes32 role,uint expiry,address issuer)');
+    const agreement_type_hash = id('Agreement(address subject,bytes32 role,uint version)');
+    const proof_type_hash = id('Proof(address subject,bytes32 role,uint version,uint expiry,address issuer)');
 
     const domainSeparator = keccak256(
       defaultAbiCoder.encode(
@@ -144,8 +146,8 @@ function testSuit() {
         messageId,
         domainSeparator,
         keccak256(defaultAbiCoder.encode(
-          ['bytes32', 'address', 'bytes32'],
-          [agreement_type_hash, subjectAddr, namehash(roleName)]
+          ['bytes32', 'address', 'bytes32', 'uint'],
+          [agreement_type_hash, subjectAddr, namehash(roleName), version]
         ))
       ]
     );
@@ -160,8 +162,8 @@ function testSuit() {
         messageId,
         domainSeparator,
         keccak256(defaultAbiCoder.encode(
-          ['bytes32', 'address', 'bytes32', 'uint', 'address'],
-          [proof_type_hash, subjectAddr, namehash(roleName), expiry, issuerAddr]
+          ['bytes32', 'address', 'bytes32', 'uint', 'uint', 'address'],
+          [proof_type_hash, subjectAddr, namehash(roleName), version, expiry, issuerAddr]
         ))
       ]
     );
@@ -173,6 +175,7 @@ function testSuit() {
     await (await claimManager.register(
       subjectAddr,
       namehash(roleName),
+      version,
       expiry,
       issuerAddr,
       canonizeSig(agreement),
@@ -213,7 +216,7 @@ function testSuit() {
           issuer: { issuerType: "DID", did: [`did:ethr:${await authority.getAddress()}`] },
           metadata: [],
           roleType: '',
-          version
+          version: defaultVersion.toString()
         }
       })
     })).wait();
@@ -228,7 +231,7 @@ function testSuit() {
           issuer: { issuerType: "ROLE", roleName: namehash(installerRole) },
           metadata: [],
           roleType: '',
-          version
+          version: defaultVersion.toString()
         }
       })
     })).wait();
@@ -243,7 +246,7 @@ function testSuit() {
           issuer: { issuerType: "ROLE", roleName: namehash(installerRole) },
           metadata: [],
           roleType: '',
-          version
+          version: defaultVersion.toString()
         }
       })
     })).wait();
@@ -258,7 +261,7 @@ function testSuit() {
           issuer: { issuerType: "ROLE", roleName: namehash(authorityRole) },
           metadata: [],
           roleType: '',
-          version: '1'
+          version: defaultVersion.toString()
         }
       })
     })).wait();
@@ -267,14 +270,14 @@ function testSuit() {
   it('Role can be assigned when issuer type is DID', async () => {
     await requestRole({ roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
 
-    expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), version)).true;
+    expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), defaultVersion)).true;
   });
 
   it('Role can be assigned when issuer type is ROLE', async () => {
     await requestRole({ roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
     await requestRole({ roleName: installerRole, agreementSigner: installer, proofSigner: authority });
 
-    expect(await claimManager.hasRole(installerAddr, namehash(installerRole), version)).true;
+    expect(await claimManager.hasRole(installerAddr, namehash(installerRole), defaultVersion)).true;
   });
 
   it('Role proof signed by not authorized issuer should be rejected', async () => {
@@ -302,7 +305,7 @@ function testSuit() {
     await requestRole({ roleName: deviceRole, agreementSigner: device, proofSigner: installer });
     await requestRole({ roleName: activeDeviceRole, agreementSigner: device, proofSigner: installer });
 
-    expect(await claimManager.hasRole(deviceAddr, namehash(activeDeviceRole), version)).true;
+    expect(await claimManager.hasRole(deviceAddr, namehash(activeDeviceRole), defaultVersion)).true;
   });
 
   it('Agreement can be signed by subject delegate', async () => {
@@ -315,7 +318,7 @@ function testSuit() {
     await requestRole({ roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
     await requestRole({ roleName: installerRole, agreementSigner: delegate, proofSigner: authority, subject: installer });
 
-    expect(await claimManager.hasRole(installerAddr, namehash(installerRole), version)).true;
+    expect(await claimManager.hasRole(installerAddr, namehash(installerRole), defaultVersion)).true;
   });
 
   it('Proof can be signed by issuer delegate', async () => {
@@ -334,7 +337,7 @@ function testSuit() {
       issuer: authority
     });
 
-    expect(await claimManager.hasRole(installerAddr, namehash(installerRole), version)).true;
+    expect(await claimManager.hasRole(installerAddr, namehash(installerRole), defaultVersion)).true;
   });
 
   it('Proof can be issued by issuer delegate', async () => {
@@ -353,7 +356,7 @@ function testSuit() {
       issuer: delegate
     });
 
-    expect(await claimManager.hasRole(installerAddr, namehash(authorityRole), version)).true;
+    expect(await claimManager.hasRole(installerAddr, namehash(authorityRole), defaultVersion)).true;
   });
 
   it('Proof can be signed by delegate of issuer delegate', async () => {
@@ -375,29 +378,29 @@ function testSuit() {
       issuer: delegate
     });
 
-    expect(await claimManager.hasRole(installerAddr, namehash(authorityRole), version)).true;
+    expect(await claimManager.hasRole(installerAddr, namehash(authorityRole), defaultVersion)).true;
   });
 
   describe('Role versions tests', () => {
-    it('hasRole() should return true if subject has at some role version', async () => {
+    it('When version is 0 hasRole() should check any version', async () => {
       await requestRole({ roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
 
-      expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), "")).true;
+      expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), 0)).true;
+    });
+    
+    it('hasRole() should return true if identity registered with more recent version', async () => {
+      const latest = 2;
+      await roleResolver.setVersionNumber(namehash(authorityRole), latest.toString());
+      await requestRole({ roleName: authorityRole, version: latest, agreementSigner: authority, proofSigner: authority });
+
+      expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), latest)).true;
+      expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), defaultVersion)).true;
     });
 
     it('hasRole() should return false if tested against not requested verion', async () => {
       await requestRole({ roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
 
-      expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), "2.0")).false;
-    });
-
-    it('register() should enrol to latest version', async () => {
-      const newVersion = "2.0";
-      await roleResolver.setVersionNumber(namehash(authorityRole), newVersion);
-      await requestRole({ roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
-
-      expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), newVersion)).true;
-      expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), version)).false;
+      expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), 2)).false;
     });
   });
 }

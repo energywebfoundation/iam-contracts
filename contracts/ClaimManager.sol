@@ -20,30 +20,32 @@ contract ClaimManager is EIP712 {
   
   struct Record {
     uint expireDate;
-    string version;
+    uint version;
   }
   
   struct Agreement {
     address subject;
     bytes32 role;
+    uint version;
   }
   
   struct Proof {
     address subject;
     bytes32 role;
+    uint256 version;
     uint256 expiry;
     address issuer;
   }
   
   bytes32 constant AGREEMENT_TYPEHASH = keccak256(
-    "Agreement(address subject,bytes32 role)"
+    "Agreement(address subject,bytes32 role,uint version)"
   );
 
   bytes32 constant public PROOF_TYPEHASH = keccak256(
-    "Proof(address subject,bytes32 role,uint expiry,address issuer)"
+    "Proof(address subject,bytes32 role,uint version,uint expiry,address issuer)"
   );
   
-  event RoleRegistered(bytes32 role, address subject);
+  event RoleRegistered(bytes32 role, uint version, address subject);
   
   mapping(bytes32 => mapping(address => Record)) private roles;
   address private didRegistry;
@@ -54,41 +56,49 @@ contract ClaimManager is EIP712 {
     ensRegistry = _ensRegistry;
   }
   
-  function hasRole(address subject, bytes32 role, string memory version) public view returns(bool) {
+  function hasRole(address subject, bytes32 role, uint version) public view returns(bool) {
     Record memory r = roles[role][subject];
-    if (bytes(version).length == 0) {
+    if (version == 0) {
       return r.expireDate > block.timestamp;
     } else {
-      return r.expireDate > block.timestamp && compareStrings(r.version, version);
+      return r.expireDate > block.timestamp && r.version >= version;
     }
   }
   
   function register(
     address subject, 
     bytes32 role,
+    uint version,
     uint expiry,
     address issuer,
     bytes calldata subject_agreement,
     bytes calldata role_proof
     ) external {
+    address proofSigner;
+    address agreementSigner;
+    {
+    // TODO: verify existing of role to register
     bytes32 agreementHash = ECDSA.toEthSignedMessageHash(
       _hashTypedDataV4(keccak256(abi.encode(
       AGREEMENT_TYPEHASH,
       subject,
-      role
+      role,
+      version
     ))));
-    address agreementSigner = ECDSA.recover(agreementHash, subject_agreement);
     
     bytes32 proofHash = ECDSA.toEthSignedMessageHash(
       _hashTypedDataV4(keccak256(abi.encode(
       PROOF_TYPEHASH,
       subject,
       role,
+      version,
       expiry,
       issuer
     ))));
-    address proofSigner = ECDSA.recover(proofHash, role_proof);
-    
+    agreementSigner = ECDSA.recover(agreementHash, subject_agreement);
+    proofSigner = ECDSA.recover(proofHash, role_proof);
+    }
+        
     EthereumDIDRegistry registry = EthereumDIDRegistry(didRegistry);
     require(
       registry.identityOwner(subject) == agreementSigner || registry.validDelegate(subject, ASSERTION_DELEGATE_TYPE, agreementSigner),
@@ -105,22 +115,22 @@ contract ClaimManager is EIP712 {
     
     Record storage r = roles[role][subject];
     r.expireDate = block.timestamp + expiry;
-    r.version = VersionNumberResolver(ENSRegistry(ensRegistry).resolver(role)).versionNumber(role);
+    r.version = version;
     
-    emit RoleRegistered(role, subject);
+    emit RoleRegistered(role, version, subject);
   }
   
   function verifyPreconditions(address subject, bytes32 role) internal view {
     address resolver = ENSRegistry(ensRegistry).resolver(role);
     
-    (bytes32[] memory roles, bool mustHaveAll) = EnrolmentPrerequisiteRolesResolver(resolver).prerequisiteRoles(role);
-    if (roles.length == 0) {
+    (bytes32[] memory requiredRoles, bool mustHaveAll) = EnrolmentPrerequisiteRolesResolver(resolver).prerequisiteRoles(role);
+    if (requiredRoles.length == 0) {
       return;
     }
-    uint numberOfRequiredRoles = mustHaveAll ? roles.length : 1;
+    uint numberOfRequiredRoles = mustHaveAll ? requiredRoles.length : 1;
     uint numberOfRoles = 0;
-    for (uint i = 0; i < roles.length && numberOfRoles < numberOfRequiredRoles; i++) {
-      if (this.hasRole(subject, roles[i], "")) {
+    for (uint i = 0; i < requiredRoles.length && numberOfRoles < numberOfRequiredRoles; i++) {
+      if (this.hasRole(subject, requiredRoles[i], 0)) {
         numberOfRoles++;
       }
     }
@@ -142,7 +152,7 @@ contract ClaimManager is EIP712 {
       }
       revert("ClaimManager: Issuer is not listed in role issuers list");
     } else if (issuer_role != "") {
-      require(hasRole(issuer, issuer_role, ""), "ClaimManager: Issuer does not has required role");
+      require(hasRole(issuer, issuer_role, 0), "ClaimManager: Issuer does not has required role");
     } else {
       revert("ClaimManager: Role issuers are not specified");
     }
