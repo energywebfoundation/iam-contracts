@@ -77,7 +77,8 @@ contract ClaimManager is EIP712 {
     address proofSigner;
     address agreementSigner;
     {
-    // TODO: verify existing of role to register
+    require(VersionNumberResolver(ENSRegistry(ensRegistry).resolver(role)).versionNumber(role) >= version, 
+    "ClaimManager: Such version of this role doesn't exist");
     bytes32 agreementHash = ECDSA.toEthSignedMessageHash(
       _hashTypedDataV4(keccak256(abi.encode(
       AGREEMENT_TYPEHASH,

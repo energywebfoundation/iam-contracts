@@ -387,7 +387,7 @@ function testSuit() {
 
       expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), 0)).true;
     });
-    
+
     it('hasRole() should return true if identity registered with more recent version', async () => {
       const latest = 2;
       await roleResolver.setVersionNumber(namehash(authorityRole), latest.toString());
@@ -401,6 +401,11 @@ function testSuit() {
       await requestRole({ roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
 
       expect(await claimManager.hasRole(authorityAddr, namehash(authorityRole), 2)).false;
+    });
+
+    it('request to register with non-existing role should be rejected', async () => {
+      expect(requestRole({ roleName: authorityRole, version: 47, agreementSigner: authority, proofSigner: authority }))
+      .rejectedWith("ClaimManager: Such version of this role doesn't exist")
     });
   });
 }
