@@ -9,9 +9,7 @@ import {
   IAppDefinition,
   IOrganizationDefinition,
   IRoleDefinition,
-  ResolverContractType,
-  addKnownResolver,
-  setRegistryAddress
+  ResolverContractType
 } from "../src/index";
 import { PreconditionType } from "../src/types/DomainDefinitions";
 import { ERROR_MESSAGES } from "../src/types/ErrorMessages";
@@ -76,13 +74,15 @@ let domainNotifier: DomainNotifier;
 let ensPublicResolver: PublicResolver;
 let owner: JsonRpcSigner;
 let provider: JsonRpcProvider
+let chainId: number;
 
+let domainReader: DomainReader;
 
 export function domainCrudTestSuite(): void {
   describe("Domain CRUD tests", () => {
     before(async function () {
       ({
-        publicResolverFactory, roleDefResolverFactory, ensFactory, domainNotifierFactory, provider, owner
+        publicResolverFactory, roleDefResolverFactory, ensFactory, domainNotifierFactory, provider, owner, chainId
       } = this);
     });
 
@@ -95,11 +95,9 @@ export function domainCrudTestSuite(): void {
       await ensRoleDefResolver.deployed();
       ensPublicResolver = await publicResolverFactory.deploy(ensRegistry.address) as PublicResolver;
       await ensRoleDefResolver.deployed();
-
-      const chainId = await (await provider.getNetwork()).chainId;
-      setRegistryAddress(chainId, ensRegistry.address);
-      addKnownResolver(chainId, ensRoleDefResolver.address, ResolverContractType.RoleDefinitionResolver_v1);
-      addKnownResolver(chainId, ensPublicResolver.address, ResolverContractType.PublicResolver);
+      domainReader = new DomainReader({ ensRegistryAddress: ensRegistry.address, provider: owner.provider });
+      domainReader.addKnownResolver({ chainId, address: ensRoleDefResolver.address, type: ResolverContractType.RoleDefinitionResolver_v1 });
+      domainReader.addKnownResolver({ chainId, address: ensPublicResolver.address, type: ResolverContractType.PublicResolver });
 
       const rootNameHash = "0x0000000000000000000000000000000000000000000000000000000000000000";
       await ensRegistry.setSubnodeOwner(rootNameHash, hashLabel(domain), await owner.getAddress());
@@ -108,12 +106,11 @@ export function domainCrudTestSuite(): void {
 
     it("role can be created, read and updated", async () => {
       await ensRegistry.setResolver(node, ensRoleDefResolver.address);
-      const domainDefTxFactory = new DomainTransactionFactory(ensRoleDefResolver);
+      const domainDefTxFactory = new DomainTransactionFactory({ domainResolverAddress: ensRoleDefResolver.address });
       const call = domainDefTxFactory.newRole({ domain: domain, roleDefinition: role });
       await (await owner.sendTransaction(call)).wait()
 
-      const domainReader = new DomainReader(owner.provider)
-      const roleDef = await domainReader.read(node);
+      const roleDef = await domainReader.read({ node });
       expect(roleDef).to.eql(role);
 
       const reverseName = await ensRoleDefResolver.name(node);
@@ -122,7 +119,7 @@ export function domainCrudTestSuite(): void {
       role.version = role.version + 1;
       const updateRole = domainDefTxFactory.editDomain({ domain: domain, domainDefinition: role });
       await (await owner.sendTransaction(updateRole)).wait()
-      const updatedRoleDef = await domainReader.read(node);
+      const updatedRoleDef = await domainReader.read({ node });
       expect(updatedRoleDef).to.eql(role);
 
       const logs = await getDomainUpdatedLogs();
@@ -135,8 +132,7 @@ export function domainCrudTestSuite(): void {
       const call = domainDefTxFactory.newRole({ domain: domain, roleDefinition: role });
       await (await owner.sendTransaction(call)).wait()
 
-      const domainReader = new DomainReader(owner.provider)
-      const roleDef = await domainReader.read(node);
+      const roleDef = await domainReader.read({ node });
 
       expect(roleDef).to.eql(role);
 
@@ -149,12 +145,11 @@ export function domainCrudTestSuite(): void {
         appName: "myApp"
       }
       await ensRegistry.setResolver(node, ensRoleDefResolver.address);
-      const domainDefTxFactory = new DomainTransactionFactory(ensRoleDefResolver);
+      const domainDefTxFactory = new DomainTransactionFactory({ domainResolverAddress: ensRoleDefResolver.address });
       const call = domainDefTxFactory.newDomain({ domain: domain, domainDefinition: app });
       await (await owner.sendTransaction(call)).wait()
 
-      const domainReader = new DomainReader(owner.provider)
-      const appDef = await domainReader.read(node);
+      const appDef = await domainReader.read({ node });
 
       expect(appDef).to.eql(app);
 
@@ -170,12 +165,11 @@ export function domainCrudTestSuite(): void {
         orgName: "myOrg"
       }
       await ensRegistry.setResolver(node, ensRoleDefResolver.address);
-      const domainDefTxFactory = new DomainTransactionFactory(ensRoleDefResolver);
+      const domainDefTxFactory = new DomainTransactionFactory({ domainResolverAddress: ensRoleDefResolver.address });
       const call = domainDefTxFactory.newDomain({ domain: domain, domainDefinition: org });
       await (await owner.sendTransaction(call)).wait()
 
-      const domainReader = new DomainReader(owner.provider)
-      const appDef = await domainReader.read(node);
+      const appDef = await domainReader.read({ node });
 
       expect(appDef).to.eql(org);
 
@@ -188,8 +182,7 @@ export function domainCrudTestSuite(): void {
 
     it("domain with unknown resolver type throws error", async () => {
       await ensRegistry.setResolver(node, '0x0000000000000000000000000000000000000123');
-      const roleDefinitionReader = new DomainReader(owner.provider)
-      await expect(roleDefinitionReader.read(node)).to.eventually.rejectedWith(ERROR_MESSAGES.RESOLVER_NOT_KNOWN);
+      await expect(domainReader.read({ node })).to.eventually.rejectedWith(ERROR_MESSAGES.RESOLVER_NOT_KNOWN);
     });
 
     it("domain with not supported resolver throws error", async () => {
@@ -197,16 +190,14 @@ export function domainCrudTestSuite(): void {
       const chainId = await (await provider.getNetwork()).chainId;
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      addKnownResolver(chainId, resolverAddress, "999");
+      domainReader.addKnownResolver(chainId, resolverAddress, "999");
       await ensRegistry.setResolver(node, resolverAddress);
-      const roleDefinitionReader = new DomainReader(owner.provider)
-      await expect(roleDefinitionReader.read(node)).to.eventually.rejectedWith(ERROR_MESSAGES.RESOLVER_NOT_SUPPORTED);
+      await expect(domainReader.read({ node })).to.eventually.rejectedWith(ERROR_MESSAGES.RESOLVER_NOT_KNOWN);
     });
 
     it("domain which has not been registered throws error", async () => {
       const unregisteredRole = namehash("notregistered.iam");
-      const roleDefinitionReader = new DomainReader(owner.provider)
-      await expect(roleDefinitionReader.read(unregisteredRole)).to.eventually.rejectedWith(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED);
+      await expect(domainReader.read({ node: unregisteredRole })).to.eventually.rejectedWith(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED);
     });
   });
 }

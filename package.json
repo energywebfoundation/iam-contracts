@@ -7,9 +7,15 @@
   },
   "description": "Smart contracts related to EnergyWeb IAM",
   "main": "dist/src/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/src/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
+    "prebuild": "rimraf dist && patch-package",
     "build": "npm run compile:contracts && npm run build:typechain && npm run compile:ts",
-    "compile:ts": "tsc",
+    "compile:ts": "bili",
     "test": "run-with-testrpc -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000 \"npm run test-ganache\" ",
     "ganache": "ganache-cli -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000",
     "test-ganache": "mocha -r ts-node/register test/*test.ts",
@@ -18,8 +24,7 @@
     "build:typechain:domainnotifier": "typechain --target ethers-v4 --outDir typechain './build/contracts/DomainNotifier.json'",
     "build:typechain:resolver": "typechain --target ethers-v4 --outDir typechain './build/contracts/RoleDefinitionResolver.json'",
     "build:typechain:registry": "typechain --target ethers-v4 --outDir typechain './node_modules/@ensdomains/ens/build/contracts/ENSRegistry.json'",
-    "build:typechain:publicresolver": "typechain --target ethers-v4 --outDir typechain './node_modules/@ensdomains/resolver/build/contracts/PublicResolver.json'",
-    "postinstall": "patch-package"
+    "build:typechain:publicresolver": "typechain --target ethers-v4 --outDir typechain './node_modules/@ensdomains/resolver/build/contracts/PublicResolver.json'"
   },
   "homepage": "https://github.com/energywebfoundation/iam-contracts/#readme",
   "repository": {
@@ -53,6 +58,7 @@
     "@types/mocha": "^8.2.2",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
+    "bili": "^5.0.5",
     "chai": "4.2.0",
     "chai-arrays": "2.2.0",
     "chai-as-promised": "7.1.1",
@@ -60,6 +66,8 @@
     "ganache-cli": "^6.12.2",
     "mocha": "7.1.0",
     "patch-package": "^6.4.7",
+    "rimraf": "^3.0.2",
+    "rollup-plugin-typescript2": "^0.30.0",
     "run-with-testrpc": "0.3.1",
     "semantic-release": "^17.4.2",
     "truffle": "^5.3.0",
