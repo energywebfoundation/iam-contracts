@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.4.0...v1.5.0) (2021-05-24)
+
+
+### Features
+
+* **VersionNumberResolver:** change to uint ([b467135](https://github.com/energywebfoundation/iam-contracts/commit/b467135b0d3430ea7db209aabd594ea4174e2e3b))
+
 # [1.4.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.3.0...v1.4.0) (2021-05-19)
 
 
