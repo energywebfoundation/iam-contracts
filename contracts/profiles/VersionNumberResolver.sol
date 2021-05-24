@@ -9,9 +9,9 @@ import "@ensdomains/resolver/contracts/ResolverBase.sol";
 abstract contract VersionNumberResolver is ResolverBase {
     bytes4 private constant VERSION_NUMBER_INTERFACE_ID = 0x338bc8fa;
 
-    event VersionNumberChanged(bytes32 indexed node, string newVersion);
+    event VersionNumberChanged(bytes32 indexed node, uint256 newVersion);
 
-    mapping(bytes32 => string) public versionNumbers;
+    mapping(bytes32 => uint256) public versionNumbers;
 
     /**
      * Sets the version number associated with a role def.
@@ -19,7 +19,7 @@ abstract contract VersionNumberResolver is ResolverBase {
      * @param node The node to update.
      * @param newVersionNumber The versionNumber to set.
      */
-    function setVersionNumber(bytes32 node, string calldata newVersionNumber)
+    function setVersionNumber(bytes32 node, uint256 newVersionNumber)
         external
         authorised(node)
     {
@@ -32,7 +32,7 @@ abstract contract VersionNumberResolver is ResolverBase {
      * @param node The ENS node to query.
      * @return The associated version number.
      */
-    function versionNumber(bytes32 node) external view returns (string memory) {
+    function versionNumber(bytes32 node) external view returns (uint256) {
         return (versionNumbers[node]);
     }
 

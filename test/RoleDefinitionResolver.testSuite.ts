@@ -5,6 +5,7 @@ import { ENSRegistry } from "../typechain/ENSRegistry";
 import { RoleDefinitionResolver } from "../typechain/RoleDefinitionResolver";
 import { DomainNotifier } from "../typechain/DomainNotifier";
 import { JsonRpcSigner } from "ethers/providers";
+import { BigNumber } from "ethers/utils";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -59,7 +60,7 @@ interface IEvent {
     node?: string,
     newPrerequisiteRoles?: string[],
     newType?: string,
-    newVersion?: string
+    newVersion?: BigNumber
   }
 }
 
@@ -144,9 +145,17 @@ export function roleDefinitionResolverTestSuite(): void {
       await ens.connect(delegate).setSubnodeOwner(orgNode, newRoleLabelHash, ownerAddr);
       await ens.connect(delegate).setResolver(newRoleNode, roleDefinitionResolver.address);
       expect(await ens.owner(newRoleNode)).to.equal(ownerAddr);
-      // Assumption is that if can update one resolver profile then can update them all
-      const newVersionNumber = "2.0.0";
+      // Set version number as test of a new resolver profile
+      const newVersionNumber = 100;
       await roleDefinitionResolver.connect(delegate).setVersionNumber(roleNode, newVersionNumber);
+      const changedVersionNumber = await roleDefinitionResolver.versionNumber(roleNode);
+      expect(changedVersionNumber.toNumber()).to.equal(newVersionNumber);
+      const newText = "new text";
+      // Set text as test of PublicResolver profile
+      const textKey = "metadata";
+      await roleDefinitionResolver.connect(delegate).setText(roleNode, textKey, newText);
+      const changedText = await roleDefinitionResolver.text(roleNode, textKey);
+      expect(changedText).to.equal(newText);
 
       // Remove delegate and confirm that can not longer create role 
       const anotherRoleLabel = "anotherrole";
@@ -156,7 +165,8 @@ export function roleDefinitionResolverTestSuite(): void {
       await ens.connect(owner).setApprovalForAll(delegateAddress, false);
       await expect(ens.connect(delegate).setSubnodeOwner(orgNode, anotherRoleLabelHash, ownerAddr)).to.eventually.be.rejected;
       await expect(ens.connect(delegate).setResolver(anotherRoleNode, roleDefinitionResolver.address)).to.eventually.be.rejected;
-      await expect(roleDefinitionResolver.connect(anotherAccount).setVersionNumber(roleNode, newVersionNumber)).to.eventually.be.rejected;
+      await expect(roleDefinitionResolver.connect(delegate).setVersionNumber(roleNode, newVersionNumber + 1)).to.eventually.be.rejected;
+      await expect(roleDefinitionResolver.connect(delegate).setText(roleNode, textKey, newText + "changed")).to.eventually.be.rejected;
     });
   });
 
@@ -225,19 +235,19 @@ export function roleDefinitionResolverTestSuite(): void {
   describe('versionNumbers', async () => {
     it('permits setting version number by owner', async () => {
       const initialVersionNumber = await roleDefinitionResolver.versionNumber(roleNode);
-      expect(initialVersionNumber).to.equal("", "version numbers should initialized to empty string")
-      const newVersionNumber = "1.0.0";
+      expect(initialVersionNumber.toNumber()).to.equal(0, "version numbers should initialized to 0")
+      const newVersionNumber = 1
       const tx = await roleDefinitionResolver.setVersionNumber(roleNode, newVersionNumber);
       const changedVersionNumber = await roleDefinitionResolver.versionNumber(roleNode);
-      expect(changedVersionNumber).to.equal(newVersionNumber);
+      expect(changedVersionNumber.toNumber()).to.equal(newVersionNumber);
 
       const event = await getTransactionEventArgs(tx);
-      expect(event.args?.newVersion).to.equal(newVersionNumber);
+      expect(event.args?.newVersion?.toNumber()).to.equal(newVersionNumber);
       expect(event.args?.node).to.equal(roleNode);
     });
 
     it('prevents updating version number by non-owner', async () => {
-      await expect(roleDefinitionResolver.connect(anotherAccount).setVersionNumber(roleNode, "2.0")).to.eventually.be.rejected;
+      await expect(roleDefinitionResolver.connect(anotherAccount).setVersionNumber(roleNode, 2)).to.eventually.be.rejected;
     });
   });
 

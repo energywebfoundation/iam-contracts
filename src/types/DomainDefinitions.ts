@@ -15,7 +15,7 @@ export interface IOrganizationDefinition {
 }
 
 export interface IRoleDefinition extends IRoleDefinitionText {
-  version: string;
+  version: number;
   issuer: IIssuerDefinition
   enrolmentPreconditions: { type: PreconditionType; conditions: string[] }[];
 }

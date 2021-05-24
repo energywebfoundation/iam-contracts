@@ -48,7 +48,7 @@ const role: IRoleDefinition = {
   }],
   roleName: "myRole",
   roleType: "test",
-  version: "1.0.0",
+  version: 10,
   enrolmentPreconditions: [{
     type: PreconditionType.Role,
     conditions: [domain] // Circular condition but sufficient for test
@@ -119,7 +119,7 @@ export function domainCrudTestSuite(): void {
       const reverseName = await ensRoleDefResolver.name(node);
       expect(reverseName).to.equal(domain);
 
-      role.version = role.version + "updated"
+      role.version = role.version + 1;
       const updateRole = domainDefTxFactory.editDomain({ domain: domain, domainDefinition: role });
       await (await owner.sendTransaction(updateRole)).wait()
       const updatedRoleDef = await domainReader.read(node);
