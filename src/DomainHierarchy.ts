@@ -109,7 +109,7 @@ export class DomainHierarchy {
       },
       provider: this._ensRegistry.provider
     });
-    return [...singleLevel]
+    return [...singleLevel].filter(Boolean); // Boolean filter to remove empty string
   };
 
   /**
