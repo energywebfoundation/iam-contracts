@@ -1,3 +1,10 @@
+## [1.7.1](https://github.com/energywebfoundation/iam-contracts/compare/v1.7.0...v1.7.1) (2021-05-25)
+
+
+### Bug Fixes
+
+* **DomainHierarchy:** removing empty string from singlelevel ([211dbe2](https://github.com/energywebfoundation/iam-contracts/commit/211dbe29a8a8d8ac1d0f7dfa38f5814d903731a4))
+
 # [1.7.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.6.0...v1.7.0) (2021-05-25)
 
 
