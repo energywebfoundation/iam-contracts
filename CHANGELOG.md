@@ -1,3 +1,16 @@
+# [1.7.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.6.0...v1.7.0) (2021-05-25)
+
+
+### Bug Fixes
+
+* **package.json:** correct main path ([2bf2f5e](https://github.com/energywebfoundation/iam-contracts/commit/2bf2f5ea933782540a3d75e1b3bc179050efdfe7))
+
+
+### Features
+
+* copy typechain files to dist ([9ebcfab](https://github.com/energywebfoundation/iam-contracts/commit/9ebcfab8ca99ed79582cc95b2037f219bee260aa))
+* export contract factories ([2f6f49a](https://github.com/energywebfoundation/iam-contracts/commit/2f6f49a7f1dc2ff8b6884751f9dc8fde05c53b74))
+
 # [1.6.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.5.0...v1.6.0) (2021-05-24)
 
 
