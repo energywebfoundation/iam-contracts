@@ -6,7 +6,7 @@
     "registry": "https://registry.npmjs.org"
   },
   "description": "Smart contracts related to EnergyWeb IAM",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "module": "dist/index.esm.js",
   "types": "dist/src/index.d.ts",
   "files": [
