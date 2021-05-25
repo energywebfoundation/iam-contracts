@@ -4,5 +4,4 @@ export enum ERROR_MESSAGES {
   RESOLVER_NOT_SUPPORTED = "Resolver type is not supported",
   DOMAIN_TYPE_UNKNOWN = "unable to determine domain type",
   NAME_NODE_MISMATCH = "hashed name does not match node",
-  REGISTRY_NOT_SET = "Registry address not set for chain id. Use setRegistryAddress function",
 }

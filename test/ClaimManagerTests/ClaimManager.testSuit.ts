@@ -5,7 +5,7 @@ import { abi as erc1056Abi, bytecode as erc1056Bytecode } from './ERC1056.json';
 import { ClaimManager__factory as ClaimManagerFactory } from '../../typechain/factories/ClaimManager__factory';
 import { ClaimManager } from '../../typechain/ClaimManager';
 import { DomainTransactionFactory } from '../../src';
-import { namehash, keccak256, toUtf8Bytes, id, verifyMessage } from 'ethers/utils';
+import { namehash, keccak256, toUtf8Bytes, id } from 'ethers/utils';
 import { ENSRegistry } from '../../typechain/ENSRegistry';
 import { RoleDefinitionResolver } from '../../typechain/RoleDefinitionResolver';
 import { PreconditionType } from '../../src/types/DomainDefinitions';
@@ -194,7 +194,7 @@ function testSuit() {
     roleResolver = await (await (roleDefResolverFactory.connect(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
 
     claimManager = await (await new ClaimManagerFactory(deployer).deploy(erc1056.address, ensRegistry.address)).deployed();
-    roleFactory = new DomainTransactionFactory(roleResolver);
+    roleFactory = new DomainTransactionFactory({ domainResolverAddress: roleResolver.address });
 
     await (await ensRegistry.setSubnodeOwner(root, hashLabel(authorityRole), deployerAddr)).wait();
     await (await ensRegistry.setSubnodeOwner(root, hashLabel(deviceRole), deployerAddr)).wait();
@@ -216,7 +216,7 @@ function testSuit() {
           issuer: { issuerType: "DID", did: [`did:ethr:${await authority.getAddress()}`] },
           metadata: [],
           roleType: '',
-          version: defaultVersion.toString()
+          version: defaultVersion
         }
       })
     })).wait();
@@ -231,7 +231,7 @@ function testSuit() {
           issuer: { issuerType: "ROLE", roleName: namehash(installerRole) },
           metadata: [],
           roleType: '',
-          version: defaultVersion.toString()
+          version: defaultVersion
         }
       })
     })).wait();
@@ -246,7 +246,7 @@ function testSuit() {
           issuer: { issuerType: "ROLE", roleName: namehash(installerRole) },
           metadata: [],
           roleType: '',
-          version: defaultVersion.toString()
+          version: defaultVersion
         }
       })
     })).wait();
@@ -261,7 +261,7 @@ function testSuit() {
           issuer: { issuerType: "ROLE", roleName: namehash(authorityRole) },
           metadata: [],
           roleType: '',
-          version: defaultVersion.toString()
+          version: defaultVersion
         }
       })
     })).wait();
@@ -405,7 +405,7 @@ function testSuit() {
 
     it('request to register with non-existing role should be rejected', async () => {
       expect(requestRole({ roleName: authorityRole, version: 47, agreementSigner: authority, proofSigner: authority }))
-      .rejectedWith("ClaimManager: Such version of this role doesn't exist")
+        .rejectedWith("ClaimManager: Such version of this role doesn't exist")
     });
   });
 }

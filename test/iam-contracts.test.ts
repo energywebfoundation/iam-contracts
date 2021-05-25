@@ -6,7 +6,7 @@ import { abi as DomainNotifierAbi, bytecode as DomainNotiferBytecode } from '../
 import { abi as ensAbi, bytecode as ensBytecode } from '@ensdomains/ens/build/contracts/ENSRegistry.json';
 import { roleDefinitionResolverTestSuite } from './RoleDefinitionResolver.testSuite';
 import { domainCrudTestSuite } from './DomainCRUD.testSuite';
-import { getSubDomainsTestSuite } from './getSubDomains.testSuite';
+import { getSubDomainsTestSuite } from './DomainHierarchy.testSuite';
 import { claimManagerTests } from './ClaimManagerTests/ClaimManager.testSuit';
 
 const { JsonRpcProvider } = providers;
@@ -27,8 +27,10 @@ describe('[IAM CONTRACTS]', function () {
     const ensFactory = new ContractFactory(ensAbi, ensBytecode, deployer);
     const domainNotifierFactory = new ContractFactory(DomainNotifierAbi, DomainNotiferBytecode, deployer);
 
+    const { chainId } = await provider.getNetwork();
+
     Object.assign(this, {
-      publicResolverFactory, roleDefResolverFactory, ensFactory, domainNotifierFactory, owner, anotherAccount, provider,
+      publicResolverFactory, roleDefResolverFactory, ensFactory, domainNotifierFactory, owner, anotherAccount, provider, chainId
     });
   });
 
