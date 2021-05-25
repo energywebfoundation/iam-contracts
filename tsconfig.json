@@ -7,8 +7,7 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "outDir": "dist",
-    "resolveJsonModule": true,
-    "declaration": true
+    "resolveJsonModule": true
   },
   "include": ["./src"],
 }

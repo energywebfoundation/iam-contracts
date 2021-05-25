@@ -1,4 +1,5 @@
 pragma solidity 0.7.6;
+pragma abicoder v2;
 
 import "@ensdomains/ens/contracts/ENSRegistry.sol";
 import "@openzeppelin/contracts/cryptography/ECDSA.sol";
@@ -19,14 +20,14 @@ contract ClaimManager is EIP712 {
   string constant private ERC712_DOMAIN_VERSION = "1.0";
   
   struct Record {
-    uint expireDate;
-    uint version;
+    uint256 expiry;
+    uint256 version;
   }
   
   struct Agreement {
     address subject;
     bytes32 role;
-    uint version;
+    uint256 version;
   }
   
   struct Proof {
@@ -38,14 +39,14 @@ contract ClaimManager is EIP712 {
   }
   
   bytes32 constant AGREEMENT_TYPEHASH = keccak256(
-    "Agreement(address subject,bytes32 role,uint version)"
+    "Agreement(address subject,bytes32 role,uint256 version)"
   );
 
   bytes32 constant public PROOF_TYPEHASH = keccak256(
-    "Proof(address subject,bytes32 role,uint version,uint expiry,address issuer)"
+    "Proof(address subject,bytes32 role,uint256 version,uint256 expiry,address issuer)"
   );
   
-  event RoleRegistered(bytes32 role, uint version, address subject);
+  event RoleRegistered(address subject, bytes32 role, uint256 version, uint256 expiry, address issuer);
   
   mapping(bytes32 => mapping(address => Record)) private roles;
   address private didRegistry;
@@ -56,20 +57,20 @@ contract ClaimManager is EIP712 {
     ensRegistry = _ensRegistry;
   }
   
-  function hasRole(address subject, bytes32 role, uint version) public view returns(bool) {
+  function hasRole(address subject, bytes32 role, uint256 version) public view returns(bool) {
     Record memory r = roles[role][subject];
     if (version == 0) {
-      return r.expireDate > block.timestamp;
+      return r.expiry > block.timestamp;
     } else {
-      return r.expireDate > block.timestamp && r.version >= version;
+      return r.expiry > block.timestamp && r.version >= version;
     }
   }
   
   function register(
     address subject, 
     bytes32 role,
-    uint version,
-    uint expiry,
+    uint256 version,
+    uint256 expiry,
     address issuer,
     bytes calldata subject_agreement,
     bytes calldata role_proof
@@ -79,6 +80,7 @@ contract ClaimManager is EIP712 {
     {
     require(VersionNumberResolver(ENSRegistry(ensRegistry).resolver(role)).versionNumber(role) >= version, 
     "ClaimManager: Such version of this role doesn't exist");
+    
     bytes32 agreementHash = ECDSA.toEthSignedMessageHash(
       _hashTypedDataV4(keccak256(abi.encode(
       AGREEMENT_TYPEHASH,
@@ -115,10 +117,10 @@ contract ClaimManager is EIP712 {
     verifyIssuer(issuer, role);
     
     Record storage r = roles[role][subject];
-    r.expireDate = block.timestamp + expiry;
+    r.expiry = expiry;
     r.version = version;
     
-    emit RoleRegistered(role, version, subject);
+    emit RoleRegistered(subject, role, version, expiry, issuer);
   }
   
   function verifyPreconditions(address subject, bytes32 role) internal view {
@@ -157,9 +159,5 @@ contract ClaimManager is EIP712 {
     } else {
       revert("ClaimManager: Role issuers are not specified");
     }
-  }
-  
-  function compareStrings(string memory a, string memory b) public pure returns (bool) {
-    return (keccak256(abi.encodePacked((a))) == keccak256(abi.encodePacked((b))));
   }
 }

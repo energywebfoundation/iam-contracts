@@ -18,7 +18,7 @@ const deviceRole = 'device';
 const activeDeviceRole = 'active-device'
 const installerRole = 'installer';
 
-const expiry = 60 * 60; // in secs
+const expiry = Math.floor(new Date().getTime() / 1000) + 60 * 60;
 const defaultVersion = 1;
 
 const hashLabel = (label: string): string => keccak256(toUtf8Bytes(label));
@@ -77,7 +77,7 @@ export function testsOnGanache(): void {
 
 function testsOnVolta() {
   before(async function () {
-    provider = new JsonRpcProvider('https://volta-rpc-vkn5r5zx4ke71f9hcu0c.energyweb.org/');
+    provider = new JsonRpcProvider('');
     const faucet = new Wallet(
       'df66a89721aab9508a5004192e8f0a7670141bdbcf7bd59cf5a20c4efd0daef3',
       provider
@@ -128,8 +128,8 @@ function testSuit() {
     const subjectAddr = await subject.getAddress();
 
     const erc712_type_hash = id('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)');
-    const agreement_type_hash = id('Agreement(address subject,bytes32 role,uint version)');
-    const proof_type_hash = id('Proof(address subject,bytes32 role,uint version,uint expiry,address issuer)');
+    const agreement_type_hash = id('Agreement(address subject,bytes32 role,uint256 version)');
+    const proof_type_hash = id('Proof(address subject,bytes32 role,uint256 version,uint256 expiry,address issuer)');
 
     const domainSeparator = keccak256(
       defaultAbiCoder.encode(
@@ -146,7 +146,7 @@ function testSuit() {
         messageId,
         domainSeparator,
         keccak256(defaultAbiCoder.encode(
-          ['bytes32', 'address', 'bytes32', 'uint'],
+          ['bytes32', 'address', 'bytes32', 'uint256'],
           [agreement_type_hash, subjectAddr, namehash(roleName), version]
         ))
       ]
