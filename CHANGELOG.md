@@ -1,3 +1,10 @@
+# [1.9.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.8.0...v1.9.0) (2021-05-26)
+
+
+### Features
+
+* update resolver and domain notifier address ([6c54e4f](https://github.com/energywebfoundation/iam-contracts/commit/6c54e4f23b2efb2fb0a742e84b2435fefd4991ad))
+
 # [1.8.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.7.1...v1.8.0) (2021-05-26)
 
 
