@@ -1,3 +1,26 @@
+# [1.8.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.7.1...v1.8.0) (2021-05-26)
+
+
+### Bug Fixes
+
+* pure parse string ([5fded2a](https://github.com/energywebfoundation/iam-contracts/commit/5fded2aff7ca31e746144f8d0a066b52ef3a8613))
+* specify fields visibility ([4ab62df](https://github.com/energywebfoundation/iam-contracts/commit/4ab62df076a4040202a57242b831f0d9999400e0))
+
+
+### Features
+
+* **claimManager:** client to canonize sigs ([00cdd0f](https://github.com/energywebfoundation/iam-contracts/commit/00cdd0f4e8dbaca4d62f68bb191e70cec8c84ee3))
+* **claimManager:** include version in proof ([e3c0409](https://github.com/energywebfoundation/iam-contracts/commit/e3c0409d40e2e3b1e49bae2fe6fdaffe731523ac))
+* **claimManager:** type signatures ([5cca815](https://github.com/energywebfoundation/iam-contracts/commit/5cca815e2ddc68d383867ac90b3d061cf61057e1))
+* **claimManager:** verify role version ([8dcd147](https://github.com/energywebfoundation/iam-contracts/commit/8dcd147187f01a1b77cacbff4eec1f31ae1cdadd))
+* check required number of prerequisites ([c0c6a38](https://github.com/energywebfoundation/iam-contracts/commit/c0c6a3853c8ef2052133580e257964c14dfefae9))
+* delegate agreement and proving ([827599d](https://github.com/energywebfoundation/iam-contracts/commit/827599d19f86aa3cb439bf331ff0a364fa5c222e))
+* emit role assigned ([0924538](https://github.com/energywebfoundation/iam-contracts/commit/09245388a89878cb3e7f9e3a9385440a7732bd1f))
+* openzeppelin to verify sig ([997b725](https://github.com/energywebfoundation/iam-contracts/commit/997b725ab02ef8f61de4938bacb13098620139f0))
+* register with latest role version ([7e8235a](https://github.com/energywebfoundation/iam-contracts/commit/7e8235aa3d27a8230beece31b63a4ec20da48dfe))
+* register with role ([4293806](https://github.com/energywebfoundation/iam-contracts/commit/4293806dfa02cd959d8d957261aac975f88b9be8))
+* resolve resolver from role ([66e24e1](https://github.com/energywebfoundation/iam-contracts/commit/66e24e1ae43a9aa3ceb5da94d9651a6d6e35bbba))
+
 ## [1.7.1](https://github.com/energywebfoundation/iam-contracts/compare/v1.7.0...v1.7.1) (2021-05-25)
 
 
