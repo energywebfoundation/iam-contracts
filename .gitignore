@@ -66,13 +66,13 @@ common/autoinstallers/*/.npmrc
 
 # Hardhat files
 cache
-typechain
+ethers-v4
 
 # VS Code files
 .vscode
 
 # Build outputs
 dist
-typechain
+ethers-v4
 build/contracts
 bin/contracts

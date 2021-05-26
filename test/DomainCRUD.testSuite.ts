@@ -14,10 +14,10 @@ import {
 import { PreconditionType } from "../src/types/DomainDefinitions";
 import { ERROR_MESSAGES } from "../src/types/ErrorMessages";
 import { LegacyDomainDefTransactionFactory } from "./LegacyDomainDefTransactionFactory";
-import { ENSRegistry } from "../typechain/ENSRegistry";
-import { RoleDefinitionResolver } from "../typechain/RoleDefinitionResolver";
-import { DomainNotifier } from "../typechain/DomainNotifier";
-import { PublicResolver } from "../typechain/PublicResolver";
+import { ENSRegistry } from "../ethers-v4/ENSRegistry";
+import { RoleDefinitionResolver } from "../ethers-v4/RoleDefinitionResolver";
+import { DomainNotifier } from "../ethers-v4/DomainNotifier";
+import { PublicResolver } from "../ethers-v4/PublicResolver";
 import { hashLabel } from "./iam-contracts.test";
 
 chai.use(chaiAsPromised);
