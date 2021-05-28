@@ -14,18 +14,18 @@
   ],
   "scripts": {
     "prebuild": "rimraf dist && patch-package",
-    "build": "npm run compile:contracts && npm run build:typechain && npm run compile:ts && copyfiles \"typechain/**/*.d.ts\" dist",
+    "build": "npm run compile:contracts && npm run build:typechain && npm run compile:ts && copyfiles \"ethers-v4/**/*.d.ts\" dist",
     "compile:ts": "bili",
     "test": "run-with-testrpc -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000 \"npm run test-ganache\" ",
     "ganache": "ganache-cli -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000",
     "test-ganache": "mocha -r ts-node/register test/*test.ts",
     "compile:contracts": "truffle compile",
     "build:typechain": "npm run build:typechain:domainnotifier && npm run build:typechain:resolver && npm run build:typechain:registry && npm run build:typechain:publicresolver && npm run build:typechain:claimmanager",
-    "build:typechain:domainnotifier": "typechain --target ethers-v4 --outDir typechain './build/contracts/DomainNotifier.json'",
-    "build:typechain:resolver": "typechain --target ethers-v4 --outDir typechain './build/contracts/RoleDefinitionResolver.json'",
-    "build:typechain:registry": "typechain --target ethers-v4 --outDir typechain './node_modules/@ensdomains/ens/build/contracts/ENSRegistry.json'",
-    "build:typechain:publicresolver": "typechain --target ethers-v4 --outDir typechain './node_modules/@ensdomains/resolver/build/contracts/PublicResolver.json'",
-    "build:typechain:claimmanager": "typechain --target ethers-v4 --outDir typechain './build/contracts/ClaimManager.json'"
+    "build:typechain:domainnotifier": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/DomainNotifier.json'",
+    "build:typechain:resolver": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/RoleDefinitionResolver.json'",
+    "build:typechain:registry": "typechain --target ethers-v4 --outDir ethers-v4 './node_modules/@ensdomains/ens/build/contracts/ENSRegistry.json'",
+    "build:typechain:publicresolver": "typechain --target ethers-v4 --outDir ethers-v4 './node_modules/@ensdomains/resolver/build/contracts/PublicResolver.json'",
+    "build:typechain:claimmanager": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/ClaimManager.json'"
   },
   "homepage": "https://github.com/energywebfoundation/iam-contracts/#readme",
   "repository": {

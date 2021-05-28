@@ -1,15 +1,15 @@
 import { EventFilter, utils, providers } from "ethers";
-import { ENSRegistry } from "../typechain/ENSRegistry";
+import { ENSRegistry } from "../ethers-v4/ENSRegistry";
 import { abi as ensRegistryContract } from "../build/contracts/ENS.json";
 import { abi as ensResolverContract } from "../build/contracts/PublicResolver.json";
 import { abi as domainNotifierContract } from '../build/contracts/DomainNotifier.json';
 import { emptyAddress } from "./constants";
 import { DomainReader } from "./DomainReader";
-import { PublicResolver__factory } from "../typechain/factories/PublicResolver__factory";
-import { DomainNotifier__factory } from "../typechain/factories/DomainNotifier__factory";
+import { PublicResolver__factory } from "../ethers-v4/factories/PublicResolver__factory";
+import { DomainNotifier__factory } from "../ethers-v4/factories/DomainNotifier__factory";
 import { Provider } from "ethers/providers";
-import { PublicResolver } from "../typechain/PublicResolver";
-import { DomainNotifier } from "../typechain/DomainNotifier";
+import { PublicResolver } from "../ethers-v4/PublicResolver";
+import { DomainNotifier } from "../ethers-v4/DomainNotifier";
 
 export class DomainHierarchy {
   protected readonly _domainReader: DomainReader;

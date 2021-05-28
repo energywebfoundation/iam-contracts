@@ -2,12 +2,12 @@ import { utils, ContractFactory, Signer, Contract, Wallet } from 'ethers';
 import { JsonRpcProvider } from 'ethers/providers';
 import { expect } from 'chai';
 import { abi as erc1056Abi, bytecode as erc1056Bytecode } from './ERC1056.json';
-import { ClaimManager__factory as ClaimManagerFactory } from '../../typechain/factories/ClaimManager__factory';
-import { ClaimManager } from '../../typechain/ClaimManager';
+import { ClaimManager__factory as ClaimManagerFactory } from '../../ethers-v4/factories/ClaimManager__factory';
+import { ClaimManager } from '../../ethers-v4/ClaimManager';
 import { DomainTransactionFactory } from '../../src';
 import { namehash, keccak256, toUtf8Bytes, id } from 'ethers/utils';
-import { ENSRegistry } from '../../typechain/ENSRegistry';
-import { RoleDefinitionResolver } from '../../typechain/RoleDefinitionResolver';
+import { ENSRegistry } from '../../ethers-v4/ENSRegistry';
+import { RoleDefinitionResolver } from '../../ethers-v4/RoleDefinitionResolver';
 import { PreconditionType } from '../../src/types/DomainDefinitions';
 
 const { solidityKeccak256, arrayify, defaultAbiCoder } = utils;

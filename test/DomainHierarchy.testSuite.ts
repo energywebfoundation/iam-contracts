@@ -1,10 +1,10 @@
 import { ContractFactory } from 'ethers';
 import { DomainHierarchy } from '../src/DomainHierarchy';
 import { DomainReader, DomainTransactionFactory, EncodedCall, IRoleDefinition, ResolverContractType } from '../src';
-import { ENSRegistry } from '../typechain/ENSRegistry';
-import { RoleDefinitionResolver } from '../typechain/RoleDefinitionResolver';
-import { DomainNotifier } from '../typechain/DomainNotifier';
-import { PublicResolver } from '../typechain/PublicResolver';
+import { ENSRegistry } from '../ethers-v4/ENSRegistry';
+import { RoleDefinitionResolver } from '../ethers-v4/RoleDefinitionResolver';
+import { DomainNotifier } from '../ethers-v4/DomainNotifier';
+import { PublicResolver } from '../ethers-v4/PublicResolver';
 import { JsonRpcProvider, JsonRpcSigner } from "ethers/providers";
 import { hashLabel } from './iam-contracts.test';
 import { namehash } from 'ethers/utils';

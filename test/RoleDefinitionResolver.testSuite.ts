@@ -1,9 +1,9 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
 import { ContractFactory, ContractTransaction, utils } from "ethers";
-import { ENSRegistry } from "../typechain/ENSRegistry";
-import { RoleDefinitionResolver } from "../typechain/RoleDefinitionResolver";
-import { DomainNotifier } from "../typechain/DomainNotifier";
+import { ENSRegistry } from "../ethers-v4/ENSRegistry";
+import { RoleDefinitionResolver } from "../ethers-v4/RoleDefinitionResolver";
+import { DomainNotifier } from "../ethers-v4/DomainNotifier";
 import { JsonRpcSigner } from "ethers/providers";
 import { BigNumber } from "ethers/utils";
 

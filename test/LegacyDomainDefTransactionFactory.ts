@@ -1,5 +1,5 @@
 import { namehash } from "ethers/utils";
-import { PublicResolver } from "../typechain/PublicResolver";
+import { PublicResolver } from "../ethers-v4/PublicResolver";
 import { EncodedCall, IRoleDefinition } from "../src/index";
 
 /**
