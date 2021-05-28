@@ -1,8 +1,6 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
-import { ContractFactory } from "ethers";
-import { namehash } from "ethers/utils";
-import { JsonRpcProvider, JsonRpcSigner } from "ethers/providers";
+import { ContractFactory, utils, providers } from "ethers";
 import {
   DomainReader,
   DomainTransactionFactory,
@@ -26,7 +24,7 @@ const expect = chai.expect;
 export const rpcUrl = `http://localhost:8544`;
 
 const domain = "mydomain";
-const node = namehash(domain);
+const node = utils.namehash(domain);
 
 const role: IRoleDefinition = {
   fields: [{
@@ -72,8 +70,8 @@ let ensRegistry: ENSRegistry;
 let ensRoleDefResolver: RoleDefinitionResolver;
 let domainNotifier: DomainNotifier;
 let ensPublicResolver: PublicResolver;
-let owner: JsonRpcSigner;
-let provider: JsonRpcProvider
+let owner: providers.JsonRpcSigner;
+let provider: providers.JsonRpcProvider
 let chainId: number;
 
 let domainReader: DomainReader;
@@ -196,7 +194,7 @@ export function domainCrudTestSuite(): void {
     });
 
     it("domain which has not been registered throws error", async () => {
-      const unregisteredRole = namehash("notregistered.iam");
+      const unregisteredRole = utils.namehash("notregistered.iam");
       await expect(domainReader.read({ node: unregisteredRole })).to.eventually.rejectedWith(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED);
     });
   });

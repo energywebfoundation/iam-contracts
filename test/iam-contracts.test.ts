@@ -1,5 +1,4 @@
-import { providers, ContractFactory } from 'ethers';
-import { keccak256, toUtf8Bytes } from 'ethers/utils';
+import { providers, ContractFactory, utils } from 'ethers';
 import { abi as RoleDefAbi, bytecode as RoleDefBytecode } from '../build/contracts/RoleDefinitionResolver.json';
 import { abi as PublicResolverAbi, bytecode as PublicResolverBytecode } from '../build/contracts/PublicResolver.json';
 import { abi as DomainNotifierAbi, bytecode as DomainNotiferBytecode } from '../build/contracts/DomainNotifier.json';
@@ -11,7 +10,7 @@ import { claimManagerTests } from './ClaimManagerTests/ClaimManager.testSuit';
 
 const { JsonRpcProvider } = providers;
 
-export const hashLabel = (label: string): string => keccak256(toUtf8Bytes(label));
+export const hashLabel = (label: string): string => utils.keccak256(utils.toUtf8Bytes(label));
 
 describe('[IAM CONTRACTS]', function () {
   this.timeout(0);
