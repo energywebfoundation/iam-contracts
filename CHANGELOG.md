@@ -1,3 +1,10 @@
+## [1.10.1](https://github.com/energywebfoundation/iam-contracts/compare/v1.10.0...v1.10.1) (2021-05-28)
+
+
+### Bug Fixes
+
+* replace all ethers subpaths ([58ebb9e](https://github.com/energywebfoundation/iam-contracts/commit/58ebb9ebc542b3c4e317470779bcc244272febce))
+
 # [1.10.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.9.0...v1.10.0) (2021-05-28)
 
 
