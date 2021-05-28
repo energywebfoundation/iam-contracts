@@ -1,3 +1,10 @@
+# [1.10.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.9.0...v1.10.0) (2021-05-28)
+
+
+### Features
+
+* exporting contracts types in an ethers-v4 dir ([3c37e02](https://github.com/energywebfoundation/iam-contracts/commit/3c37e022be98e7d3755b0a608436d92f816c42cb))
+
 # [1.9.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.8.0...v1.9.0) (2021-05-26)
 
 
