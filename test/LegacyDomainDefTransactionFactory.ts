@@ -1,4 +1,4 @@
-import { namehash } from "ethers/utils";
+import { utils } from "ethers";
 import { PublicResolver } from "../ethers-v4/PublicResolver";
 import { EncodedCall, IRoleDefinition } from "../src/index";
 
@@ -16,7 +16,7 @@ export class LegacyDomainDefTransactionFactory {
   }
 
   protected setDomainNameTx({ domain }: { domain: string }): EncodedCall {
-    const namespaceHash = namehash(domain) as string;
+    const namespaceHash = utils.namehash(domain) as string;
     return {
       to: this.publicResolver.address,
       data: this.publicResolver.interface.functions.setName.encode([namespaceHash, domain])
@@ -44,7 +44,7 @@ export class LegacyDomainDefTransactionFactory {
     return {
       to: this.publicResolver.address,
       data: this.publicResolver.interface.functions.setText.encode([
-        namehash(domain),
+        utils.namehash(domain),
         "metadata",
         JSON.stringify(data)
       ])

@@ -1,13 +1,11 @@
-import { ContractFactory } from 'ethers';
+import { ContractFactory, utils, providers } from 'ethers';
 import { DomainHierarchy } from '../src/DomainHierarchy';
 import { DomainReader, DomainTransactionFactory, EncodedCall, IRoleDefinition, ResolverContractType } from '../src';
 import { ENSRegistry } from '../ethers-v4/ENSRegistry';
 import { RoleDefinitionResolver } from '../ethers-v4/RoleDefinitionResolver';
 import { DomainNotifier } from '../ethers-v4/DomainNotifier';
 import { PublicResolver } from '../ethers-v4/PublicResolver';
-import { JsonRpcProvider, JsonRpcSigner } from "ethers/providers";
 import { hashLabel } from './iam-contracts.test';
-import { namehash } from 'ethers/utils';
 import { expect } from 'chai';
 import { LegacyDomainDefTransactionFactory } from './LegacyDomainDefTransactionFactory';
 
@@ -19,20 +17,20 @@ let ensRegistry: ENSRegistry;
 let ensRoleDefResolver: RoleDefinitionResolver;
 let domainNotifier: DomainNotifier;
 let ensPublicResolver: PublicResolver;
-let owner: JsonRpcSigner;
-let provider: JsonRpcProvider;
+let owner: providers.JsonRpcSigner;
+let provider: providers.JsonRpcProvider;
 let chainId: number;
 
 let domainReader: DomainReader;
 let domainHierarchy: DomainHierarchy;
 
 const domain = "ewc";
-const node = namehash(domain);
+const node = utils.namehash(domain);
 
 const addSubdomain = async (parentDomain: string, label: string, resolverType: "PUBLIC" | "ROLEDEF") => {
-  const rootNode = namehash(parentDomain);
+  const rootNode = utils.namehash(parentDomain);
   const subdomain = `${label}.${parentDomain}`
-  const subNode = namehash(subdomain);
+  const subNode = utils.namehash(subdomain);
   await ensRegistry.setSubnodeOwner(rootNode, hashLabel(label), await owner.getAddress());
   let call: EncodedCall
   if (resolverType === "ROLEDEF") {

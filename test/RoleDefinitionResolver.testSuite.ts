@@ -1,11 +1,9 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
-import { ContractFactory, ContractTransaction, utils } from "ethers";
+import { ContractFactory, ContractTransaction, providers, utils } from "ethers";
 import { ENSRegistry } from "../ethers-v4/ENSRegistry";
 import { RoleDefinitionResolver } from "../ethers-v4/RoleDefinitionResolver";
 import { DomainNotifier } from "../ethers-v4/DomainNotifier";
-import { JsonRpcSigner } from "ethers/providers";
-import { BigNumber } from "ethers/utils";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -49,9 +47,9 @@ let domainNotifierFactory: ContractFactory;
 let ens: ENSRegistry;
 let roleDefinitionResolver: RoleDefinitionResolver;
 let domainNotifier: DomainNotifier;
-let owner: JsonRpcSigner;
+let owner: providers.JsonRpcSigner;
 let ownerAddr: string;
-let anotherAccount: JsonRpcSigner;
+let anotherAccount: providers.JsonRpcSigner;
 
 interface IEvent {
   topics: string[],
@@ -60,7 +58,7 @@ interface IEvent {
     node?: string,
     newPrerequisiteRoles?: string[],
     newType?: string,
-    newVersion?: BigNumber
+    newVersion?: utils.BigNumber
   }
 }
 
@@ -84,7 +82,7 @@ export function roleDefinitionResolverTestSuite(): void {
 
     // Set owner of "role" node hierarchy
     // https://docs.ens.domains/contract-api-reference/name-processing#terminology
-    // https://eips.ethereum.org/EIPS/eip-137#namehash-algorithm
+    // https://eips.ethereum.org/EIPS/eip-137#utils.namehash-algorithm
     const rootNameHash = "0x0000000000000000000000000000000000000000000000000000000000000000";
     await ens.setSubnodeOwner(rootNameHash, ewcLabelHash, ownerAddr);
     const ewcOwner = await ens.owner(ewcNode)

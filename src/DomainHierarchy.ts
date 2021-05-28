@@ -7,14 +7,13 @@ import { emptyAddress } from "./constants";
 import { DomainReader } from "./DomainReader";
 import { PublicResolver__factory } from "../ethers-v4/factories/PublicResolver__factory";
 import { DomainNotifier__factory } from "../ethers-v4/factories/DomainNotifier__factory";
-import { Provider } from "ethers/providers";
 import { PublicResolver } from "../ethers-v4/PublicResolver";
 import { DomainNotifier } from "../ethers-v4/DomainNotifier";
 
 export class DomainHierarchy {
   protected readonly _domainReader: DomainReader;
   protected readonly _ensRegistry: ENSRegistry;
-  protected readonly _provider: Provider;
+  protected readonly _provider: providers.Provider;
   protected readonly _domainNotifier: DomainNotifier;
   protected readonly _publicResolver?: PublicResolver;
 
@@ -27,7 +26,7 @@ export class DomainHierarchy {
   }: {
     domainReader: DomainReader,
     ensRegistry: ENSRegistry,
-    provider: Provider,
+    provider: providers.Provider,
     domainNotifierAddress: string
     publicResolverAddress?: string,
   }) {

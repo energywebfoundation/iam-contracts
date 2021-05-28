@@ -1,11 +1,10 @@
+import { providers, utils } from 'ethers'
 import { IAppDefinition, IIssuerDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from './types/DomainDefinitions'
 import { VOLTA_CHAIN_ID, VOLTA_PUBLIC_RESOLVER_ADDRESS, VOLTA_RESOLVER_V1_ADDRESS } from "./chainConstants";
 import { ENSRegistry__factory } from "../ethers-v4/factories/ENSRegistry__factory";
-import { Provider } from "ethers/providers";
 import { PublicResolver } from "../ethers-v4/PublicResolver";
 import { PublicResolver__factory } from "../ethers-v4/factories/PublicResolver__factory";
 import { RoleDefinitionResolver } from "../ethers-v4/RoleDefinitionResolver"
-import { namehash } from "ethers/utils";
 import { RoleDefinitionResolver__factory } from "../ethers-v4/factories/RoleDefinitionResolver__factory";
 import { ResolverContractType } from "./types/ResolverContractType";
 import { ERROR_MESSAGES } from "./types/ErrorMessages";
@@ -21,7 +20,7 @@ export class DomainReader {
   public static isRoleDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IRoleDefinition =>
     (domainDefinition as IRoleDefinition).roleName !== undefined;
 
-  private readonly _provider: Provider
+  private readonly _provider: providers.Provider
   private readonly _ensRegistry: ENSRegistry;
   private readonly _knownEnsResolvers: Record<number, Record<string, ResolverContractType>> = {
     [VOLTA_CHAIN_ID]: {
@@ -30,7 +29,7 @@ export class DomainReader {
     }
   };
 
-  constructor({ ensRegistryAddress, provider }: { ensRegistryAddress: string, provider: Provider }) {
+  constructor({ ensRegistryAddress, provider }: { ensRegistryAddress: string, provider: providers.Provider }) {
     this._provider = provider;
     this._ensRegistry = ENSRegistry__factory.connect(ensRegistryAddress, this._provider);
   }
@@ -49,7 +48,7 @@ export class DomainReader {
    */
   public async readName(node: string): Promise<string> {
     const checkName = (name: string) => {
-      if (node !== namehash(name)) {
+      if (node !== utils.namehash(name)) {
         throw Error(`${ERROR_MESSAGES.NAME_NODE_MISMATCH}, node: ${node}`)
       }
       return name;
