@@ -10,6 +10,7 @@ import { DomainNotifier__factory } from "../ethers-v4/factories/DomainNotifier__
 import { ENSRegistry__factory } from "../ethers-v4/factories/ENSRegistry__factory"
 import { PublicResolver__factory } from "../ethers-v4/factories/PublicResolver__factory"
 import { RoleDefinitionResolver__factory } from "../ethers-v4/factories/RoleDefinitionResolver__factory"
+import { ClaimManager__factory } from "../ethers-v4/factories/ClaimManager__factory"
 
 // To disable "WARNING: Multiple definitions for addr" that is triggered by ENS Registry
 errors.setLogLevel("error");
@@ -21,4 +22,4 @@ export { EncodedCall }
 export { VOLTA_CHAIN_ID, VOLTA_PUBLIC_RESOLVER_ADDRESS, VOLTA_RESOLVER_V1_ADDRESS, VOLTA_DOMAIN_NOTIFER_ADDRESS, VOLTA_ENS_REGISTRY_ADDRESS }
 export { ResolverContractType }
 export { DomainHierarchy }
-export { DomainNotifier__factory, ENSRegistry__factory, PublicResolver__factory, RoleDefinitionResolver__factory }
+export { DomainNotifier__factory, ENSRegistry__factory, PublicResolver__factory, RoleDefinitionResolver__factory, ClaimManager__factory }
