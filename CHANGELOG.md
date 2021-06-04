@@ -1,3 +1,10 @@
+# [1.11.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.10.1...v1.11.0) (2021-06-04)
+
+
+### Features
+
+* **claimManager:** export claim manager factory ([6f1dbd2](https://github.com/energywebfoundation/iam-contracts/commit/6f1dbd238d8e33d26cd8a54c2e08a1f74ceb2e68))
+
 ## [1.10.1](https://github.com/energywebfoundation/iam-contracts/compare/v1.10.0...v1.10.1) (2021-05-28)
 
 
