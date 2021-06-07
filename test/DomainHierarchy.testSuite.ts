@@ -59,8 +59,8 @@ const role: IRoleDefinition = {
   enrolmentPreconditions: []
 };
 
-export function getSubDomainsTestSuite(): void {
-  describe("getSubDomains tests", () => {
+export function domainHierarchyTestSuite(): void {
+  describe("DomainHierarchy", () => {
     before(async function () {
       ({
         publicResolverFactory, roleDefResolverFactory, ensFactory, domainNotifierFactory, provider, owner, chainId
@@ -99,32 +99,71 @@ export function getSubDomainsTestSuite(): void {
       await (await owner.sendTransaction(call)).wait()
     });
 
-    it("returns subdomains using RoleDefResolver", async () => {
-      await Promise.all([addSubdomain("ewc", "test", "ROLEDEF"), addSubdomain("ewc", "iam", "ROLEDEF")]);
-      const subDomains = await domainHierarchy.getSubdomainsUsingResolver({
-        domain: domain,
-        mode: "ALL"
-      })
-      expect(subDomains.length).to.equal(2);
-    });
+    describe("getSubdomainsUsingResolver", () => {
+      it("returns subdomains using RoleDefResolver", async () => {
+        await Promise.all([addSubdomain("ewc", "test", "ROLEDEF"), addSubdomain("ewc", "iam", "ROLEDEF")]);
+        const subDomains = await domainHierarchy.getSubdomainsUsingResolver({
+          domain: domain,
+          mode: "ALL"
+        })
+        expect(subDomains.length).to.equal(2);
+      });
 
-    it("returns subdomains using PublicResolver", async () => {
-      await Promise.all([addSubdomain("ewc", "test", "PUBLIC"), addSubdomain("ewc", "iam", "PUBLIC")]);
-      const subDomains = await domainHierarchy.getSubdomainsUsingResolver({
-        domain: domain,
-        mode: "ALL"
-      })
-      expect(subDomains.length).to.equal(2);
-    });
+      it("continues even if domain isn't registered", async () => {
+        await Promise.all([addSubdomain("ewc", "test", "ROLEDEF"), addSubdomain("ewc", "iam", "ROLEDEF")]);
 
-    it("returns subdomains using PublicResolver and RoleDefResolver", async () => {
-      await Promise.all([addSubdomain("ewc", "test", "ROLEDEF"), addSubdomain("ewc", "iam", "PUBLIC")]);
-      const subDomains = await domainHierarchy.getSubdomainsUsingResolver({
-        domain: domain,
-        mode: "ALL"
-      })
-      expect(subDomains.length).to.equal(2);
-    });
+        // deregister namespace by setting resolver to zero address
+        const emptyAddress = '0x'.padEnd(42, '0');
+        await ensRegistry.setResolver(utils.namehash('iam.ewc'), emptyAddress);
+
+        const subDomains = await domainHierarchy.getSubdomainsUsingResolver({
+          domain: domain,
+          mode: "ALL"
+        })
+        expect(subDomains.length).to.equal(1);
+      });
+
+      it("returns subdomains using PublicResolver", async () => {
+        await Promise.all([addSubdomain("ewc", "test", "PUBLIC"), addSubdomain("ewc", "iam", "PUBLIC")]);
+        const subDomains = await domainHierarchy.getSubdomainsUsingResolver({
+          domain: domain,
+          mode: "ALL"
+        })
+        expect(subDomains.length).to.equal(2);
+      });
+
+      it("returns subdomains using PublicResolver and RoleDefResolver", async () => {
+        await Promise.all([addSubdomain("ewc", "test", "ROLEDEF"), addSubdomain("ewc", "iam", "PUBLIC")]);
+        const subDomains = await domainHierarchy.getSubdomainsUsingResolver({
+          domain: domain,
+          mode: "ALL"
+        })
+        expect(subDomains.length).to.equal(2);
+      });
+    })
+
+    describe("getSubdomainsUsingRegistry", () => {
+      it("returns subdomains", async () => {
+        await Promise.all([addSubdomain("ewc", "test", "ROLEDEF"), addSubdomain("ewc", "iam", "ROLEDEF")]);
+        const subDomains = await domainHierarchy.getSubdomainsUsingRegistry({
+          domain: domain
+        })
+        expect(subDomains.length).to.equal(3);
+      });
+
+      it("continues even if domain isn't registered", async () => {
+        await Promise.all([addSubdomain("ewc", "test", "ROLEDEF"), addSubdomain("ewc", "iam", "ROLEDEF")]);
+
+        // deregister namespace by setting resolver to zero address
+        const emptyAddress = '0x'.padEnd(42, '0');
+        await ensRegistry.setResolver(utils.namehash('iam.ewc'), emptyAddress);
+
+        const subDomains = await domainHierarchy.getSubdomainsUsingRegistry({
+          domain: domain
+        })
+        expect(subDomains.length).to.equal(2);
+      });
+    })
 
     // TODO: Test multi-level
   });
