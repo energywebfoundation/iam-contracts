@@ -1,3 +1,10 @@
+## [1.11.1](https://github.com/energywebfoundation/iam-contracts/compare/v1.11.0...v1.11.1) (2021-06-08)
+
+
+### Bug Fixes
+
+* **DomainHierarchu:** DomainHierarchy accomodate deleted namespaces ([31aa3df](https://github.com/energywebfoundation/iam-contracts/commit/31aa3dfc8de442e56506300e4d40bf3d7795ad2e))
+
 # [1.11.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.10.1...v1.11.0) (2021-06-04)
 
 
