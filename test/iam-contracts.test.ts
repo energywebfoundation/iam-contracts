@@ -5,7 +5,7 @@ import { abi as DomainNotifierAbi, bytecode as DomainNotiferBytecode } from '../
 import { abi as ensAbi, bytecode as ensBytecode } from '@ensdomains/ens/build/contracts/ENSRegistry.json';
 import { roleDefinitionResolverTestSuite } from './RoleDefinitionResolver.testSuite';
 import { domainCrudTestSuite } from './DomainCRUD.testSuite';
-import { getSubDomainsTestSuite } from './DomainHierarchy.testSuite';
+import { domainHierarchyTestSuite } from './DomainHierarchy.testSuite';
 import { claimManagerTests } from './ClaimManagerTests/ClaimManager.testSuit';
 
 const { JsonRpcProvider } = providers;
@@ -35,6 +35,6 @@ describe('[IAM CONTRACTS]', function () {
 
   describe('RoleDefinitionResolver Test', roleDefinitionResolverTestSuite);
   describe('DomainCRUD Test', domainCrudTestSuite);
-  describe('getSubDomains Test', getSubDomainsTestSuite);
+  describe('DomainHierarchy Test', domainHierarchyTestSuite);
   describe('ClaimManager Test', claimManagerTests);
 });

@@ -62,11 +62,16 @@ export class DomainHierarchy {
     if (mode === "ALL") {
       const getParser = (nameReader: (node: string) => Promise<string>) => {
         return async ({ node }: { node: string, }) => {
-          const name = await nameReader(node);
-          if (name.endsWith(domain) && name !== domain) {
-            const owner = await this._ensRegistry.owner(node);
-            if (owner === emptyAddress) return "";
-            return name;
+          try {
+            const name = await nameReader(node);
+            if (name.endsWith(domain) && name !== domain) {
+              const owner = await this._ensRegistry.owner(node);
+              if (owner === emptyAddress) return "";
+              return name;
+            }
+          } catch {
+            // A possible source of exceptions is if domain has been deleted (https://energyweb.atlassian.net/browse/SWTCH-997)
+            return "";
           }
           return "";
         }
@@ -125,14 +130,19 @@ export class DomainHierarchy {
     if (!domain) throw new Error("You need to pass a domain name");
     const notRelevantDomainEndings = ["roles", "apps"]
     const parser = async ({ node, label, owner }: { node: string, label: string, owner: string }) => {
-      if (owner === emptyAddress) return "";
-      const namehash = utils.keccak256(node + label.slice(2));
-      const [name, ownerAddress] = await Promise.all([
-        this._domainReader.readName(namehash),
-        this._ensRegistry.owner(namehash)
-      ]);
-      if (ownerAddress === emptyAddress) return "";
-      return name;
+      try {
+        if (owner === emptyAddress) return "";
+        const namehash = utils.keccak256(node + label.slice(2));
+        const [name, ownerAddress] = await Promise.all([
+          this._domainReader.readName(namehash),
+          this._ensRegistry.owner(namehash)
+        ]);
+        if (ownerAddress === emptyAddress) return "";
+        return name;
+      } catch {
+        // A possible source of exceptions is if domain has been deleted (https://energyweb.atlassian.net/browse/SWTCH-997)
+        return "";
+      }
     }
     const queue: string[][] = []
     const subDomains: Set<string> = new Set();
@@ -190,6 +200,7 @@ export class DomainHierarchy {
       return parsedLog.values;
     });
     const domains = await Promise.all(rawLogs.map(parser));
-    return new Set(domains);
+    const nonEmptyDomains = domains.filter(domain => domain != '');
+    return new Set(nonEmptyDomains);
   };
 }

@@ -10,7 +10,7 @@ const { JsonRpcProvider } = providers;
  * This test suite is to retrieval of the suddomains actually
  * on Volta. Not intended to be run during CI/CD
  */
-xdescribe('[getSubDomains]', async function () {
+xdescribe('[DomainHierarchy VOLTA]', async function () {
   this.timeout(0);
   const provider = new JsonRpcProvider('https://volta-rpc.energyweb.org');
 
