@@ -141,8 +141,8 @@ export class DomainReader {
     }
     else if (issuersData.role != "") {
       issuer = {
-        issuerType: 'Role',
-        roleName: issuersData.role
+        issuerType: 'ROLE',
+        roleName: await this.readName(issuersData.role)
       }
     }
     else {

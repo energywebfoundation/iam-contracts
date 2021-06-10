@@ -226,7 +226,7 @@ function testSuit() {
           roleName: deviceRole,
           enrolmentPreconditions: [],
           fields: [],
-          issuer: { issuerType: "ROLE", roleName: utils.namehash(installerRole) },
+          issuer: { issuerType: "ROLE", roleName: installerRole },
           metadata: [],
           roleType: '',
           version: defaultVersion
@@ -241,7 +241,7 @@ function testSuit() {
           roleName: activeDeviceRole,
           enrolmentPreconditions: [{ type: PreconditionType.Role, conditions: [deviceRole] }],
           fields: [],
-          issuer: { issuerType: "ROLE", roleName: utils.namehash(installerRole) },
+          issuer: { issuerType: "ROLE", roleName: installerRole },
           metadata: [],
           roleType: '',
           version: defaultVersion
@@ -256,7 +256,7 @@ function testSuit() {
           roleName: installerRole,
           enrolmentPreconditions: [],
           fields: [],
-          issuer: { issuerType: "ROLE", roleName: utils.namehash(authorityRole) },
+          issuer: { issuerType: "ROLE", roleName: authorityRole },
           metadata: [],
           roleType: '',
           version: defaultVersion
