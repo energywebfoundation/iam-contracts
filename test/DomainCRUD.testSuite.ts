@@ -102,26 +102,36 @@ export function domainCrudTestSuite(): void {
       expect(await ensRegistry.owner(node)).to.equal(await owner.getAddress());
     });
 
-    it("role can be created, read and updated", async () => {
-      await ensRegistry.setResolver(node, ensRoleDefResolver.address);
-      const domainDefTxFactory = new DomainTransactionFactory({ domainResolverAddress: ensRoleDefResolver.address });
-      const call = domainDefTxFactory.newRole({ domain: domain, roleDefinition: role });
-      await (await owner.sendTransaction(call)).wait()
+    describe("Role can be created, read and updated", () => {
+      const roleCRUDtests = async (role: IRoleDefinition) => {
+        await ensRegistry.setResolver(node, ensRoleDefResolver.address);
+        const domainDefTxFactory = new DomainTransactionFactory({ domainResolverAddress: ensRoleDefResolver.address });
+        const call = domainDefTxFactory.newRole({ domain: domain, roleDefinition: role });
+        await (await owner.sendTransaction(call)).wait()
 
-      const roleDef = await domainReader.read({ node });
-      expect(roleDef).to.eql(role);
+        const roleDef = await domainReader.read({ node });
+        expect(roleDef).to.eql(role);
 
-      const reverseName = await ensRoleDefResolver.name(node);
-      expect(reverseName).to.equal(domain);
+        const reverseName = await ensRoleDefResolver.name(node);
+        expect(reverseName).to.equal(domain);
 
-      role.version = role.version + 1;
-      const updateRole = domainDefTxFactory.editDomain({ domain: domain, domainDefinition: role });
-      await (await owner.sendTransaction(updateRole)).wait()
-      const updatedRoleDef = await domainReader.read({ node });
-      expect(updatedRoleDef).to.eql(role);
+        role.version = role.version + 1;
+        const updateRole = domainDefTxFactory.editDomain({ domain: domain, domainDefinition: role });
+        await (await owner.sendTransaction(updateRole)).wait()
+        const updatedRoleDef = await domainReader.read({ node });
+        expect(updatedRoleDef).to.eql(role);
 
-      const logs = await getDomainUpdatedLogs();
-      expect(logs.length).to.equal(2); // One log for create, one for update
+        const logs = await getDomainUpdatedLogs();
+        expect(logs.length).to.equal(2); // One log for create, one for update  
+      }
+
+      it('issuer of type "DID"', async () => {
+        await roleCRUDtests(role);
+      });
+
+      it('issuer of type "ROLE"', async () => {
+        await roleCRUDtests({ ...role, issuer: { issuerType: "ROLE", roleName: domain } });
+      });
     });
 
     it("text only role can be created and read", async () => {

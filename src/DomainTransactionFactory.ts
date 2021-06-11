@@ -6,6 +6,8 @@ import { EncodedCall } from "./types/Transaction";
 import { VOLTA_RESOLVER_V1_ADDRESS } from "./chainConstants";
 import { abi } from "../build/contracts/RoleDefinitionResolver.json"
 
+const { namehash } = utils;
+
 export class DomainTransactionFactory {
   protected readonly _roleDefResolverInterface: utils.Interface
   protected readonly _resolverAddress: string
@@ -192,7 +194,7 @@ export class DomainTransactionFactory {
         to: this._resolverAddress,
         data: this._roleDefResolverInterface.functions.setIssuerRole.encode([
           utils.namehash(domain),
-          issuers.roleName
+          namehash(issuers.roleName)
         ])
       };
     }
