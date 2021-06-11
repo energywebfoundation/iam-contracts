@@ -1,3 +1,10 @@
+## [1.11.2](https://github.com/energywebfoundation/iam-contracts/compare/v1.11.1...v1.11.2) (2021-06-11)
+
+
+### Bug Fixes
+
+* hash issuer role name ([69e9d9d](https://github.com/energywebfoundation/iam-contracts/commit/69e9d9d6ef618c8df87a3081f34f5ad91692e1dc))
+
 ## [1.11.1](https://github.com/energywebfoundation/iam-contracts/compare/v1.11.0...v1.11.1) (2021-06-08)
 
 
