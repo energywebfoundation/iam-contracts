@@ -72,7 +72,7 @@ contract StakingPool {
     Stake storage stake = stakes[msg.sender];
     require(stake.amount > 0, "StakingPool: No stake to withdraw");
     require(
-      block.timestamp >= stake.end + minStakingPeriod,
+      block.timestamp >= stake.start + minStakingPeriod,
        "StakingPool: Minimum staking period is not expired yet"
     );
     uint stakingEnd = block.timestamp;
@@ -92,7 +92,7 @@ contract StakingPool {
       "StakingPool: Stake hasn't requested to withdraw"
     );
     require(
-      stake.end + withdrawDelay <= block.timestamp,
+      block.timestamp >= stake.end + withdrawDelay,
       "StakingPool: Withdrawal delay hasn't expired yet"
     );
     RewardPool(rewardPool).payReward(staker);

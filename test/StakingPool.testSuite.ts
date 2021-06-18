@@ -4,11 +4,13 @@ import { RewardPool } from '../ethers-v4/RewardPool';
 import { ClaimManager__factory } from '../ethers-v4/factories/ClaimManager__factory';
 import { RewardPool__factory } from '../ethers-v4/factories/RewardPool__factory';
 import { StakingPool__factory } from '../ethers-v4/factories/StakingPool__factory';
+import { ENSRegistry__factory } from '../ethers-v4/factories/ENSRegistry__factory';
+import { DomainNotifier__factory } from '../ethers-v4/factories/DomainNotifier__factory';
+import { RoleDefinitionResolver__factory } from '../ethers-v4/factories/RoleDefinitionResolver__factory';
 import { DomainTransactionFactory } from '../src';
 import { abi as erc1056Abi, bytecode as erc1056Bytecode } from './test_utils/ERC1056.json';
 import { ClaimManager } from '../ethers-v4/ClaimManager';
 import { ENSRegistry } from '../ethers-v4/ENSRegistry';
-import { RoleDefinitionResolver } from '../ethers-v4/RoleDefinitionResolver';
 import { hashLabel } from './iam-contracts.test';
 import { parseEther } from 'ethers/utils';
 import { expect } from 'chai';
@@ -27,27 +29,23 @@ export function stakingPoolTests(): void {
   let rewardPool: RewardPool;
   const principle = 1000;
   const amount = parseEther('0.5');
-  const minStakingPeriod = 60 * 60 * 24 * 365;
-  const withdrawDelay = 60 * 60 * 24 * 30;
+  let minStakingPeriod = 60 * 60 * 24 * 365;
+  let withdrawDelay = 60 * 60 * 24 * 30;
   const root = `0x${'0'.repeat(64)}`;
   const patronRole = 'patron';
   const version = 1;
 
-  before(async function () {
+  async function setupContracts() {
     const deployer = provider.getSigner(1);
     const deployerAddr = await deployer.getAddress();
     ewc = provider.getSigner(2);
     patron = provider.getSigner(3);
-    
+
     const erc1056Factory = new ContractFactory(erc1056Abi, erc1056Bytecode, deployer);
     const erc1056 = await (await erc1056Factory.deploy()).deployed();
-
-    const { ensFactory, domainNotifierFactory, roleDefResolverFactory } = this;
-    const ensRegistry: ENSRegistry = await (await ensFactory.connect(deployer).deploy()).deployed();
-
-    const notifier = await (await domainNotifierFactory.connect(deployer).deploy(ensRegistry.address)).deployed();
-    const roleResolver = await (await (roleDefResolverFactory.connect(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
-
+    const ensRegistry: ENSRegistry = await (await new ENSRegistry__factory(deployer).deploy()).deployed();
+    const notifier = await (await new DomainNotifier__factory(deployer).deploy(ensRegistry.address)).deployed();
+    const roleResolver = await (await (new RoleDefinitionResolver__factory(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
     claimManager = await (await new ClaimManager__factory(deployer).deploy(erc1056.address, ensRegistry.address)).deployed();
     roleFactory = new DomainTransactionFactory({ domainResolverAddress: roleResolver.address });
     rewardPool = await (await new RewardPool__factory(deployer).deploy()).deployed();
@@ -77,16 +75,37 @@ export function stakingPoolTests(): void {
         }
       })
     })).wait();
+  }
+
+  beforeEach(async function () {
+    await setupContracts();
   });
 
 
   it('should not be possible to put a stake without having patron role', async () => {
-    expect(stakingPool.putStake({ value: amount })).rejected;
+    return expect(stakingPool.putStake({ value: amount })).rejectedWith('StakingPool: staker is not registered with patron role');
   });
 
   it('having patron role should be able to put a stake', async () => {
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
 
-    expect(stakingPool.connect(patron).putStake({ value: amount })).fulfilled;
+    return expect(stakingPool.connect(patron).putStake({ value: amount })).fulfilled;
+  });
+
+  it('should not be possible to withdraw before minimal staking period is expired', async () => {
+    await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
+    await stakingPool.connect(patron).putStake({ value: amount });
+
+    return expect(stakingPool.connect(patron).requestWithdraw()).rejectedWith('StakingPool: Minimum staking period is not expired yet');
+  });
+
+  it('should be able to withdraw after minimal staking period is expired', async () => {
+    minStakingPeriod = 1;
+    await setupContracts();
+    await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
+    await stakingPool.connect(patron).putStake({ value: amount });
+    await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * minStakingPeriod) });
+
+    return expect(stakingPool.connect(patron).requestWithdraw()).fulfilled;
   });
 }
