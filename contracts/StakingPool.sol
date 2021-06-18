@@ -3,7 +3,7 @@ import "./ClaimManager.sol";
 import "./RewardPool.sol";
 
 contract StakingPool {
-  uint immutable principle;
+  uint immutable principal;
   uint immutable minStakingPeriod; // seconds
 
   uint immutable withdrawDelay; // seconds
@@ -36,7 +36,7 @@ contract StakingPool {
     claimManager = _claimManager;
     patronRole = _patronRole;
     
-    principle = msg.value;
+    principal = msg.value;
     
     rewardPool = _rewardPool;
   }
@@ -85,7 +85,8 @@ contract StakingPool {
   /**
   * @dev invoked after expiring of withdraw delay
    */
-  function withdraw(address payable staker) external {
+  function withdraw() external {
+    address payable staker = msg.sender;
     Stake storage stake = stakes[staker];
     require(
       stake.status == StakeStatus.WITHDRAWING, 

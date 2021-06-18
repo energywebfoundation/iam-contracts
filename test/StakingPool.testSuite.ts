@@ -19,6 +19,9 @@ import { requestRole } from './test_utils/role_utils';
 const { JsonRpcProvider } = providers;
 const { namehash } = utils;
 
+const defaultMinStakingPeriod = 60 * 60 * 24;
+const defaultWithdrawDelay = 60 * 60;
+
 export function stakingPoolTests(): void {
   const provider = new JsonRpcProvider('http://localhost:8544');
   let ewc: Signer;
@@ -29,8 +32,8 @@ export function stakingPoolTests(): void {
   let rewardPool: RewardPool;
   const principle = 1000;
   const amount = parseEther('0.5');
-  let minStakingPeriod = 60 * 60 * 24 * 365;
-  let withdrawDelay = 60 * 60 * 24 * 30;
+  let minStakingPeriod = defaultMinStakingPeriod;
+  let withdrawDelay = defaultWithdrawDelay;
   const root = `0x${'0'.repeat(64)}`;
   const patronRole = 'patron';
   const version = 1;
@@ -92,20 +95,48 @@ export function stakingPoolTests(): void {
     return expect(stakingPool.connect(patron).putStake({ value: amount })).fulfilled;
   });
 
-  it('should not be possible to withdraw before minimal staking period is expired', async () => {
+  it('should not be possible to request withdraw before minimal staking period is expired', async () => {
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
     await stakingPool.connect(patron).putStake({ value: amount });
 
     return expect(stakingPool.connect(patron).requestWithdraw()).rejectedWith('StakingPool: Minimum staking period is not expired yet');
   });
 
-  it('should be able to withdraw after minimal staking period is expired', async () => {
+  it('should be able to request withdraw after minimal staking period is expired', async () => {
     minStakingPeriod = 1;
     await setupContracts();
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
     await stakingPool.connect(patron).putStake({ value: amount });
     await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * minStakingPeriod) });
 
+    minStakingPeriod = defaultMinStakingPeriod;
     return expect(stakingPool.connect(patron).requestWithdraw()).fulfilled;
+  });
+
+  it('should not be possible to withdraw before withdraw delay is expired', async () => {
+    minStakingPeriod = 1;
+    await setupContracts();
+    await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
+    await stakingPool.connect(patron).putStake({ value: amount });
+    await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * minStakingPeriod) });
+    await stakingPool.connect(patron).requestWithdraw();
+
+    minStakingPeriod = defaultMinStakingPeriod;
+    return expect(stakingPool.connect(patron).withdraw()).rejectedWith('StakingPool: Withdrawal delay hasn\'t expired yet');
+  });
+
+  it('should be able to withdraw after withdraw delay is expired', async () => {
+    minStakingPeriod = 1;
+    withdrawDelay = 1;
+    await setupContracts();
+    await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
+    await stakingPool.connect(patron).putStake({ value: amount });
+    await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * minStakingPeriod) });
+    await stakingPool.connect(patron).requestWithdraw();
+    await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * withdrawDelay) });
+
+    minStakingPeriod = defaultMinStakingPeriod;
+    withdrawDelay = defaultWithdrawDelay;
+    return expect(stakingPool.connect(patron).withdraw()).fulfilled;
   });
 }
