@@ -3,7 +3,7 @@ import "./ClaimManager.sol";
 import "./RewardPool.sol";
 
 contract StakingPool {
-  uint immutable principle; 
+  uint immutable principle;
   uint immutable minStakingPeriod; // seconds
 
   uint immutable withdrawDelay; // seconds
