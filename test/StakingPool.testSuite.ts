@@ -26,6 +26,7 @@ export function stakingPoolTests(): void {
   let stakingPool: StakingPool;
   let rewardPool: RewardPool;
   const principle = 1000;
+  const amount = parseEther('0.5');
   const minStakingPeriod = 60 * 60 * 24 * 365;
   const withdrawDelay = 60 * 60 * 24 * 30;
   const root = `0x${'0'.repeat(64)}`;
@@ -37,6 +38,7 @@ export function stakingPoolTests(): void {
     const deployerAddr = await deployer.getAddress();
     ewc = provider.getSigner(2);
     patron = provider.getSigner(3);
+    
     const erc1056Factory = new ContractFactory(erc1056Abi, erc1056Bytecode, deployer);
     const erc1056 = await (await erc1056Factory.deploy()).deployed();
 
@@ -79,16 +81,12 @@ export function stakingPoolTests(): void {
 
 
   it('should not be possible to put a stake without having patron role', async () => {
-    const amount = parseEther('0.5');
     expect(stakingPool.putStake({ value: amount })).rejected;
   });
 
   it('having patron role should be able to put a stake', async () => {
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
-    
-    expect(await claimManager.hasRole(await patron.getAddress(), namehash(patronRole), version)).true;
-    
-    const amount = parseEther('0.5');
-    expect(stakingPool.putStake({ value: amount })).rejected;
+
+    expect(stakingPool.connect(patron).putStake({ value: amount })).fulfilled;
   });
 }

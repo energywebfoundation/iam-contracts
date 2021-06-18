@@ -52,7 +52,7 @@ contract StakingPool {
   function putStake() payable external isPatron {
     Stake storage stake = stakes[msg.sender];
     require(
-      stake.amount > 0,
+      stake.amount == 0,
       "StakingPool: Replenishment of the stake is not allowed"
     );
     uint amount = msg.value;
