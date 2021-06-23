@@ -1,4 +1,4 @@
-import { ContractFactory, providers, Signer, utils } from 'ethers';
+import { ContractFactory, EventFilter, providers, Signer, utils } from 'ethers';
 import { StakingPool } from '../ethers-v4/StakingPool';
 import { RewardPool } from '../ethers-v4/RewardPool';
 import { ClaimManager__factory } from '../ethers-v4/factories/ClaimManager__factory';
@@ -80,6 +80,13 @@ export function stakingPoolTests(): void {
     })).wait();
   }
 
+  const waitFor = (filter: EventFilter) => new Promise((resolve) => {
+    stakingPool.addListener(filter, resolve);
+  })
+    .then(() => {
+      stakingPool.removeAllListeners(filter);
+    });
+
   beforeEach(async function () {
     await setupContracts();
   });
@@ -93,7 +100,15 @@ export function stakingPoolTests(): void {
   it('having patron role should be able to put a stake', async () => {
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
 
-    return expect(stakingPool.connect(patron).putStake({ value: amount })).fulfilled;
+    const stakePut = waitFor(stakingPool.filters.StakePut(
+      await patron.getAddress(),
+      amount,
+      null
+    ));
+
+    stakingPool.connect(patron).putStake({ value: amount });
+
+    return expect(stakePut).fulfilled;
   });
 
   it('should not be possible to replenish stake', async () => {
@@ -120,7 +135,11 @@ export function stakingPoolTests(): void {
     await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * minStakingPeriod) });
 
     minStakingPeriod = defaultMinStakingPeriod;
-    return expect(stakingPool.connect(patron).requestWithdraw()).fulfilled;
+
+    const withdrawnRequested = waitFor(stakingPool.filters.StakeWithdrawalRequested(await patron.getAddress(), null));
+    stakingPool.connect(patron).requestWithdraw();
+
+    return expect(withdrawnRequested).fulfilled;
   });
 
   it('should not be possible to repeat withdrawal request', async () => {
@@ -161,7 +180,11 @@ export function stakingPoolTests(): void {
 
     minStakingPeriod = defaultMinStakingPeriod;
     withdrawDelay = defaultWithdrawDelay;
-    return expect(stakingPool.connect(patron).withdraw()).fulfilled;
+
+    const withdrawn = waitFor(stakingPool.filters.StakeWithdrawn(await patron.getAddress(), null));
+    stakingPool.connect(patron).withdraw()
+
+    return expect(withdrawn).fulfilled;
   });
 
   it('should not be possible to repeat withdraw', async () => {

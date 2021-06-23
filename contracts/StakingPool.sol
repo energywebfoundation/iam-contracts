@@ -13,9 +13,13 @@ contract StakingPool {
   
   address immutable rewardPool;
   
-  mapping(address => Stake) public stakes;
+  mapping(address => Stake) stakes;
   
   enum StakeStatus { NONSTAKING, STAKING, WITHDRAWING }
+  
+  event StakePut(address indexed patron, uint indexed amount, uint indexed timestamp);
+  event StakeWithdrawalRequested(address indexed patron, uint indexed timestamp);
+  event StakeWithdrawn(address indexed patron, uint indexed timestamp);
   
   struct Stake {
     uint amount;
@@ -50,7 +54,8 @@ contract StakingPool {
   }
   
   function putStake() payable external isPatron {
-    Stake storage stake = stakes[msg.sender];
+    address staker = msg.sender;
+    Stake storage stake = stakes[staker];
     require(
       stake.status == StakeStatus.NONSTAKING,
       "StakingPool: Replenishment of the stake is not allowed"
@@ -62,13 +67,16 @@ contract StakingPool {
     stake.start = start;
     stake.withdrawalRequested = 0;
     stake.status = StakeStatus.STAKING;
+    
+    emit StakePut(staker, stake.amount, stake.start);
   }
   
   /**
   * @dev stops staking and notifies reward pool
    */
   function requestWithdraw() external {
-    Stake storage stake = stakes[msg.sender];
+    address staker = msg.sender;
+    Stake storage stake = stakes[staker];
     require(
       stake.status == StakeStatus.STAKING,
       "StakingPool: No stake to withdraw"
@@ -79,6 +87,8 @@ contract StakingPool {
     );
     stake.status = StakeStatus.WITHDRAWING;
     stake.withdrawalRequested = block.timestamp;
+    
+    emit StakeWithdrawalRequested(staker, stake.withdrawalRequested);
   }
   
   /**
@@ -96,7 +106,9 @@ contract StakingPool {
       "StakingPool: Withdrawal delay hasn't expired yet"
     );
     RewardPool(rewardPool).payReward(staker, stake.amount, stake.withdrawalRequested - stake.start);
-    staker.transfer(stake.amount);
+    staker.transfer(stake.amount);   
     delete stakes[staker];
+    
+    emit StakeWithdrawn(staker, block.timestamp);
   }
 }
