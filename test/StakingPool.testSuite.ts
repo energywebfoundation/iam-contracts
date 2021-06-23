@@ -86,7 +86,8 @@ export function stakingPoolTests(): void {
 
 
   it('should not be possible to put a stake without having patron role', async () => {
-    return expect(stakingPool.putStake({ value: amount })).rejectedWith('StakingPool: staker is not registered with patron role');
+    return expect(stakingPool.putStake({ value: amount }))
+      .rejectedWith('StakingPool: staker is not registered with patron role');
   });
 
   it('having patron role should be able to put a stake', async () => {
@@ -95,11 +96,20 @@ export function stakingPoolTests(): void {
     return expect(stakingPool.connect(patron).putStake({ value: amount })).fulfilled;
   });
 
+  it('should not be possible to replenish stake', async () => {
+    await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
+    await stakingPool.connect(patron).putStake({ value: amount });
+
+    return expect(stakingPool.connect(patron).putStake({ value: amount }))
+      .rejectedWith('StakingPool: Replenishment of the stake is not allowed');
+  });
+
   it('should not be possible to request withdraw before minimal staking period is expired', async () => {
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
     await stakingPool.connect(patron).putStake({ value: amount });
 
-    return expect(stakingPool.connect(patron).requestWithdraw()).rejectedWith('StakingPool: Minimum staking period is not expired yet');
+    return expect(stakingPool.connect(patron).requestWithdraw())
+      .rejectedWith('StakingPool: Minimum staking period is not expired yet');
   });
 
   it('should be able to request withdraw after minimal staking period is expired', async () => {
@@ -113,6 +123,19 @@ export function stakingPoolTests(): void {
     return expect(stakingPool.connect(patron).requestWithdraw()).fulfilled;
   });
 
+  it('should not be possible to repeat withdrawal request', async () => {
+    minStakingPeriod = 1;
+    await setupContracts();
+    await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
+    await stakingPool.connect(patron).putStake({ value: amount });
+    await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * minStakingPeriod) });
+
+    minStakingPeriod = defaultMinStakingPeriod;
+    await stakingPool.connect(patron).requestWithdraw();
+
+    return expect(stakingPool.connect(patron).requestWithdraw()).rejectedWith('StakingPool: No stake to withdraw');
+  });
+
   it('should not be possible to withdraw before withdraw delay is expired', async () => {
     minStakingPeriod = 1;
     await setupContracts();
@@ -122,7 +145,8 @@ export function stakingPoolTests(): void {
     await stakingPool.connect(patron).requestWithdraw();
 
     minStakingPeriod = defaultMinStakingPeriod;
-    return expect(stakingPool.connect(patron).withdraw()).rejectedWith('StakingPool: Withdrawal delay hasn\'t expired yet');
+    return expect(stakingPool.connect(patron).withdraw())
+      .rejectedWith('StakingPool: Withdrawal delay hasn\'t expired yet');
   });
 
   it('should be able to withdraw after withdraw delay is expired', async () => {
@@ -138,5 +162,23 @@ export function stakingPoolTests(): void {
     minStakingPeriod = defaultMinStakingPeriod;
     withdrawDelay = defaultWithdrawDelay;
     return expect(stakingPool.connect(patron).withdraw()).fulfilled;
+  });
+
+  it('should not be possible to repeat withdraw', async () => {
+    minStakingPeriod = 1;
+    withdrawDelay = 1;
+    await setupContracts();
+    await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
+    await stakingPool.connect(patron).putStake({ value: amount });
+    await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * minStakingPeriod) });
+    await stakingPool.connect(patron).requestWithdraw();
+    await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * withdrawDelay) });
+
+    minStakingPeriod = defaultMinStakingPeriod;
+    withdrawDelay = defaultWithdrawDelay;
+    await stakingPool.connect(patron).withdraw();
+
+    return expect(stakingPool.connect(patron).withdraw())
+      .rejectedWith('StakingPool: Stake hasn\'t requested to withdraw');
   });
 }

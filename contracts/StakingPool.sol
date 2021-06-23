@@ -13,7 +13,7 @@ contract StakingPool {
   
   address immutable rewardPool;
   
-  mapping(address => Stake) stakes;
+  mapping(address => Stake) public stakes;
   
   enum StakeStatus { NONSTAKING, STAKING, WITHDRAWING }
   
@@ -52,7 +52,7 @@ contract StakingPool {
   function putStake() payable external isPatron {
     Stake storage stake = stakes[msg.sender];
     require(
-      stake.amount == 0,
+      stake.status == StakeStatus.NONSTAKING,
       "StakingPool: Replenishment of the stake is not allowed"
     );
     uint amount = msg.value;
@@ -70,7 +70,10 @@ contract StakingPool {
    */
   function requestWithdraw() external {
     Stake storage stake = stakes[msg.sender];
-    require(stake.amount > 0, "StakingPool: No stake to withdraw");
+    require(
+      stake.status == StakeStatus.STAKING,
+      "StakingPool: No stake to withdraw"
+    );
     require(
       block.timestamp >= stake.start + minStakingPeriod,
        "StakingPool: Minimum staking period is not expired yet"
