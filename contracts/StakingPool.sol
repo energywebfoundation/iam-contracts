@@ -20,7 +20,7 @@ contract StakingPool {
   struct Stake {
     uint amount;
     uint start;
-    uint end;
+    uint withdrawalRequested;
     StakeStatus status;
   }
   
@@ -60,9 +60,8 @@ contract StakingPool {
     uint start = block.timestamp;
     stake.amount = amount;
     stake.start = start;
-    stake.end = 0;
+    stake.withdrawalRequested = 0;
     stake.status = StakeStatus.STAKING;
-    RewardPool(rewardPool).startStaking(msg.sender, amount, start);
   }
   
   /**
@@ -78,11 +77,8 @@ contract StakingPool {
       block.timestamp >= stake.start + minStakingPeriod,
        "StakingPool: Minimum staking period is not expired yet"
     );
-    uint stakingEnd = block.timestamp;
     stake.status = StakeStatus.WITHDRAWING;
-    stake.end = stakingEnd;
-    
-    RewardPool(rewardPool).completeStaking(msg.sender, stakingEnd);    
+    stake.withdrawalRequested = block.timestamp;
   }
   
   /**
@@ -96,10 +92,10 @@ contract StakingPool {
       "StakingPool: Stake hasn't requested to withdraw"
     );
     require(
-      block.timestamp >= stake.end + withdrawDelay,
+      block.timestamp >= stake.withdrawalRequested + withdrawDelay,
       "StakingPool: Withdrawal delay hasn't expired yet"
     );
-    RewardPool(rewardPool).payReward(staker);
+    RewardPool(rewardPool).payReward(staker, stake.amount, stake.withdrawalRequested - stake.start);
     staker.transfer(stake.amount);
     delete stakes[staker];
   }
