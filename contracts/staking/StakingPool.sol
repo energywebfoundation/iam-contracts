@@ -1,5 +1,5 @@
 pragma solidity 0.7.6;
-import "./ClaimManager.sol";
+import "../roles/ClaimManager.sol";
 import "./RewardPool.sol";
 
 contract StakingPool {
