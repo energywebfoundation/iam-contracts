@@ -23,7 +23,7 @@ contract StakingPool {
   uint immutable withdrawDelay; // seconds
   
   address immutable claimManager;
-  bytes32 immutable patronRole;
+  bytes32[] patronRoles;
   
   address immutable rewardPool;
   
@@ -35,13 +35,13 @@ contract StakingPool {
     uint _minStakingPeriod,
     uint _withdrawDelay,
     address _claimManager,
-    bytes32 _patronRole,
+    bytes32[] memory _patronRoles,
     address _rewardPool
   ) payable {
     minStakingPeriod = _minStakingPeriod;
     withdrawDelay = _withdrawDelay;
     claimManager = _claimManager;
-    patronRole = _patronRole;
+    patronRoles = _patronRoles;
     
     principal = msg.value;
     totalStake = principal;
@@ -49,15 +49,23 @@ contract StakingPool {
     rewardPool = _rewardPool;
   }
   
-  modifier isPatron() {
+  modifier hasPatronRole() {
+    bool hasPatronRole = false;
+    ClaimManager cm = ClaimManager(claimManager);
+    for (uint i = 0; i < patronRoles.length; i++) {
+      if (cm.hasRole(msg.sender, patronRoles[i], 0)) {
+        hasPatronRole = true;
+        break;
+      }
+    }
     require(
-      ClaimManager(claimManager).hasRole(msg.sender, patronRole, 0),
+      hasPatronRole,
       "StakingPool: patron is not registered with patron role"
     );
     _;
   }
   
-  function putStake() payable external isPatron {
+  function putStake() payable external hasPatronRole {
     address patron = msg.sender;
     Stake storage stake = stakes[patron];
     require(

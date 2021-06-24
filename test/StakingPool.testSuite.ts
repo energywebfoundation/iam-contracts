@@ -56,7 +56,7 @@ export function stakingPoolTests(): void {
       minStakingPeriod,
       withdrawDelay,
       claimManager.address,
-      namehash(patronRole),
+      [namehash(patronRole)],
       rewardPool.address,
       { value: principal }
     )).deployed();
