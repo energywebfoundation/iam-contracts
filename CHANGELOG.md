@@ -1,3 +1,20 @@
+# [1.12.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.11.2...v1.12.0) (2021-06-24)
+
+
+### Bug Fixes
+
+* **staking:** prevent repeated stake state change ([46832f8](https://github.com/energywebfoundation/iam-contracts/commit/46832f8832c42ec1e6cbf12a49d69e32b6e9078e))
+
+
+### Features
+
+* **staking:** add checkReward ([a40be99](https://github.com/energywebfoundation/iam-contracts/commit/a40be996d11209fff5449a1d89ca78bfdc58e64d))
+* **staking:** array of patron roles ([01b8d4c](https://github.com/energywebfoundation/iam-contracts/commit/01b8d4c2a623614c0b57ca06edb1bf3e00b3509c))
+* **staking:** emit on stake state change ([e48f9ed](https://github.com/energywebfoundation/iam-contracts/commit/e48f9ed72fcc1157dc4d62db92694a12adfdafe1))
+* **staking:** get total stake ([a3c800b](https://github.com/energywebfoundation/iam-contracts/commit/a3c800b028e656607ad7f1ffdff6b08d6e20e624))
+* **staking:** reward pool only pays reward ([dca563f](https://github.com/energywebfoundation/iam-contracts/commit/dca563f9daaef3d5abffd4dea0ba8155ed3b433c))
+* StakingPool contract ([e191971](https://github.com/energywebfoundation/iam-contracts/commit/e19197132777115a9be72d5ead8bbf9de4758081))
+
 ## [1.11.2](https://github.com/energywebfoundation/iam-contracts/compare/v1.11.1...v1.11.2) (2021-06-11)
 
 
