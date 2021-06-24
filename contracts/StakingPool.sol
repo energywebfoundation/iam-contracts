@@ -3,7 +3,21 @@ import "./ClaimManager.sol";
 import "./RewardPool.sol";
 
 contract StakingPool {
-  uint immutable principal;
+  struct Stake {
+    uint amount;
+    uint start;
+    uint withdrawalRequested;
+    StakeStatus status;
+  }
+  
+  enum StakeStatus { NONSTAKING, STAKING, WITHDRAWING }
+  
+  event StakePut(address indexed patron, uint indexed amount, uint indexed timestamp);
+  event StakeWithdrawalRequested(address indexed patron, uint indexed timestamp);
+  event StakeWithdrawn(address indexed patron, uint indexed timestamp);
+  
+  uint principal;
+  uint public totalStake;
   uint immutable minStakingPeriod; // seconds
 
   uint immutable withdrawDelay; // seconds
@@ -13,20 +27,9 @@ contract StakingPool {
   
   address immutable rewardPool;
   
-  mapping(address => Stake) stakes;
-  
-  enum StakeStatus { NONSTAKING, STAKING, WITHDRAWING }
-  
-  event StakePut(address indexed patron, uint indexed amount, uint indexed timestamp);
-  event StakeWithdrawalRequested(address indexed patron, uint indexed timestamp);
-  event StakeWithdrawn(address indexed patron, uint indexed timestamp);
-  
-  struct Stake {
-    uint amount;
-    uint start;
-    uint withdrawalRequested;
-    StakeStatus status;
-  }
+  mapping(address => Stake) public stakes;
+  address[] patrons;
+  mapping(address => uint) indexOfPatron;
   
   constructor(
     uint _minStakingPeriod,
@@ -41,6 +44,7 @@ contract StakingPool {
     patronRole = _patronRole;
     
     principal = msg.value;
+    totalStake = principal;
     
     rewardPool = _rewardPool;
   }
@@ -48,14 +52,14 @@ contract StakingPool {
   modifier isPatron() {
     require(
       ClaimManager(claimManager).hasRole(msg.sender, patronRole, 0),
-      "StakingPool: staker is not registered with patron role"
+      "StakingPool: patron is not registered with patron role"
     );
     _;
   }
   
   function putStake() payable external isPatron {
-    address staker = msg.sender;
-    Stake storage stake = stakes[staker];
+    address patron = msg.sender;
+    Stake storage stake = stakes[patron];
     require(
       stake.status == StakeStatus.NONSTAKING,
       "StakingPool: Replenishment of the stake is not allowed"
@@ -67,16 +71,18 @@ contract StakingPool {
     stake.start = start;
     stake.withdrawalRequested = 0;
     stake.status = StakeStatus.STAKING;
+    totalStake += stake.amount;
+    addPatron(patron);
     
-    emit StakePut(staker, stake.amount, stake.start);
+    emit StakePut(patron, stake.amount, stake.start);
   }
   
   /**
   * @dev stops staking and notifies reward pool
    */
   function requestWithdraw() external {
-    address staker = msg.sender;
-    Stake storage stake = stakes[staker];
+    address patron = msg.sender;
+    Stake storage stake = stakes[patron];
     require(
       stake.status == StakeStatus.STAKING,
       "StakingPool: No stake to withdraw"
@@ -88,15 +94,15 @@ contract StakingPool {
     stake.status = StakeStatus.WITHDRAWING;
     stake.withdrawalRequested = block.timestamp;
     
-    emit StakeWithdrawalRequested(staker, stake.withdrawalRequested);
+    emit StakeWithdrawalRequested(patron, stake.withdrawalRequested);
   }
   
   /**
   * @dev invoked after expiring of withdraw delay
    */
   function withdraw() external {
-    address payable staker = msg.sender;
-    Stake storage stake = stakes[staker];
+    address payable patron = msg.sender;
+    Stake storage stake = stakes[patron];
     require(
       stake.status == StakeStatus.WITHDRAWING, 
       "StakingPool: Stake hasn't requested to withdraw"
@@ -105,10 +111,31 @@ contract StakingPool {
       block.timestamp >= stake.withdrawalRequested + withdrawDelay,
       "StakingPool: Withdrawal delay hasn't expired yet"
     );
-    RewardPool(rewardPool).payReward(staker, stake.amount, stake.withdrawalRequested - stake.start);
-    staker.transfer(stake.amount);   
-    delete stakes[staker];
+    RewardPool(rewardPool).payReward(patron, stake.amount, stake.withdrawalRequested - stake.start);
+    patron.transfer(stake.amount);   
+    totalStake -= stake.amount;
+    delete stakes[patron];
+    removePatron(patron);
     
-    emit StakeWithdrawn(staker, block.timestamp);
+    emit StakeWithdrawn(patron, block.timestamp);
+  }
+  
+  function addPatron(address _patron) internal {
+    patrons.push(_patron);
+    indexOfPatron[_patron] = patrons.length - 1;
+  }
+  
+  function removePatron(address _patron) internal {
+    uint index = indexOfPatron[_patron];
+    require(
+      patrons[index] == _patron,
+      "StakingPool: No such patron"
+    );
+    
+    if (index > 0 && index < patrons.length - 1) {
+      patrons[index] = patrons[patrons.length-1];
+      indexOfPatron[patrons[index]] = index;
+    }
+    patrons.pop();
   }
 }
