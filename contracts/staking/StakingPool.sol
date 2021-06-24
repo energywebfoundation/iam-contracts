@@ -128,6 +128,14 @@ contract StakingPool {
     emit StakeWithdrawn(patron, block.timestamp);
   }
   
+  function checkReward() public returns (uint reward) {
+    require(
+      stakes[msg.sender].status != StakeStatus.NONSTAKING,
+      "StakingPool: No stake"
+    );
+    reward = RewardPool(rewardPool).checkReward(msg.sender);
+  }
+  
   function addPatron(address _patron) internal {
     patrons.push(_patron);
     indexOfPatron[_patron] = patrons.length - 1;
