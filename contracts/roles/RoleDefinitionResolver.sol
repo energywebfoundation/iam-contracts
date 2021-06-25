@@ -1,8 +1,7 @@
-pragma solidity 0.7.6;
-pragma experimental ABIEncoderV2;
+pragma solidity 0.8.6;
 
-import "@ensdomains/ens/contracts/ENS.sol";
-import "@ensdomains/resolver/contracts/PublicResolver.sol";
+import "@ensdomains/ens-contracts/contracts/registry/ENS.sol";
+import "@ensdomains/ens-contracts/contracts/resolvers/PublicResolver.sol";
 import "./DomainNotifier.sol";
 import "./profiles/enrolment-conditions/EnrolmentPrerequisiteRolesResolver.sol";
 import "./profiles/issuance/IssuersResolver.sol";

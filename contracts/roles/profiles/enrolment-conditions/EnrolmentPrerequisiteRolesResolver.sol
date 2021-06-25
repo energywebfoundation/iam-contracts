@@ -1,7 +1,6 @@
-pragma solidity ^0.7.0;
-pragma experimental ABIEncoderV2;
+pragma solidity ^0.8.0;
 
-import "@ensdomains/resolver/contracts/ResolverBase.sol";
+import "@ensdomains/ens-contracts/contracts/resolvers/ResolverBase.sol";
 
 /**
  * Profile for resolving roles which an identity must have to be eligible for a role claim

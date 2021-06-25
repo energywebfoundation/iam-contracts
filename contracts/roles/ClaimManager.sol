@@ -1,9 +1,10 @@
-pragma solidity 0.7.6;
-pragma abicoder v2;
+pragma solidity 0.8.6;
 
-import "@ensdomains/ens/contracts/ENSRegistry.sol";
-import "@openzeppelin/contracts/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/drafts/EIP712.sol";
+import "@ensdomains/ens-contracts/contracts/registry/ENSRegistry.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
+// import "@ew-did-registry/proxyidentity/contracts/IdentityManager.sol";
+// import "/Users/john/ew/ew-did-registry/packages/proxyIdentity/contracts/IdentityManager.sol";
 import "./RoleDefinitionResolver.sol";
 
 interface EthereumDIDRegistry {
@@ -52,7 +53,7 @@ contract ClaimManager is EIP712 {
   address private didRegistry;
   address private ensRegistry;
   
-  constructor(address _didRegistry, address _ensRegistry) EIP712(ERC712_DOMAIN_NAME, ERC712_DOMAIN_VERSION) public {
+  constructor(address _didRegistry, address _ensRegistry, address _identityManager) EIP712(ERC712_DOMAIN_NAME, ERC712_DOMAIN_VERSION) public {
     didRegistry = _didRegistry;
     ensRegistry = _ensRegistry;
   }
