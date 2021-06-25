@@ -20,15 +20,18 @@
     "ganache": "ganache-cli -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000",
     "test-ganache": "mocha -r ts-node/register test/*test.ts",
     "compile:contracts": "truffle compile",
-    "build:typechain": "npm run build:typechain:domainnotifier && npm run build:typechain:resolver && npm run build:typechain:registry && npm run build:typechain:publicresolver && npm run build:typechain:claimmanager && npm run build:staking",
+    "build:typechain": "npm run build:typechain:domainnotifier && npm run build:typechain:resolver && npm run build:typechain:registry && npm run build:typechain:publicresolver && npm run build:typechain:claimmanager && npm run build:staking && npm run build:proxyIdentity",
     "build:staking": "npm run build:typechain:stakingpool && npm run build:typechain:rewardpool",
+    "build:proxyIdentity": "npm run build:typechain:offerableIdentity && npm run build:typechain:identityManager",
     "build:typechain:domainnotifier": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/DomainNotifier.json'",
     "build:typechain:resolver": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/RoleDefinitionResolver.json'",
     "build:typechain:registry": "typechain --target ethers-v4 --outDir ethers-v4 './node_modules/@ensdomains/ens/build/contracts/ENSRegistry.json'",
     "build:typechain:publicresolver": "typechain --target ethers-v4 --outDir ethers-v4 './node_modules/@ensdomains/resolver/build/contracts/PublicResolver.json'",
     "build:typechain:claimmanager": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/ClaimManager.json'",
     "build:typechain:stakingpool": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/StakingPool.json'",
-    "build:typechain:rewardpool": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/RewardPool.json'"
+    "build:typechain:rewardpool": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/RewardPool.json'",
+    "build:typechain:offerableIdentity": "typechain --target ethers-v4 --outDir ethers-v4-for-tests \"./node_modules/@ew-did-registry/proxyidentity/build/contracts/OfferableIdentity.json\"",
+    "build:typechain:identityManager": "typechain --target ethers-v4 --outDir ethers-v4-for-tests \"./node_modules/@ew-did-registry/proxyidentity/build/contracts/IdentityManager.json\""
   },
   "homepage": "https://github.com/energywebfoundation/iam-contracts/#readme",
   "repository": {
@@ -52,6 +55,7 @@
     "@ensdomains/dnssec-oracle": "^0.2.0",
     "@ensdomains/ens": "^0.5.0",
     "@ensdomains/resolver": "0.3.0",
+    "@ew-did-registry/proxyidentity": "^0.5.2-alpha.1057.0",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/commit-analyzer": "^8.0.1",
     "@semantic-release/git": "^9.0.0",

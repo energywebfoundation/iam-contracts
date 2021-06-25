@@ -3,6 +3,9 @@ import { expect } from 'chai';
 import { abi as erc1056Abi, bytecode as erc1056Bytecode } from '../test_utils/ERC1056.json';
 import { ClaimManager__factory as ClaimManagerFactory } from '../../ethers-v4/factories/ClaimManager__factory';
 import { ClaimManager } from '../../ethers-v4/ClaimManager';
+import { IdentityManager__factory as IdentityManagerFactory } from '../../ethers-v4-for-tests/factories/IdentityManager__factory';
+import { IdentityManager } from '../../ethers-v4-for-tests/IdentityManager';
+import { OfferableIdentity__factory as OfferableIdentityFactory } from '../../ethers-v4-for-tests/factories/OfferableIdentity__factory';
 import { DomainTransactionFactory } from '../../src';
 import { ENSRegistry } from '../../ethers-v4/ENSRegistry';
 import { RoleDefinitionResolver } from '../../ethers-v4/RoleDefinitionResolver';
@@ -18,6 +21,7 @@ const installerRole = 'installer';
 const hashLabel = (label: string): string => utils.keccak256(utils.toUtf8Bytes(label));
 
 let claimManager: ClaimManager;
+let proxyIdentityManager: IdentityManager;
 let roleFactory: DomainTransactionFactory;
 let roleResolver: RoleDefinitionResolver;
 let erc1056: Contract;
@@ -89,6 +93,8 @@ function testSuite() {
     roleResolver = await (await (roleDefResolverFactory.connect(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
 
     claimManager = await (await new ClaimManagerFactory(deployer).deploy(erc1056.address, ensRegistry.address)).deployed();
+    const offerableIdentity = await (await new OfferableIdentityFactory(deployer).deploy()).deployed();
+    proxyIdentityManager = await (await new IdentityManagerFactory(deployer).deploy(offerableIdentity.address)).deployed();
     roleFactory = new DomainTransactionFactory({ domainResolverAddress: roleResolver.address });
 
     await (await ensRegistry.setSubnodeOwner(root, hashLabel(authorityRole), deployerAddr)).wait();
@@ -215,6 +221,20 @@ function testSuite() {
 
     expect(await claimManager.hasRole(installerAddr, utils.namehash(installerRole), defaultVersion)).true;
   });
+
+  it('Agreement can be signed by proxyIdentity owner', async () => {
+    const event = (await (await proxyIdentityManager.connect(authority).createIdentity(authorityAddr)).wait())
+        .events?.find((e) => e.event === proxyIdentityManager.interface.events.IdentityCreated.name);
+    const proxyIdentityAddr = (event?.args as string[])[0];
+    const proxyIdentity = OfferableIdentityFactory.connect(proxyIdentityAddr, provider);
+    const owner = await proxyIdentity.owner();
+    expect(owner).to.eql(authorityAddr);
+
+    await requestRole({claimManager,  roleName: installerRole, agreementSigner: authority, proofSigner: authority, subjectAddress: proxyIdentityAddr});
+
+    expect(await claimManager.hasRole(installerAddr, utils.namehash(installerRole), defaultVersion)).true;
+  });
+
 
   it('Proof can be signed by issuer delegate', async () => {
     const delegate = provider.getSigner(6);
