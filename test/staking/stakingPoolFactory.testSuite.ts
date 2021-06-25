@@ -96,7 +96,7 @@ export function stakingPoolFactoryTests(): void {
     )).rejectedWith("StakingPoolFactory: service provider doesn't have required role");
   });
 
-  it('non owner of service should not be able to launch pool', async () => {
+  it("non owner of service should not be able to launch pool", async () => {
     const nonOwner = await getSigner();
     await requestRole({ claimManager, roleName: serviceProviderRole, version, agreementSigner: nonOwner, proofSigner: ewc });
 
@@ -104,7 +104,18 @@ export function stakingPoolFactoryTests(): void {
       namehash(service),
       defaultMinStakingPeriod,
       sharing,
-      { value: principalThreshold.mul(2) }
+      { value: principalThreshold }
     )).rejectedWith("StakingPoolFactory: Not authorized to create pool for services in this domain");
+  });
+
+  it("can't launch when principal less than threshold", async () => {
+    await requestRole({ claimManager, roleName: serviceProviderRole, version, agreementSigner: serviceProvider, proofSigner: ewc });
+
+    return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
+      namehash(service),
+      defaultMinStakingPeriod / 2,
+      sharing,
+      { value: principalThreshold.div(2) }
+    )).rejectedWith("StakingPoolFactory: service principal less than threshold");
   });
 }

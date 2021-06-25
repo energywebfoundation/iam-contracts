@@ -41,20 +41,10 @@ contract StakingPoolFactory {
     rewardPool = _rewardPool;
   }
   
-  modifier isServiceProvider(bytes32 service) {
+  modifier isServiceProvider() {
     require(
       ClaimManager(claimManager).hasRole(msg.sender, serviceProviderRole, 0),
       "StakingPoolFactory: service provider doesn't have required role"
-    );
-    address serviceOwner = ENSRegistry(ensRegistry).owner(service);
-    require(
-      serviceOwner == msg.sender 
-      || ENSRegistry(ensRegistry).isApprovedForAll(serviceOwner, msg.sender),
-      "StakingPoolFactory: Not authorized to create pool for services in this domain"
-    );
-    require(
-      msg.value >= principalThreshold,
-      "StakingPoolFactory: service principal less than threshold"
     );
     _;
   }
@@ -63,13 +53,28 @@ contract StakingPoolFactory {
     bytes32 service,
     uint minStakingPeriod,
     uint sharing
-  ) external isServiceProvider(service) payable {
+  ) external isServiceProvider() payable {
     require(
       address(pools[service]) == address(0),
       "StakingPool: pool for service already launched"
     );
+    address serviceOwner = ENSRegistry(ensRegistry).owner(service);
+    require(
+      serviceOwner == msg.sender 
+      || ENSRegistry(ensRegistry).isApprovedForAll(serviceOwner, msg.sender),
+      "StakingPoolFactory: Not authorized to create pool for services in this domain"
+    );
+    uint principal = msg.value;
+    require(
+      msg.value >= principalThreshold,
+      "StakingPoolFactory: service principal less than threshold"
+    );
+    require(
+      principal >= principalThreshold,
+      "StakingPoolFactory: principal less than threshold"
+    );
     StakingPool pool = (new StakingPool)
-    {value: msg.value}
+    {value: principal}
     (
       minStakingPeriod,
       withdrawDelay,
