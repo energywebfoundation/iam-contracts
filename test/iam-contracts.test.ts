@@ -7,7 +7,7 @@ import { roleDefinitionResolverTestSuite } from './RoleDefinitionResolver.testSu
 import { domainCrudTestSuite } from './DomainCRUD.testSuite';
 import { domainHierarchyTestSuite } from './DomainHierarchy.testSuite';
 import { claimManagerTests } from './ClaimManagerTests/ClaimManager.testSuit';
-import { stakingPoolTests } from './StakingPool.testSuite';
+import { stakingTests } from './staking/staking.testSuite';
 
 const { JsonRpcProvider } = providers;
 
@@ -38,5 +38,5 @@ describe('[IAM CONTRACTS]', function () {
   describe('DomainCRUD Test', domainCrudTestSuite);
   describe('DomainHierarchy Test', domainHierarchyTestSuite);
   describe('ClaimManager Test', claimManagerTests);
-  describe('StakingPool Test', stakingPoolTests);
+  describe.only('Staking Test', stakingTests);
 });

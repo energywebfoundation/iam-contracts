@@ -8,7 +8,6 @@ contract StakingPoolFactory {
   uint immutable principalThreshold;
   bytes32 immutable serviceProviderRole;
   
-  uint immutable minStakingPeriod;
   uint immutable withdrawDelay;
   
   address immutable claimManager;
@@ -27,16 +26,14 @@ contract StakingPoolFactory {
   constructor(
     uint _principalThreshold,
     bytes32 _serviceProviderRole,
-    uint _minStakingPeriod,
     uint _withdrawDelay,
     address _claimManager,
     address _ensRegistry,
     bytes32[] memory _patronRoles,
-    address _rewardPool,
+    address _rewardPool
   ) {
     principalThreshold = _principalThreshold;
     serviceProviderRole = _serviceProviderRole;
-    minStakingPeriod = _minStakingPeriod;
     withdrawDelay = _withdrawDelay;
     claimManager = _claimManager;
     ensRegistry = _ensRegistry;
@@ -49,9 +46,11 @@ contract StakingPoolFactory {
       ClaimManager(claimManager).hasRole(msg.sender, serviceProviderRole, 0),
       "StakingPoolFactory: service provider doesn't have required role"
     );
+    address serviceOwner = ENSRegistry(ensRegistry).owner(service);
     require(
-      ENSRegistry(ENSRegistry).owner(service) == msg.sender,
-      "StakingPoolFactory: Not authorized to create pools for services in this domain"
+      serviceOwner == msg.sender 
+      || ENSRegistry(ensRegistry).isApprovedForAll(serviceOwner, msg.sender),
+      "StakingPoolFactory: Not authorized to create pool for services in this domain"
     );
     require(
       msg.value >= principalThreshold,
@@ -60,7 +59,11 @@ contract StakingPoolFactory {
     _;
   }
   
-  function launchStakingPool(bytes32 service) external isServiceProvider(service) payable {
+  function launchStakingPool(
+    bytes32 service,
+    uint minStakingPeriod,
+    uint sharing
+  ) external isServiceProvider(service) payable {
     StakingPool pool = (new StakingPool)
     {value: msg.value}
     (
@@ -68,7 +71,8 @@ contract StakingPoolFactory {
       withdrawDelay,
       claimManager,
       patronRoles,
-      rewardPool
+      rewardPool,
+      sharing
     );
     pools[service] = pool;
     
