@@ -19,7 +19,7 @@ contract StakingPoolFactory {
   /**
   * @dev pools by orgs
    */
-  mapping(bytes32 => StakingPool) pools;
+  mapping(bytes32 => StakingPool) public pools;
   
   event StakingPoolLaunched(bytes32 service, address pool);
   
