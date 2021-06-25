@@ -64,6 +64,10 @@ contract StakingPoolFactory {
     uint minStakingPeriod,
     uint sharing
   ) external isServiceProvider(service) payable {
+    require(
+      address(pools[service]) == address(0),
+      "StakingPool: pool for service already launched"
+    );
     StakingPool pool = (new StakingPool)
     {value: msg.value}
     (
