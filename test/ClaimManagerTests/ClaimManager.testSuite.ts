@@ -51,7 +51,7 @@ export function testsOnGanache(): void {
     authorityAddr = await authority.getAddress();
   });
 
-  testSuit();
+  testSuite();
 }
 
 function testsOnVolta() {
@@ -74,10 +74,10 @@ function testsOnVolta() {
     authorityAddr = await authority.getAddress();
   });
 
-  testSuit();
+  testSuite();
 }
 
-function testSuit() {
+function testSuite() {
   beforeEach(async function () {
     const erc1056Factory = new ContractFactory(erc1056Abi, erc1056Bytecode, deployer);
     erc1056 = await (await erc1056Factory.deploy()).deployed();
