@@ -7,7 +7,7 @@ import { hashLabel } from "../iam-contracts.test";
 import { requestRole } from "../test_utils/role_utils";
 import { ensRegistry, patronRole, deployer, ewc, root, roleResolver, roleFactory, defaultMinStakingPeriod, claimManager, defaultWithdrawDelay, provider } from "./staking.testSuite";
 
-const { namehash, parseEther, formatEther } = utils;
+const { namehash, parseEther } = utils;
 
 export function stakingPoolFactoryTests(): void {
   let stakingPoolFactory: StakingPoolFactory;
@@ -117,5 +117,23 @@ export function stakingPoolFactoryTests(): void {
       sharing,
       { value: principalThreshold.div(2) }
     )).rejectedWith("StakingPoolFactory: service principal less than threshold");
+  });
+
+  it("can't launch several pools for service", async () => {
+    await requestRole({ claimManager, roleName: serviceProviderRole, version, agreementSigner: serviceProvider, proofSigner: ewc });
+
+    await stakingPoolFactory.connect(serviceProvider).launchStakingPool(
+      namehash(service),
+      defaultMinStakingPeriod / 2,
+      sharing,
+      { value: principalThreshold.mul(2) }
+    );
+
+    return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
+      namehash(service),
+      defaultMinStakingPeriod / 2,
+      sharing,
+      { value: principalThreshold.mul(2) }
+    )).rejectedWith("StakingPool: pool for service already launched");
   });
 }

@@ -38,5 +38,5 @@ describe("[IAM CONTRACTS]", function () {
   describe("DomainCRUD Test", domainCrudTestSuite);
   describe("DomainHierarchy Test", domainHierarchyTestSuite);
   describe("ClaimManager Test", claimManagerTests);
-  describe.only("Staking Test", stakingTests);
+  describe("Staking Test", stakingTests);
 });

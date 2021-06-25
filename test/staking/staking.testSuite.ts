@@ -68,5 +68,5 @@ export function stakingTests(): void {
   });
 
   describe("Staking pool tests", stakingPoolTests);
-  describe.only("Staking pool factory tests", stakingPoolFactoryTests);
+  describe("Staking pool factory tests", stakingPoolFactoryTests);
 }
