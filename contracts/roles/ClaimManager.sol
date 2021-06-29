@@ -4,7 +4,9 @@ pragma abicoder v2;
 import "@ensdomains/ens/contracts/ENSRegistry.sol";
 import "@openzeppelin/contracts/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/drafts/EIP712.sol";
+import "@openzeppelin/contracts/introspection/ERC165Checker.sol";
 import "./RoleDefinitionResolver.sol";
+import "@ew-did-registry/proxyidentity/contracts/IOwned.sol";
 
 interface EthereumDIDRegistry {
   function identityOwner(address identity) external view returns(address);
@@ -55,6 +57,10 @@ contract ClaimManager is EIP712 {
   constructor(address _didRegistry, address _ensRegistry) EIP712(ERC712_DOMAIN_NAME, ERC712_DOMAIN_VERSION) public {
     didRegistry = _didRegistry;
     ensRegistry = _ensRegistry;
+  }
+  
+  function isOwned(address subject) internal returns (bool ) {
+    return ERC165Checker.supportsInterface(subject, type(IOwned).interfaceId);
   }
   
   function hasRole(address subject, bytes32 role, uint256 version) public view returns(bool) {
@@ -108,7 +114,9 @@ contract ClaimManager is EIP712 {
        "ClaimManager: agreement signer is not authorized to sign on behalf of subject"
     );
     require(
-      registry.identityOwner(issuer) == proofSigner || registry.validDelegate(issuer, ASSERTION_DELEGATE_TYPE, proofSigner),
+      registry.identityOwner(issuer) == proofSigner ||
+      registry.validDelegate(issuer, ASSERTION_DELEGATE_TYPE, proofSigner) ||
+      isOwned(subject),
        "ClaimManager: proof signer is not authorized to sign on behalf of issuer"
     );
     
