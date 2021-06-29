@@ -6,7 +6,7 @@ import { abi as ensAbi, bytecode as ensBytecode } from '@ensdomains/ens/build/co
 import { roleDefinitionResolverTestSuite } from './RoleDefinitionResolver.testSuite';
 import { domainCrudTestSuite } from './DomainCRUD.testSuite';
 import { domainHierarchyTestSuite } from './DomainHierarchy.testSuite';
-import { claimManagerTests } from './ClaimManagerTests/ClaimManager.testSuit';
+import { claimManagerTests } from './ClaimManagerTests/ClaimManager.testSuite';
 import { stakingPoolTests } from './StakingPool.testSuite';
 
 const { JsonRpcProvider } = providers;

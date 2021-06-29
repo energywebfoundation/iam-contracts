@@ -25,6 +25,7 @@ export async function requestRole({
   agreementSigner,
   proofSigner,
   subject,
+  subjectAddress,
   issuer
 }: {
   claimManager: ClaimManager,
@@ -33,6 +34,7 @@ export async function requestRole({
   agreementSigner: Signer,
   proofSigner: Signer,
   subject?: Signer,
+  subjectAddress?: string,
   issuer?: Signer
 }): Promise<void> {
   if (!subject) {
@@ -42,7 +44,7 @@ export async function requestRole({
     issuer = proofSigner;
   }
   const issuerAddr = await issuer.getAddress();
-  const subjectAddr = await subject.getAddress();
+  const subjectAddr = subjectAddress ?? await subject.getAddress();
 
   const erc712_type_hash = utils.id('EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)');
   const agreement_type_hash = utils.id('Agreement(address subject,bytes32 role,uint256 version)');

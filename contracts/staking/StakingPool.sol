@@ -1,4 +1,4 @@
-pragma solidity 0.7.6;
+pragma solidity 0.8.6;
 import "../roles/ClaimManager.sol";
 import "./RewardPool.sol";
 
@@ -109,7 +109,7 @@ contract StakingPool {
   * @dev invoked after expiring of withdraw delay
    */
   function withdraw() external {
-    address payable patron = msg.sender;
+    address patron = msg.sender;
     Stake storage stake = stakes[patron];
     require(
       stake.status == StakeStatus.WITHDRAWING, 
@@ -120,7 +120,7 @@ contract StakingPool {
       "StakingPool: Withdrawal delay hasn't expired yet"
     );
     RewardPool(rewardPool).payReward(patron, stake.amount, stake.withdrawalRequested - stake.start);
-    patron.transfer(stake.amount);   
+    payable(patron).transfer(stake.amount);   
     totalStake -= stake.amount;
     delete stakes[patron];
     removePatron(patron);
