@@ -6,7 +6,6 @@ import "@ensdomains/ens/contracts/ENSRegistry.sol";
 
 contract StakingPoolFactory {
   uint immutable principalThreshold;
-  bytes32 immutable serviceProviderRole;
   
   uint immutable withdrawDelay;
   
@@ -24,26 +23,16 @@ contract StakingPoolFactory {
   
   constructor(
     uint _principalThreshold,
-    bytes32 _serviceProviderRole,
     uint _withdrawDelay,
     address _claimManager,
     address _ensRegistry,
     address _rewardPool
   ) {
     principalThreshold = _principalThreshold;
-    serviceProviderRole = _serviceProviderRole;
     withdrawDelay = _withdrawDelay;
     claimManager = _claimManager;
     ensRegistry = _ensRegistry;
     rewardPool = _rewardPool;
-  }
-  
-  modifier isServiceProvider() {
-    require(
-      ClaimManager(claimManager).hasRole(msg.sender, serviceProviderRole, 0),
-      "StakingPoolFactory: service provider doesn't have required role"
-    );
-    _;
   }
   
   function launchStakingPool(
@@ -51,7 +40,7 @@ contract StakingPoolFactory {
     uint minStakingPeriod,
     uint patronRewardPortion,
     bytes32[] memory patronRoles
-  ) external isServiceProvider() payable {
+  ) external payable {
     require(
       address(pools[org]) == address(0),
       "StakingPool: pool for organization already launched"

@@ -4,8 +4,7 @@ import { RewardPool } from "../../ethers-v4/RewardPool";
 import { StakingPoolFactory } from "../../ethers-v4/StakingPoolFactory";
 import { RewardPool__factory, StakingPoolFactory__factory } from "../../src";
 import { hashLabel } from "../iam-contracts.test";
-import { requestRole } from "../test_utils/role_utils";
-import { ensRegistry, patronRole, deployer, ewc, root, roleResolver, roleFactory, defaultMinStakingPeriod, claimManager, defaultWithdrawDelay, provider } from "./staking.testSuite";
+import { ensRegistry, patronRole, deployer, root, roleResolver, defaultMinStakingPeriod, claimManager, defaultWithdrawDelay, provider } from "./staking.testSuite";
 
 const { namehash, parseEther } = utils;
 
@@ -14,8 +13,6 @@ export function stakingPoolFactoryTests(): void {
   let rewardPool: RewardPool;
   const service = "servicename";
   const patronRewardPortion = 80;
-  const serviceProviderRole = "serviceproviderrole";
-  const version = 1;
   let serviceProvider: Signer;
   const faucet = provider.getSigner(9);
   const principalThreshold = parseEther("0.1");
@@ -33,7 +30,6 @@ export function stakingPoolFactoryTests(): void {
     rewardPool = await (await new RewardPool__factory(deployer).deploy()).deployed();
     stakingPoolFactory = await (await new StakingPoolFactory__factory(deployer).deploy(
       principalThreshold,
-      namehash(serviceProviderRole),
       withdrawDelay,
       claimManager.address,
       ensRegistry.address,
@@ -46,36 +42,14 @@ export function stakingPoolFactoryTests(): void {
     await (await ensRegistry.connect(serviceProvider).setResolver(namehash(service), roleResolver.address)).wait();
   }
 
-  async function createServiceProviderRole(): Promise<void> {
-    await (await ensRegistry.setSubnodeOwner(root, hashLabel(serviceProviderRole), await serviceProvider.getAddress())).wait();
-    await (await ensRegistry.connect(serviceProvider).setResolver(namehash(serviceProviderRole), roleResolver.address)).wait();
-    await (await serviceProvider.sendTransaction({
-      ...roleFactory.newRole({
-        domain: serviceProviderRole,
-        roleDefinition: {
-          roleName: serviceProviderRole,
-          enrolmentPreconditions: [],
-          fields: [],
-          issuer: { issuerType: "DID", did: [`did:ethr:${await ewc.getAddress()}`] },
-          metadata: [],
-          roleType: "",
-          version
-        }
-      })
-    })).wait();
-  }
-
   beforeEach(async () => {
     serviceProvider = await getSigner();
 
     await setupContracts();
     await registerServiceWithProvider();
-    await createServiceProviderRole();
   });
 
   it("service owner can launch staking pool", async () => {
-    await requestRole({ claimManager, roleName: serviceProviderRole, version, agreementSigner: serviceProvider, proofSigner: ewc });
-
     return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
       namehash(service),
       defaultMinStakingPeriod,
@@ -85,21 +59,8 @@ export function stakingPoolFactoryTests(): void {
     )).fulfilled;
   });
 
-  it("without having service provider role should not be able to launch pool", async () => {
-    expect(await claimManager.hasRole(await serviceProvider.getAddress(), namehash(serviceProviderRole), 0)).false;
-
-    return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
-      namehash(service),
-      defaultMinStakingPeriod,
-      patronRewardPortion,
-      [namehash(patronRole)],
-      { value: principalThreshold.mul(2) }
-    )).rejectedWith("StakingPoolFactory: service provider doesn't have required role");
-  });
-
   it("non owner of service should not be able to launch pool", async () => {
     const nonOwner = await getSigner();
-    await requestRole({ claimManager, roleName: serviceProviderRole, version, agreementSigner: nonOwner, proofSigner: ewc });
 
     return expect(stakingPoolFactory.connect(nonOwner).launchStakingPool(
       namehash(service),
@@ -111,8 +72,6 @@ export function stakingPoolFactoryTests(): void {
   });
 
   it("can't launch when principal less than threshold", async () => {
-    await requestRole({ claimManager, roleName: serviceProviderRole, version, agreementSigner: serviceProvider, proofSigner: ewc });
-
     return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
       namehash(service),
       defaultMinStakingPeriod / 2,
@@ -123,8 +82,6 @@ export function stakingPoolFactoryTests(): void {
   });
 
   it("can't launch several pools for service", async () => {
-    await requestRole({ claimManager, roleName: serviceProviderRole, version, agreementSigner: serviceProvider, proofSigner: ewc });
-
     await stakingPoolFactory.connect(serviceProvider).launchStakingPool(
       namehash(service),
       defaultMinStakingPeriod / 2,
