@@ -12,7 +12,6 @@ contract StakingPoolFactory {
   
   address immutable claimManager;
   address immutable ensRegistry;
-  bytes32[] patronRoles;
   
   address immutable rewardPool;
   
@@ -29,7 +28,6 @@ contract StakingPoolFactory {
     uint _withdrawDelay,
     address _claimManager,
     address _ensRegistry,
-    bytes32[] memory _patronRoles,
     address _rewardPool
   ) {
     principalThreshold = _principalThreshold;
@@ -37,7 +35,6 @@ contract StakingPoolFactory {
     withdrawDelay = _withdrawDelay;
     claimManager = _claimManager;
     ensRegistry = _ensRegistry;
-    patronRoles = _patronRoles;
     rewardPool = _rewardPool;
   }
   
@@ -52,7 +49,8 @@ contract StakingPoolFactory {
   function launchStakingPool(
     bytes32 org,
     uint minStakingPeriod,
-    uint patronRewardPortion
+    uint patronRewardPortion,
+    bytes32[] memory patronRoles
   ) external isServiceProvider() payable {
     require(
       address(pools[org]) == address(0),

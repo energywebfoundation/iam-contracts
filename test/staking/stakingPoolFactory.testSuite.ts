@@ -13,7 +13,7 @@ export function stakingPoolFactoryTests(): void {
   let stakingPoolFactory: StakingPoolFactory;
   let rewardPool: RewardPool;
   const service = "servicename";
-  const sharing = 80;
+  const patronRewardPortion = 80;
   const serviceProviderRole = "serviceproviderrole";
   const version = 1;
   let serviceProvider: Signer;
@@ -37,7 +37,6 @@ export function stakingPoolFactoryTests(): void {
       withdrawDelay,
       claimManager.address,
       ensRegistry.address,
-      [namehash(patronRole)],
       rewardPool.address
     )).deployed();
   }
@@ -80,7 +79,8 @@ export function stakingPoolFactoryTests(): void {
     return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
       namehash(service),
       defaultMinStakingPeriod,
-      sharing,
+      patronRewardPortion,
+      [namehash(patronRole)],
       { value: principalThreshold.mul(2) }
     )).fulfilled;
   });
@@ -91,7 +91,8 @@ export function stakingPoolFactoryTests(): void {
     return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
       namehash(service),
       defaultMinStakingPeriod,
-      sharing,
+      patronRewardPortion,
+      [namehash(patronRole)],
       { value: principalThreshold.mul(2) }
     )).rejectedWith("StakingPoolFactory: service provider doesn't have required role");
   });
@@ -103,7 +104,8 @@ export function stakingPoolFactoryTests(): void {
     return expect(stakingPoolFactory.connect(nonOwner).launchStakingPool(
       namehash(service),
       defaultMinStakingPeriod,
-      sharing,
+      patronRewardPortion,
+      [namehash(patronRole)],
       { value: principalThreshold }
     )).rejectedWith("StakingPoolFactory: Not authorized to create pool for this organization");
   });
@@ -114,7 +116,8 @@ export function stakingPoolFactoryTests(): void {
     return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
       namehash(service),
       defaultMinStakingPeriod / 2,
-      sharing,
+      patronRewardPortion,
+      [namehash(patronRole)],
       { value: principalThreshold.div(2) }
     )).rejectedWith("StakingPoolFactory: principal less than threshold");
   });
@@ -125,14 +128,16 @@ export function stakingPoolFactoryTests(): void {
     await stakingPoolFactory.connect(serviceProvider).launchStakingPool(
       namehash(service),
       defaultMinStakingPeriod / 2,
-      sharing,
+      patronRewardPortion,
+      [namehash(patronRole)],
       { value: principalThreshold.mul(2) }
     );
 
     return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
       namehash(service),
       defaultMinStakingPeriod / 2,
-      sharing,
+      patronRewardPortion,
+      [namehash(patronRole)],
       { value: principalThreshold.mul(2) }
     )).rejectedWith("StakingPool: pool for organization already launched");
   });

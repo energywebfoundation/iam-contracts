@@ -9,7 +9,7 @@ export function stakingPoolTests(): void {
   let stakingPool: StakingPool;
   const amount = parseEther("0.1");
   const version = 1;
-  const sharing = 80;
+  const patronRewardPortion = 80;
   const principal = parseEther("0.2");
 
   async function setupContracts(
@@ -23,7 +23,7 @@ export function stakingPoolTests(): void {
       claimManager.address,
       [namehash(patronRole)],
       rewardPool.address,
-      sharing,
+      patronRewardPortion,
       { value: principal }
     )).deployed();
   }
