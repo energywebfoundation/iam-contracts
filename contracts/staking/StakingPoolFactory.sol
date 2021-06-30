@@ -52,7 +52,7 @@ contract StakingPoolFactory {
   function launchStakingPool(
     bytes32 service,
     uint minStakingPeriod,
-    uint sharing
+    uint patronRewardPortion
   ) external isServiceProvider() payable {
     require(
       address(pools[service]) == address(0),
@@ -81,7 +81,7 @@ contract StakingPoolFactory {
       claimManager,
       patronRoles,
       rewardPool,
-      sharing
+      patronRewardPortion
     );
     pools[service] = pool;
     
