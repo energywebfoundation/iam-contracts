@@ -21,7 +21,7 @@ contract StakingPoolFactory {
    */
   mapping(bytes32 => StakingPool) public pools;
   
-  event StakingPoolLaunched(bytes32 service, address pool);
+  event StakingPoolLaunched(bytes32 org, address pool);
   
   constructor(
     uint _principalThreshold,
@@ -50,24 +50,24 @@ contract StakingPoolFactory {
   }
   
   function launchStakingPool(
-    bytes32 service,
+    bytes32 org,
     uint minStakingPeriod,
     uint patronRewardPortion
   ) external isServiceProvider() payable {
     require(
-      address(pools[service]) == address(0),
-      "StakingPool: pool for service already launched"
+      address(pools[org]) == address(0),
+      "StakingPool: pool for organization already launched"
     );
-    address serviceOwner = ENSRegistry(ensRegistry).owner(service);
+    address orgOwner = ENSRegistry(ensRegistry).owner(org);
     require(
-      serviceOwner == msg.sender 
-      || ENSRegistry(ensRegistry).isApprovedForAll(serviceOwner, msg.sender),
-      "StakingPoolFactory: Not authorized to create pool for services in this domain"
+      orgOwner == msg.sender 
+      || ENSRegistry(ensRegistry).isApprovedForAll(orgOwner, msg.sender),
+      "StakingPoolFactory: Not authorized to create pool for this organization"
     );
     uint principal = msg.value;
     require(
       msg.value >= principalThreshold,
-      "StakingPoolFactory: service principal less than threshold"
+      "StakingPoolFactory: principal less than threshold"
     );
     require(
       principal >= principalThreshold,
@@ -83,8 +83,8 @@ contract StakingPoolFactory {
       rewardPool,
       patronRewardPortion
     );
-    pools[service] = pool;
+    pools[org] = pool;
     
-    emit StakingPoolLaunched(service, address(pool));
+    emit StakingPoolLaunched(org, address(pool));
   }
 }

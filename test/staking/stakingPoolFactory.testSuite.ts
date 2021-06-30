@@ -105,7 +105,7 @@ export function stakingPoolFactoryTests(): void {
       defaultMinStakingPeriod,
       sharing,
       { value: principalThreshold }
-    )).rejectedWith("StakingPoolFactory: Not authorized to create pool for services in this domain");
+    )).rejectedWith("StakingPoolFactory: Not authorized to create pool for this organization");
   });
 
   it("can't launch when principal less than threshold", async () => {
@@ -116,7 +116,7 @@ export function stakingPoolFactoryTests(): void {
       defaultMinStakingPeriod / 2,
       sharing,
       { value: principalThreshold.div(2) }
-    )).rejectedWith("StakingPoolFactory: service principal less than threshold");
+    )).rejectedWith("StakingPoolFactory: principal less than threshold");
   });
 
   it("can't launch several pools for service", async () => {
@@ -134,6 +134,6 @@ export function stakingPoolFactoryTests(): void {
       defaultMinStakingPeriod / 2,
       sharing,
       { value: principalThreshold.mul(2) }
-    )).rejectedWith("StakingPool: pool for service already launched");
+    )).rejectedWith("StakingPool: pool for organization already launched");
   });
 }
