@@ -5,6 +5,10 @@ import "./StakingPool.sol";
 import "@ensdomains/ens/contracts/ENSRegistry.sol";
 
 contract StakingPoolFactory {
+  struct Service {
+    address provider;
+    address pool;
+  }
   uint immutable principalThreshold;
   
   uint immutable withdrawDelay;
@@ -15,9 +19,10 @@ contract StakingPoolFactory {
   address immutable rewardPool;
   
   /**
-  * @dev pools by orgs
+  * @dev services by orgs
    */
-  mapping(bytes32 => StakingPool) public pools;
+  mapping(bytes32 => Service) public services;
+  bytes32[] orgs;
   
   event StakingPoolLaunched(bytes32 org, address pool);
   
@@ -42,19 +47,16 @@ contract StakingPoolFactory {
     bytes32[] memory patronRoles
   ) external payable {
     require(
-      address(pools[org]) == address(0),
+      address(services[org].pool) == address(0),
       "StakingPool: pool for organization already launched"
     );
     address orgOwner = ENSRegistry(ensRegistry).owner(org);
-    require(
-      orgOwner == msg.sender 
-      || ENSRegistry(ensRegistry).isApprovedForAll(orgOwner, msg.sender),
-      "StakingPoolFactory: Not authorized to create pool for this organization"
-    );
     uint principal = msg.value;
+    address provider = msg.sender;
     require(
-      msg.value >= principalThreshold,
-      "StakingPoolFactory: principal less than threshold"
+      orgOwner == provider
+      || ENSRegistry(ensRegistry).isApprovedForAll(orgOwner, provider),
+      "StakingPoolFactory: Not authorized to create pool for this organization"
     );
     require(
       principal >= principalThreshold,
@@ -70,8 +72,14 @@ contract StakingPoolFactory {
       rewardPool,
       patronRewardPortion
     );
-    pools[org] = pool;
+    services[org].pool = address(pool);
+    services[org].provider = provider;
+    orgs.push(org);
     
     emit StakingPoolLaunched(org, address(pool));
+  }
+  
+  function orgsList() public view returns (bytes32[] memory) {
+    return orgs;
   }
 }

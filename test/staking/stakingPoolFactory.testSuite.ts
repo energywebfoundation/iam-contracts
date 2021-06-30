@@ -11,7 +11,7 @@ const { namehash, parseEther } = utils;
 export function stakingPoolFactoryTests(): void {
   let stakingPoolFactory: StakingPoolFactory;
   let rewardPool: RewardPool;
-  const service = "servicename";
+  const org = "orgname";
   const patronRewardPortion = 80;
   let serviceProvider: Signer;
   const faucet = provider.getSigner(9);
@@ -38,8 +38,8 @@ export function stakingPoolFactoryTests(): void {
   }
 
   async function registerServiceWithProvider(): Promise<void> {
-    await (await ensRegistry.setSubnodeOwner(root, hashLabel(service), await serviceProvider.getAddress())).wait();
-    await (await ensRegistry.connect(serviceProvider).setResolver(namehash(service), roleResolver.address)).wait();
+    await (await ensRegistry.setSubnodeOwner(root, hashLabel(org), await serviceProvider.getAddress())).wait();
+    await (await ensRegistry.connect(serviceProvider).setResolver(namehash(org), roleResolver.address)).wait();
   }
 
   beforeEach(async () => {
@@ -50,20 +50,24 @@ export function stakingPoolFactoryTests(): void {
   });
 
   it("service owner can launch staking pool", async () => {
-    return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
-      namehash(service),
+    expect(await stakingPoolFactory.orgsList()).is.empty;
+    
+    await stakingPoolFactory.connect(serviceProvider).launchStakingPool(
+      namehash(org),
       defaultMinStakingPeriod,
       patronRewardPortion,
       [namehash(patronRole)],
       { value: principalThreshold.mul(2) }
-    )).fulfilled;
+    );
+
+    expect(await stakingPoolFactory.orgsList()).to.deep.equal([namehash(org)]);
   });
 
   it("non owner of service should not be able to launch pool", async () => {
     const nonOwner = await getSigner();
 
     return expect(stakingPoolFactory.connect(nonOwner).launchStakingPool(
-      namehash(service),
+      namehash(org),
       defaultMinStakingPeriod,
       patronRewardPortion,
       [namehash(patronRole)],
@@ -73,7 +77,7 @@ export function stakingPoolFactoryTests(): void {
 
   it("can't launch when principal less than threshold", async () => {
     return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
-      namehash(service),
+      namehash(org),
       defaultMinStakingPeriod / 2,
       patronRewardPortion,
       [namehash(patronRole)],
@@ -83,7 +87,7 @@ export function stakingPoolFactoryTests(): void {
 
   it("can't launch several pools for service", async () => {
     await stakingPoolFactory.connect(serviceProvider).launchStakingPool(
-      namehash(service),
+      namehash(org),
       defaultMinStakingPeriod / 2,
       patronRewardPortion,
       [namehash(patronRole)],
@@ -91,7 +95,7 @@ export function stakingPoolFactoryTests(): void {
     );
 
     return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
-      namehash(service),
+      namehash(org),
       defaultMinStakingPeriod / 2,
       patronRewardPortion,
       [namehash(patronRole)],
