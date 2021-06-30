@@ -3,7 +3,7 @@ pragma solidity 0.8.6;
 import "@ensdomains/ens-contracts/contracts/registry/ENSRegistry.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
-import "@ew-did-registry/proxyidentity/contracts/IdentityManager.sol";
+import "@openzeppelin/contracts/utils/introspection/ERC165Checker.sol";
 import "@ew-did-registry/proxyidentity/contracts/IOwned.sol";
 import "./RoleDefinitionResolver.sol";
 
@@ -53,13 +53,22 @@ contract ClaimManager is EIP712 {
   address private didRegistry;
   address private ensRegistry;
   
-  constructor(address _didRegistry, address _ensRegistry, address _identityManager) EIP712(ERC712_DOMAIN_NAME, ERC712_DOMAIN_VERSION) public {
+  constructor(address _didRegistry, address _ensRegistry) EIP712(ERC712_DOMAIN_NAME, ERC712_DOMAIN_VERSION) public {
     didRegistry = _didRegistry;
     ensRegistry = _ensRegistry;
   }
   
-  function isOwned(address subject) internal returns (bool ) {
-    return ERC165Checker.supportsInterface(subject, type(IOwned).interfaceId);
+  function isAuthorized(address identity, address approved) internal returns (bool) {
+    EthereumDIDRegistry registry = EthereumDIDRegistry(didRegistry);
+    if (
+      registry.identityOwner(identity) == approved || 
+      ERC165Checker.supportsInterface(identity, type(IOwned).interfaceId) && approved == IOwned(identity).owner() ||
+      registry.validDelegate(identity, ASSERTION_DELEGATE_TYPE, approved)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
   }
   
   function hasRole(address subject, bytes32 role, uint256 version) public view returns(bool) {
@@ -107,15 +116,12 @@ contract ClaimManager is EIP712 {
     proofSigner = ECDSA.recover(proofHash, role_proof);
     }
         
-    EthereumDIDRegistry registry = EthereumDIDRegistry(didRegistry);
     require(
-      registry.identityOwner(subject) == agreementSigner || registry.validDelegate(subject, ASSERTION_DELEGATE_TYPE, agreementSigner),
+      isAuthorized(subject, agreementSigner),
        "ClaimManager: agreement signer is not authorized to sign on behalf of subject"
     );
     require(
-      registry.identityOwner(issuer) == proofSigner ||
-      registry.validDelegate(issuer, ASSERTION_DELEGATE_TYPE, proofSigner) ||
-      isOwned(subject),
+      isAuthorized(issuer, proofSigner),
        "ClaimManager: proof signer is not authorized to sign on behalf of issuer"
     );
     
