@@ -62,7 +62,7 @@ contract ClaimManager is EIP712 {
     EthereumDIDRegistry registry = EthereumDIDRegistry(didRegistry);
     if (
       registry.identityOwner(identity) == approved || 
-      ERC165Checker.supportsInterface(identity, type(IOwned).interfaceId) && approved == IOwned(identity).owner() ||
+      (ERC165Checker.supportsInterface(identity, type(IOwned).interfaceId) && approved == IOwned(identity).owner()) ||
       registry.validDelegate(identity, ASSERTION_DELEGATE_TYPE, approved)
       ) {
         return true;
