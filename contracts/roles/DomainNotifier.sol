@@ -1,6 +1,6 @@
-pragma solidity 0.7.6;
+pragma solidity 0.8.6;
 
-import "@ensdomains/ens/contracts/ENS.sol";
+import "@ensdomains/ens-contracts/contracts/registry/ENS.sol";
 
 /**
  * DomainNotifier is used as a central point from which to

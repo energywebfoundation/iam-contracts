@@ -2,11 +2,11 @@ import { providers, ContractFactory, utils } from "ethers";
 import { abi as RoleDefAbi, bytecode as RoleDefBytecode } from "../build/contracts/RoleDefinitionResolver.json";
 import { abi as PublicResolverAbi, bytecode as PublicResolverBytecode } from "../build/contracts/PublicResolver.json";
 import { abi as DomainNotifierAbi, bytecode as DomainNotiferBytecode } from "../build/contracts/DomainNotifier.json";
-import { abi as ensAbi, bytecode as ensBytecode } from "@ensdomains/ens/build/contracts/ENSRegistry.json";
+import { abi as ensAbi, bytecode as ensBytecode } from "@ensdomains/ens-contracts/artifacts/contracts/registry/ENSRegistry.sol/ENSRegistry.json";
 import { roleDefinitionResolverTestSuite } from "./RoleDefinitionResolver.testSuite";
 import { domainCrudTestSuite } from "./DomainCRUD.testSuite";
 import { domainHierarchyTestSuite } from "./DomainHierarchy.testSuite";
-import { claimManagerTests } from "./ClaimManagerTests/ClaimManager.testSuit";
+import { claimManagerTests } from "./ClaimManagerTests/ClaimManager.testSuite";
 import { stakingTests } from "./staking/staking.testSuite";
 
 const { JsonRpcProvider } = providers;

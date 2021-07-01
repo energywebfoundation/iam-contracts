@@ -28,8 +28,9 @@
     "build:typechain:publicresolver": "typechain --target ethers-v4 --outDir ethers-v4 './node_modules/@ensdomains/resolver/build/contracts/PublicResolver.json'",
     "build:typechain:claimmanager": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/ClaimManager.json'",
     "build:typechain:stakingpool": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/StakingPool.json'",
-    "build:typechain:stakingpoolfactory": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/StakingPoolFactory.json'",
-    "build:typechain:rewardpool": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/RewardPool.json'"
+    "build:typechain:rewardpool": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/RewardPool.json'",
+    "build:typechain:offerableIdentity": "typechain --target ethers-v4 --outDir ethers-v4-for-tests \"./node_modules/@ew-did-registry/proxyidentity/build/contracts/OfferableIdentity.json\"",
+    "build:typechain:stakingpoolfactory": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/StakingPoolFactory.json'"
   },
   "homepage": "https://github.com/energywebfoundation/iam-contracts/#readme",
   "repository": {
@@ -45,14 +46,13 @@
   },
   "license": "GPL-3.0-or-later",
   "dependencies": {
-    "@openzeppelin/contracts": "3.4.1",
+    "@ensdomains/buffer": "0.0.13",
+    "@ensdomains/ens-contracts": "0.0.4",
+    "@openzeppelin/contracts": "4.0.0",
     "ethers": "4.0.45"
   },
   "devDependencies": {
-    "@ensdomains/buffer": "0.0.10",
-    "@ensdomains/dnssec-oracle": "^0.2.0",
-    "@ensdomains/ens": "^0.5.0",
-    "@ensdomains/resolver": "0.3.0",
+    "@ew-did-registry/proxyidentity": "0.5.2-alpha.1076.0",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/commit-analyzer": "^8.0.1",
     "@semantic-release/git": "^9.0.0",

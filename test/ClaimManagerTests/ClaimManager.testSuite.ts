@@ -3,6 +3,9 @@ import { expect } from 'chai';
 import { abi as erc1056Abi, bytecode as erc1056Bytecode } from '../test_utils/ERC1056.json';
 import { ClaimManager__factory as ClaimManagerFactory } from '../../ethers-v4/factories/ClaimManager__factory';
 import { ClaimManager } from '../../ethers-v4/ClaimManager';
+import { IdentityManager__factory as IdentityManagerFactory } from '../../ethers-v4-for-tests/factories/IdentityManager__factory';
+import { IdentityManager } from '../../ethers-v4-for-tests/IdentityManager';
+import { OfferableIdentity__factory as OfferableIdentityFactory } from '../../ethers-v4-for-tests/factories/OfferableIdentity__factory';
 import { DomainTransactionFactory } from '../../src';
 import { ENSRegistry } from '../../ethers-v4/ENSRegistry';
 import { RoleDefinitionResolver } from '../../ethers-v4/RoleDefinitionResolver';
@@ -18,6 +21,7 @@ const installerRole = 'installer';
 const hashLabel = (label: string): string => utils.keccak256(utils.toUtf8Bytes(label));
 
 let claimManager: ClaimManager;
+let proxyIdentityManager: IdentityManager;
 let roleFactory: DomainTransactionFactory;
 let roleResolver: RoleDefinitionResolver;
 let erc1056: Contract;
@@ -51,7 +55,7 @@ export function testsOnGanache(): void {
     authorityAddr = await authority.getAddress();
   });
 
-  testSuit();
+  testSuite();
 }
 
 function testsOnVolta() {
@@ -74,10 +78,10 @@ function testsOnVolta() {
     authorityAddr = await authority.getAddress();
   });
 
-  testSuit();
+  testSuite();
 }
 
-function testSuit() {
+function testSuite() {
   beforeEach(async function () {
     const erc1056Factory = new ContractFactory(erc1056Abi, erc1056Bytecode, deployer);
     erc1056 = await (await erc1056Factory.deploy()).deployed();
@@ -89,6 +93,8 @@ function testSuit() {
     roleResolver = await (await (roleDefResolverFactory.connect(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
 
     claimManager = await (await new ClaimManagerFactory(deployer).deploy(erc1056.address, ensRegistry.address)).deployed();
+    const offerableIdentity = await (await new OfferableIdentityFactory(deployer).deploy()).deployed();
+    proxyIdentityManager = await (await new IdentityManagerFactory(deployer).deploy(offerableIdentity.address)).deployed();
     roleFactory = new DomainTransactionFactory({ domainResolverAddress: roleResolver.address });
 
     await (await ensRegistry.setSubnodeOwner(root, hashLabel(authorityRole), deployerAddr)).wait();
@@ -163,42 +169,42 @@ function testSuit() {
   });
 
   it('Role can be assigned when issuer type is DID', async () => {
-    await requestRole({claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+    await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
 
     expect(await claimManager.hasRole(authorityAddr, utils.namehash(authorityRole), defaultVersion)).true;
   });
 
   it('Role can be assigned when issuer type is ROLE', async () => {
-    await requestRole({claimManager,  roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
-    await requestRole({claimManager,  roleName: installerRole, agreementSigner: installer, proofSigner: authority });
+    await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+    await requestRole({ claimManager, roleName: installerRole, agreementSigner: installer, proofSigner: authority });
 
     expect(await claimManager.hasRole(installerAddr, utils.namehash(installerRole), defaultVersion)).true;
   });
 
   it('Role proof signed by not authorized issuer should be rejected', async () => {
     expect(
-      requestRole({claimManager,  roleName: authorityRole, agreementSigner: authority, proofSigner: provider.getSigner(10) })
+      requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: provider.getSigner(10) })
     ).rejectedWith("ClaimManager: Issuer is not listed in role issuers list")
 
     expect(
-      requestRole({claimManager,  roleName: deviceRole, agreementSigner: device, proofSigner: provider.getSigner(10) })
+      requestRole({ claimManager, roleName: deviceRole, agreementSigner: device, proofSigner: provider.getSigner(10) })
     ).rejectedWith("ClaimManager: Issuer does not has required role")
   });
 
   it('When prerequisites are not met, enrolment request must be rejected', async () => {
-    await requestRole({claimManager,  roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
-    await requestRole({claimManager,  roleName: installerRole, agreementSigner: installer, proofSigner: authority });
+    await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+    await requestRole({ claimManager, roleName: installerRole, agreementSigner: installer, proofSigner: authority });
     return expect(
-      requestRole({claimManager,  roleName: activeDeviceRole, agreementSigner: device, proofSigner: installer })
+      requestRole({ claimManager, roleName: activeDeviceRole, agreementSigner: device, proofSigner: installer })
     )
       .rejectedWith('ClaimManager: Enrollment prerequisites are not met');
   });
 
   it('When prerequisites are met, enrolment request must be approved', async () => {
-    await requestRole({claimManager,  roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
-    await requestRole({claimManager,  roleName: installerRole, agreementSigner: installer, proofSigner: authority });
-    await requestRole({claimManager,  roleName: deviceRole, agreementSigner: device, proofSigner: installer });
-    await requestRole({claimManager,  roleName: activeDeviceRole, agreementSigner: device, proofSigner: installer });
+    await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+    await requestRole({ claimManager, roleName: installerRole, agreementSigner: installer, proofSigner: authority });
+    await requestRole({ claimManager, roleName: deviceRole, agreementSigner: device, proofSigner: installer });
+    await requestRole({ claimManager, roleName: activeDeviceRole, agreementSigner: device, proofSigner: installer });
 
     expect(await claimManager.hasRole(deviceAddr, utils.namehash(activeDeviceRole), defaultVersion)).true;
   });
@@ -210,11 +216,26 @@ function testSuit() {
 
     await erc1056.connect(installer).addDelegate(installerAddr, veriKey, delegateAddr, 60 * 60);
 
-    await requestRole({claimManager,  roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
-    await requestRole({claimManager,  roleName: installerRole, agreementSigner: delegate, proofSigner: authority, subject: installer });
+    await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+    await requestRole({ claimManager, roleName: installerRole, agreementSigner: delegate, proofSigner: authority, subject: installer });
 
     expect(await claimManager.hasRole(installerAddr, utils.namehash(installerRole), defaultVersion)).true;
   });
+
+  it('Agreement can be signed by proxyIdentity owner', async () => {
+    const event = (await (await proxyIdentityManager.connect(authority).createIdentity(authorityAddr)).wait())
+      .events?.find((e) => e.event === proxyIdentityManager.interface.events.IdentityCreated.name);
+    const proxyIdentityAddr = (event?.args as string[])[0];
+    const proxyIdentity = OfferableIdentityFactory.connect(proxyIdentityAddr, provider);
+    const owner = await proxyIdentity.owner();
+    expect(owner).to.eql(authorityAddr);
+
+    await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+    await requestRole({ claimManager, roleName: installerRole, agreementSigner: authority, proofSigner: authority, subjectAddress: proxyIdentityAddr });
+
+    expect(await claimManager.hasRole(proxyIdentityAddr, utils.namehash(installerRole), defaultVersion)).true;
+  });
+
 
   it('Proof can be signed by issuer delegate', async () => {
     const delegate = provider.getSigner(6);
@@ -223,8 +244,9 @@ function testSuit() {
 
     await erc1056.connect(authority).addDelegate(authorityAddr, veriKey, delegateAddr, 60 * 60);
 
-    await requestRole({claimManager,  roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
-    await requestRole({claimManager, 
+    await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+    await requestRole({
+      claimManager,
       roleName: installerRole,
       agreementSigner: installer,
       proofSigner: delegate,
@@ -242,8 +264,9 @@ function testSuit() {
 
     await erc1056.connect(authority).addDelegate(authorityAddr, veriKey, delegateAddr, 60 * 60);
 
-    await requestRole({claimManager,  roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
-    await requestRole({claimManager, 
+    await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+    await requestRole({
+      claimManager,
       roleName: authorityRole,
       agreementSigner: installer,
       proofSigner: delegate,
@@ -264,8 +287,9 @@ function testSuit() {
     await erc1056.connect(authority).addDelegate(authorityAddr, veriKey, delegateAddr, 60 * 60);
     await erc1056.connect(delegate).addDelegate(delegateAddr, veriKey, delegateOfDelegateAddr, 60 * 60);
 
-    await requestRole({claimManager,  roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
-    await requestRole({claimManager, 
+    await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+    await requestRole({
+      claimManager,
       roleName: authorityRole,
       agreementSigner: installer,
       proofSigner: delegateOfDelegate,
@@ -278,7 +302,7 @@ function testSuit() {
 
   describe('Role versions tests', () => {
     it('When version is 0 hasRole() should check any version', async () => {
-      await requestRole({claimManager,  roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+      await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
 
       expect(await claimManager.hasRole(authorityAddr, utils.namehash(authorityRole), 0)).true;
     });
@@ -286,20 +310,20 @@ function testSuit() {
     it('hasRole() should return true if identity registered with more recent version', async () => {
       const latest = 2;
       await roleResolver.setVersionNumber(utils.namehash(authorityRole), latest.toString());
-      await requestRole({claimManager,  roleName: authorityRole, version: latest, agreementSigner: authority, proofSigner: authority });
+      await requestRole({ claimManager, roleName: authorityRole, version: latest, agreementSigner: authority, proofSigner: authority });
 
       expect(await claimManager.hasRole(authorityAddr, utils.namehash(authorityRole), latest)).true;
       expect(await claimManager.hasRole(authorityAddr, utils.namehash(authorityRole), defaultVersion)).true;
     });
 
     it('hasRole() should return false if tested against not requested verion', async () => {
-      await requestRole({claimManager,  roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+      await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
 
       expect(await claimManager.hasRole(authorityAddr, utils.namehash(authorityRole), 2)).false;
     });
 
     it('request to register with non-existing role should be rejected', async () => {
-      expect(requestRole({claimManager,  roleName: authorityRole, version: 47, agreementSigner: authority, proofSigner: authority }))
+      expect(requestRole({ claimManager, roleName: authorityRole, version: 47, agreementSigner: authority, proofSigner: authority }))
         .rejectedWith("ClaimManager: Such version of this role doesn't exist")
     });
   });

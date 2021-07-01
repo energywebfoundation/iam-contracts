@@ -1,8 +1,8 @@
-pragma solidity 0.7.6;
+pragma solidity 0.8.6;
 
 import "../roles/ClaimManager.sol";
 import "./StakingPool.sol";
-import "@ensdomains/ens/contracts/ENSRegistry.sol";
+import "@ensdomains/ens-contracts/contracts/registry/ENSRegistry.sol";
 
 contract StakingPoolFactory {
   struct Service {

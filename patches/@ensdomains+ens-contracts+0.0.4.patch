@@ -1,7 +1,7 @@
-diff --git a/node_modules/@ensdomains/resolver/contracts/PublicResolver.sol b/node_modules/@ensdomains/resolver/contracts/PublicResolver.sol
-index 1b9784a..bf80339 100644
---- a/node_modules/@ensdomains/resolver/contracts/PublicResolver.sol
-+++ b/node_modules/@ensdomains/resolver/contracts/PublicResolver.sol
+diff --git a/node_modules/@ensdomains/ens-contracts/contracts/resolvers/PublicResolver.sol b/node_modules/@ensdomains/ens-contracts/contracts/resolvers/PublicResolver.sol
+index 81bd55e..e97049e 100644
+--- a/node_modules/@ensdomains/ens-contracts/contracts/resolvers/PublicResolver.sol
++++ b/node_modules/@ensdomains/ens-contracts/contracts/resolvers/PublicResolver.sol
 @@ -48,7 +48,7 @@ contract PublicResolver is ABIResolver, AddrResolver, ContentHashResolver, DNSRe
          emit AuthorisationChanged(node, msg.sender, target, isAuthorised);
      }

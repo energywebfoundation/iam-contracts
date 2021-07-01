@@ -1,9 +1,10 @@
-pragma solidity 0.7.6;
-pragma abicoder v2;
+pragma solidity 0.8.6;
 
-import "@ensdomains/ens/contracts/ENSRegistry.sol";
-import "@openzeppelin/contracts/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/drafts/EIP712.sol";
+import "@ensdomains/ens-contracts/contracts/registry/ENSRegistry.sol";
+import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
+import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
+import "@openzeppelin/contracts/utils/introspection/ERC165Checker.sol";
+import "@ew-did-registry/proxyidentity/contracts/IOwned.sol";
 import "./RoleDefinitionResolver.sol";
 
 interface EthereumDIDRegistry {
@@ -57,6 +58,19 @@ contract ClaimManager is EIP712 {
     ensRegistry = _ensRegistry;
   }
   
+  function isAuthorized(address identity, address approved) internal returns (bool) {
+    EthereumDIDRegistry registry = EthereumDIDRegistry(didRegistry);
+    if (
+      registry.identityOwner(identity) == approved || 
+      (ERC165Checker.supportsInterface(identity, type(IOwned).interfaceId) && approved == IOwned(identity).owner()) ||
+      registry.validDelegate(identity, ASSERTION_DELEGATE_TYPE, approved)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+  }
+  
   function hasRole(address subject, bytes32 role, uint256 version) public view returns(bool) {
     Record memory r = roles[role][subject];
     if (version == 0) {
@@ -102,13 +116,12 @@ contract ClaimManager is EIP712 {
     proofSigner = ECDSA.recover(proofHash, role_proof);
     }
         
-    EthereumDIDRegistry registry = EthereumDIDRegistry(didRegistry);
     require(
-      registry.identityOwner(subject) == agreementSigner || registry.validDelegate(subject, ASSERTION_DELEGATE_TYPE, agreementSigner),
+      isAuthorized(subject, agreementSigner),
        "ClaimManager: agreement signer is not authorized to sign on behalf of subject"
     );
     require(
-      registry.identityOwner(issuer) == proofSigner || registry.validDelegate(issuer, ASSERTION_DELEGATE_TYPE, proofSigner),
+      isAuthorized(issuer, proofSigner),
        "ClaimManager: proof signer is not authorized to sign on behalf of issuer"
     );
     
