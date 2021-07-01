@@ -26,6 +26,7 @@ contract StakingPool {
   bytes32[] patronRoles;
   
   address immutable rewardPool;
+  uint immutable patronRewardPortion;
   
   mapping(address => Stake) public stakes;
   address[] patrons;
@@ -36,7 +37,8 @@ contract StakingPool {
     uint _withdrawDelay,
     address _claimManager,
     bytes32[] memory _patronRoles,
-    address _rewardPool
+    address _rewardPool,
+    uint _patronRewardPortion
   ) payable {
     minStakingPeriod = _minStakingPeriod;
     withdrawDelay = _withdrawDelay;
@@ -47,6 +49,7 @@ contract StakingPool {
     totalStake = principal;
     
     rewardPool = _rewardPool;
+    patronRewardPortion = _patronRewardPortion;
   }
   
   modifier hasPatronRole() {

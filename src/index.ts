@@ -12,6 +12,7 @@ import { PublicResolver__factory } from "../ethers-v4/factories/PublicResolver__
 import { RoleDefinitionResolver__factory } from "../ethers-v4/factories/RoleDefinitionResolver__factory"
 import { ClaimManager__factory } from "../ethers-v4/factories/ClaimManager__factory"
 import { StakingPool__factory } from "../ethers-v4/factories/StakingPool__factory"
+import { StakingPoolFactory__factory } from "../ethers-v4/factories/StakingPoolFactory__factory"
 import { RewardPool__factory } from "../ethers-v4/factories/RewardPool__factory"
 
 // To disable "WARNING: Multiple definitions for addr" that is triggered by ENS Registry
@@ -31,5 +32,6 @@ export {
   RoleDefinitionResolver__factory,
   ClaimManager__factory,
   StakingPool__factory,
+  StakingPoolFactory__factory,
   RewardPool__factory
 }
