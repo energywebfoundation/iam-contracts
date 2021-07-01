@@ -1,3 +1,12 @@
+# [1.13.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.12.0...v1.13.0) (2021-07-01)
+
+
+### Features
+
+* **staking:** add StakingPoolFactory ([e0f41b0](https://github.com/energywebfoundation/iam-contracts/commit/e0f41b086e5cf1032e9bbb39e22ed961467c99d4))
+* **staking:** get staking orgs list ([40196df](https://github.com/energywebfoundation/iam-contracts/commit/40196df78ce26fad1202549b37eb2fb85ad232b5))
+* **staking:** pools are public ([7b20066](https://github.com/energywebfoundation/iam-contracts/commit/7b20066a9f9dc1abc1ec88a634b6178466611571))
+
 # [1.12.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.11.2...v1.12.0) (2021-06-24)
 
 

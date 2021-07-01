@@ -1,6 +1,6 @@
 {
   "name": "@energyweb/iam-contracts",
-  "version": "1.12.0",
+  "version": "1.13.0",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
@@ -20,9 +20,8 @@
     "ganache": "ganache-cli -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000",
     "test-ganache": "mocha -r ts-node/register test/*test.ts",
     "compile:contracts": "truffle compile",
-    "build:typechain": "npm run build:typechain:domainnotifier && npm run build:typechain:resolver && npm run build:typechain:registry && npm run build:typechain:publicresolver && npm run build:typechain:claimmanager && npm run build:staking && npm run build:proxyIdentity",
-    "build:staking": "npm run build:typechain:stakingpool && npm run build:typechain:rewardpool",
-    "build:proxyIdentity": "npm run build:typechain:offerableIdentity && npm run build:typechain:identityManager",
+    "build:typechain": "npm run build:typechain:domainnotifier && npm run build:typechain:resolver && npm run build:typechain:registry && npm run build:typechain:publicresolver && npm run build:typechain:claimmanager && npm run build:staking",
+    "build:staking": "npm run build:typechain:stakingpool && npm run build:typechain:rewardpool && npm run build:typechain:stakingpoolfactory",
     "build:typechain:domainnotifier": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/DomainNotifier.json'",
     "build:typechain:resolver": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/RoleDefinitionResolver.json'",
     "build:typechain:registry": "typechain --target ethers-v4 --outDir ethers-v4 './node_modules/@ensdomains/ens/build/contracts/ENSRegistry.json'",
@@ -31,7 +30,7 @@
     "build:typechain:stakingpool": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/StakingPool.json'",
     "build:typechain:rewardpool": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/RewardPool.json'",
     "build:typechain:offerableIdentity": "typechain --target ethers-v4 --outDir ethers-v4-for-tests \"./node_modules/@ew-did-registry/proxyidentity/build/contracts/OfferableIdentity.json\"",
-    "build:typechain:identityManager": "typechain --target ethers-v4 --outDir ethers-v4-for-tests \"./node_modules/@ew-did-registry/proxyidentity/build/contracts/IdentityManager.json\""
+    "build:typechain:stakingpoolfactory": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/StakingPoolFactory.json'"
   },
   "homepage": "https://github.com/energywebfoundation/iam-contracts/#readme",
   "repository": {
