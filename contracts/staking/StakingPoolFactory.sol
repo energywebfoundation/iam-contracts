@@ -24,7 +24,7 @@ contract StakingPoolFactory {
   mapping(bytes32 => Service) public services;
   bytes32[] orgs;
   
-  event StakingPoolLaunched(bytes32 org, address pool);
+  event StakingPoolLaunched(bytes32 indexed org, address indexed pool);
   
   constructor(
     uint _principalThreshold,
