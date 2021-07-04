@@ -24,7 +24,7 @@ contract StakingPoolFactory {
   mapping(bytes32 => Service) public services;
   bytes32[] orgs;
   
-  event StakingPoolLaunched(bytes32 org, address pool);
+  event StakingPoolLaunched(bytes32 indexed org, address indexed pool);
   
   constructor(
     uint _principalThreshold,
@@ -48,7 +48,7 @@ contract StakingPoolFactory {
   ) external payable {
     require(
       address(services[org].pool) == address(0),
-      "StakingPool: pool for organization already launched"
+      "StakingPoolFactory: pool for organization already launched"
     );
     address orgOwner = ENSRegistry(ensRegistry).owner(org);
     uint principal = msg.value;
