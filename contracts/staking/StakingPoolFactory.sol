@@ -48,7 +48,7 @@ contract StakingPoolFactory {
   ) external payable {
     require(
       address(services[org].pool) == address(0),
-      "StakingPool: pool for organization already launched"
+      "StakingPoolFactory: pool for organization already launched"
     );
     address orgOwner = ENSRegistry(ensRegistry).owner(org);
     uint principal = msg.value;
