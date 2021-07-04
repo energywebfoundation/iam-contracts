@@ -1,3 +1,20 @@
+# [1.14.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.13.0...v1.14.0) (2021-07-04)
+
+
+### Bug Fixes
+
+* **staking:** error msg when pool doubled ([300cb78](https://github.com/energywebfoundation/iam-contracts/commit/300cb78302ced5aa50755ddca27fa0ceb0ef5240))
+* path to ens artifacts ([5bb16be](https://github.com/energywebfoundation/iam-contracts/commit/5bb16bef82eac929f5ef710a0869b2794c721f7f))
+* **roles:** patch ens-contracts ([aa903d0](https://github.com/energywebfoundation/iam-contracts/commit/aa903d075381abc6f463d35e992f96847d5704e0))
+* **roles:** request enrollment by subject owner ([bc9623e](https://github.com/energywebfoundation/iam-contracts/commit/bc9623e7cb9d02a8fa43cb38761c5fafc577b837))
+* **StakingPool:** payable patron for 0.8 compiler ([3bc2a9c](https://github.com/energywebfoundation/iam-contracts/commit/3bc2a9ce48c86838adcea47cb5c3e36b6399e989))
+
+
+### Features
+
+* **staking:** allow owned subject ([8882667](https://github.com/energywebfoundation/iam-contracts/commit/8882667c765febade420319ba9d17ebf48559bd7))
+* upgrade contracts to 0.8.6 ([5efabc5](https://github.com/energywebfoundation/iam-contracts/commit/5efabc51efede157cfba6f7002a8b9b1f51848ae))
+
 # [1.13.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.12.0...v1.13.0) (2021-07-01)
 
 
