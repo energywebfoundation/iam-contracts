@@ -16,7 +16,7 @@ contract StakingPoolFactory {
   address immutable claimManager;
   address immutable ensRegistry;
   
-  address immutable rewardPool;
+  address public immutable rewardPool;
   
   /**
   * @dev services by orgs
@@ -30,14 +30,13 @@ contract StakingPoolFactory {
     uint _principalThreshold,
     uint _withdrawDelay,
     address _claimManager,
-    address _ensRegistry,
-    address _rewardPool
+    address _ensRegistry
   ) {
     principalThreshold = _principalThreshold;
     withdrawDelay = _withdrawDelay;
     claimManager = _claimManager;
     ensRegistry = _ensRegistry;
-    rewardPool = _rewardPool;
+    rewardPool = address(new RewardPool(address(this)));
   }
   
   function launchStakingPool(
@@ -81,5 +80,14 @@ contract StakingPoolFactory {
   
   function orgsList() public view returns (bytes32[] memory) {
     return orgs;
+  }
+  
+  function isPool(address pool) public view returns (bool) {
+    for (uint i = 0; i < orgs.length; i++) {
+      if (pool == services[orgs[i]].pool) {
+        return true;
+      }
+    }
+    return false;
   }
 }

@@ -122,7 +122,7 @@ contract StakingPool {
       block.timestamp >= stake.withdrawalRequested + withdrawDelay,
       "StakingPool: Withdrawal delay hasn't expired yet"
     );
-    RewardPool(rewardPool).payReward(patron, stake.amount, stake.withdrawalRequested - stake.start);
+    RewardPool(rewardPool).payReward(payable(patron), stake.amount, stake.withdrawalRequested - stake.start, patronRewardPortion);
     payable(patron).transfer(stake.amount);   
     totalStake -= stake.amount;
     delete stakes[patron];
@@ -132,11 +132,12 @@ contract StakingPool {
   }
   
   function checkReward() public returns (uint reward) {
+    Stake storage stake = stakes[msg.sender];
     require(
-      stakes[msg.sender].status != StakeStatus.NONSTAKING,
+      stake.status != StakeStatus.NONSTAKING,
       "StakingPool: No stake"
     );
-    reward = RewardPool(rewardPool).checkReward(msg.sender);
+    reward = RewardPool(rewardPool).checkReward(stake.amount, stake.withdrawalRequested - stake.start, patronRewardPortion);
   }
   
   function addPatron(address _patron) internal {
