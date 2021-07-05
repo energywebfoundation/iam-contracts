@@ -16,7 +16,7 @@ contract StakingPoolFactory {
   address immutable claimManager;
   address immutable ensRegistry;
   
-  address public immutable rewardPool;
+  address payable public immutable rewardPool;
   
   /**
   * @dev services by orgs
@@ -36,7 +36,7 @@ contract StakingPoolFactory {
     withdrawDelay = _withdrawDelay;
     claimManager = _claimManager;
     ensRegistry = _ensRegistry;
-    rewardPool = address(new RewardPool(address(this)));
+    rewardPool = payable(new RewardPool(address(this)));
   }
   
   function launchStakingPool(

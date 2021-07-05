@@ -19,6 +19,8 @@ contract RewardPool {
     _;
   }
   
+  receive() external payable { }
+  
   function payReward(
     address payable patron,
     uint stakeAmount,
