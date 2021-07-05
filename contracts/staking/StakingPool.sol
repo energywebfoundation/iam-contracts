@@ -131,7 +131,7 @@ contract StakingPool {
     emit StakeWithdrawn(patron, block.timestamp);
   }
   
-  function checkReward() public returns (uint reward) {
+  function checkReward() public view returns (uint reward) {
     Stake storage stake = stakes[msg.sender];
     require(
       stake.status != StakeStatus.NONSTAKING,

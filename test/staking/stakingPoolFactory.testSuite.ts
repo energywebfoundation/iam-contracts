@@ -58,6 +58,6 @@ export function stakingPoolFactoryTests(): void {
       patronRewardPortion,
       [namehash(patronRole)],
       { value: principalThreshold.mul(2) }
-    )).rejectedWith("StakingPool: pool for organization already launched");
+    )).rejectedWith("StakingPoolFactory: pool for organization already launched");
   });
 }

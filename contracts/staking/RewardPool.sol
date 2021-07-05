@@ -35,7 +35,7 @@ contract RewardPool {
     uint depositPeriod,
     uint patronRewardPortion
     )
-  isStakingPool public returns (uint reward){
+  isStakingPool public view returns (uint reward){
     reward = _calculateReward(stakeAmount, depositPeriod, patronRewardPortion); 
   }
   
@@ -44,7 +44,7 @@ contract RewardPool {
     uint depositPeriod,
     uint patronRewardPortion
     )
-    internal returns (uint reward) {
+    internal view returns (uint reward) {
     require(
       patronRewardPortion > 0 && patronRewardPortion < 1000,
       "RewardPool: patron reward portion should be in 0...1000"
