@@ -23,6 +23,7 @@ contract StakingPoolFactory {
    */
   mapping(bytes32 => Service) public services;
   bytes32[] orgs;
+  mapping(address => bool) pools;
   
   event StakingPoolLaunched(bytes32 indexed org, address indexed pool);
   
@@ -74,6 +75,7 @@ contract StakingPoolFactory {
     services[org].pool = address(pool);
     services[org].provider = provider;
     orgs.push(org);
+    pools[address(pool)] = true;
     
     emit StakingPoolLaunched(org, address(pool));
   }
@@ -83,11 +85,6 @@ contract StakingPoolFactory {
   }
   
   function isPool(address pool) public view returns (bool) {
-    for (uint i = 0; i < orgs.length; i++) {
-      if (pool == services[orgs[i]].pool) {
-        return true;
-      }
-    }
-    return false;
+    return pools[pool];
   }
 }
