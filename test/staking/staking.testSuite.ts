@@ -10,6 +10,7 @@ import { stakingPoolTests } from "./StakingPool.testSuite";
 import { stakingPoolFactoryTests } from "./stakingPoolFactory.testSuite";
 import { RoleDefinitionResolver } from "../../ethers-v4/RoleDefinitionResolver";
 import { StakingPoolFactory } from "../../ethers-v4/StakingPoolFactory";
+import { rewardPoolTests } from "./RewardPool.testSuite";
 
 export const provider = new JsonRpcProvider("http://localhost:8544");
 export const deployer = provider.getSigner(1);
@@ -101,4 +102,5 @@ export function stakingTests(): void {
 
   describe("Staking pool tests", stakingPoolTests);
   describe("Staking pool factory tests", stakingPoolFactoryTests);
+  describe("Reward pool tests", rewardPoolTests);
 }

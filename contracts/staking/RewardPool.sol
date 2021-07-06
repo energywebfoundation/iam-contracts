@@ -3,8 +3,8 @@ pragma solidity 0.8.6;
 import "./StakingPoolFactory.sol";
 
 contract RewardPool {
-  uint constant dailyInterestNumerator = 1000312;
-  uint constant dailyInterestDenominator = 1000000;
+  uint constant dailyInterestNumerator = 125039;
+  uint constant dailyInterestDenominator = 125000;
   address immutable stakingPoolFactory;
   
   constructor() {
@@ -37,7 +37,7 @@ contract RewardPool {
     uint depositPeriod,
     uint patronRewardPortion
     )
-  isStakingPool public view returns (uint reward){
+   public view returns (uint reward){
     reward = _calculateReward(stakeAmount, depositPeriod, patronRewardPortion); 
   }
   
@@ -51,9 +51,14 @@ contract RewardPool {
       patronRewardPortion > 0 && patronRewardPortion < 1000,
       "RewardPool: patron reward portion should be in 0...1000"
     );
-    uint depositPeriodInterest = (dailyInterestNumerator / dailyInterestDenominator) ** (depositPeriod / 1 days);
-    uint accumulatedStake = stakeAmount * depositPeriodInterest;
+    uint depositPeriodInDays = depositPeriod / (1 days);
+    uint accumulatedStake = stakeAmount;
+    // reverted on dailyInterestNumerator ** depositPeriodInDays
+    for (uint i = 0; i < depositPeriodInDays; i++) {
+      accumulatedStake *= dailyInterestNumerator;
+      accumulatedStake /= dailyInterestDenominator;      
+    }
     uint totalReward =  accumulatedStake - stakeAmount;
-    reward =  totalReward * (patronRewardPortion / 1000);
+    reward =  (totalReward * patronRewardPortion) / 1000;
   }
 }
