@@ -7,8 +7,8 @@ contract RewardPool {
   uint constant dailyInterestDenominator = 1000000;
   address immutable stakingPoolFactory;
   
-  constructor(address _stakingPoolFactory) {
-    stakingPoolFactory = _stakingPoolFactory;
+  constructor() {
+    stakingPoolFactory = msg.sender;
   }
   
   modifier isStakingPool() {

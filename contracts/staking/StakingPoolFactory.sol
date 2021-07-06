@@ -36,7 +36,7 @@ contract StakingPoolFactory {
     withdrawDelay = _withdrawDelay;
     claimManager = _claimManager;
     ensRegistry = _ensRegistry;
-    rewardPool = payable(new RewardPool(address(this)));
+    rewardPool = payable(new RewardPool());
   }
   
   function launchStakingPool(
