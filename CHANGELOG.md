@@ -1,3 +1,16 @@
+# [1.15.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.14.0...v1.15.0) (2021-07-06)
+
+
+### Bug Fixes
+
+* **staking:** fractional calculations ([a323147](https://github.com/energywebfoundation/iam-contracts/commit/a323147b91f7dc7aeebdcbac54924da381c9ce52))
+* **staking:** staking factory to deploy reward pool ([5d029bc](https://github.com/energywebfoundation/iam-contracts/commit/5d029bcf8de1692b1970a3b7fa81941f342876f4))
+
+
+### Features
+
+* **staking:** deploy reward pool by pool factory ([a8e9a3b](https://github.com/energywebfoundation/iam-contracts/commit/a8e9a3b4ee2c05831f644439b6522ddd3b9c9d94))
+
 # [1.14.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.13.0...v1.14.0) (2021-07-04)
 
 
