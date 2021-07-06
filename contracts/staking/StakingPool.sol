@@ -25,7 +25,7 @@ contract StakingPool {
   address immutable claimManager;
   bytes32[] patronRoles;
   
-  address immutable rewardPool;
+  address payable immutable rewardPool;
   uint immutable patronRewardPortion;
   
   mapping(address => Stake) public stakes;
@@ -37,7 +37,7 @@ contract StakingPool {
     uint _withdrawDelay,
     address _claimManager,
     bytes32[] memory _patronRoles,
-    address _rewardPool,
+    address payable _rewardPool,
     uint _patronRewardPortion
   ) payable {
     minStakingPeriod = _minStakingPeriod;
@@ -122,7 +122,7 @@ contract StakingPool {
       block.timestamp >= stake.withdrawalRequested + withdrawDelay,
       "StakingPool: Withdrawal delay hasn't expired yet"
     );
-    RewardPool(rewardPool).payReward(patron, stake.amount, stake.withdrawalRequested - stake.start);
+    RewardPool(rewardPool).payReward(payable(patron), stake.amount, stake.withdrawalRequested - stake.start, patronRewardPortion);
     payable(patron).transfer(stake.amount);   
     totalStake -= stake.amount;
     delete stakes[patron];
@@ -131,12 +131,13 @@ contract StakingPool {
     emit StakeWithdrawn(patron, block.timestamp);
   }
   
-  function checkReward() public returns (uint reward) {
+  function checkReward() public view returns (uint reward) {
+    Stake storage stake = stakes[msg.sender];
     require(
-      stakes[msg.sender].status != StakeStatus.NONSTAKING,
+      stake.status != StakeStatus.NONSTAKING,
       "StakingPool: No stake"
     );
-    reward = RewardPool(rewardPool).checkReward(msg.sender);
+    reward = RewardPool(rewardPool).checkReward(stake.amount, stake.withdrawalRequested - stake.start, patronRewardPortion);
   }
   
   function addPatron(address _patron) internal {

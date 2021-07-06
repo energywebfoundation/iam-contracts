@@ -22,6 +22,7 @@ export { DomainTransactionFactory }
 export { IOrganizationDefinition, IAppDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType }
 export { EncodedCall }
 export * from "./chainConstants";
+export {PRINCIPAL_THRESHOLD, WITHDRAW_DELAY} from "./constants";
 export { ResolverContractType }
 export { DomainHierarchy }
 export {
