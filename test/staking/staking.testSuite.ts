@@ -1,6 +1,4 @@
-import { Contract, ContractFactory, EventFilter, Signer, Wallet } from "ethers";
-import { JsonRpcProvider } from "ethers/providers";
-import { utils } from "ethers";
+import { Contract, ContractFactory, EventFilter, Signer, Wallet , providers, utils} from "ethers";
 import { ClaimManager } from "../../ethers-v4/ClaimManager";
 import { ENSRegistry } from "../../ethers-v4/ENSRegistry";
 import { DomainTransactionFactory, ENSRegistry__factory, DomainNotifier__factory, RoleDefinitionResolver__factory, ClaimManager__factory, StakingPoolFactory__factory } from "../../src";
@@ -11,6 +9,8 @@ import { stakingPoolFactoryTests } from "./stakingPoolFactory.testSuite";
 import { RoleDefinitionResolver } from "../../ethers-v4/RoleDefinitionResolver";
 import { StakingPoolFactory } from "../../ethers-v4/StakingPoolFactory";
 import { rewardPoolTests } from "./RewardPool.testSuite";
+
+const { JsonRpcProvider } = providers;
 
 export const provider = new JsonRpcProvider("http://localhost:8544");
 export const deployer = provider.getSigner(1);
