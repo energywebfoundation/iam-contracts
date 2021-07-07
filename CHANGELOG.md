@@ -1,3 +1,10 @@
+## [1.15.1](https://github.com/energywebfoundation/iam-contracts/compare/v1.15.0...v1.15.1) (2021-07-07)
+
+
+### Bug Fixes
+
+* **staking:** replace deep import from ethers ([2a3e016](https://github.com/energywebfoundation/iam-contracts/commit/2a3e0167b8bc85f60ad601752fccb60bae90078e))
+
 # [1.15.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.14.0...v1.15.0) (2021-07-06)
 
 
