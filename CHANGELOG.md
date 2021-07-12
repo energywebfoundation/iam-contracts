@@ -1,3 +1,10 @@
+## [1.15.2](https://github.com/energywebfoundation/iam-contracts/compare/v1.15.1...v1.15.2) (2021-07-07)
+
+
+### Bug Fixes
+
+* **staking:** redeploy staking factory ([5cb4c73](https://github.com/energywebfoundation/iam-contracts/commit/5cb4c73e3d8e3e46f9d69782ed2cd9bf000b20bd))
+
 ## [1.15.1](https://github.com/energywebfoundation/iam-contracts/compare/v1.15.0...v1.15.1) (2021-07-07)
 
 
