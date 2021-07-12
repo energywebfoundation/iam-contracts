@@ -15,12 +15,12 @@ export function stakingPoolTests(): void {
   const patronRewardPortion = 80;
   const principal = parseEther("0.2");
 
-  async function setupStakingPool() {
+  async function setupStakingPool(patronRoles = [patronRole]) {
     await (await stakingPoolFactory.connect(serviceProvider).launchStakingPool(
       namehash(org),
       minStakingPeriod,
       patronRewardPortion,
-      [namehash(patronRole)],
+      patronRoles.map((r) => namehash(r)),
       { value: principal }
     )).wait();
     const stakingPoolAddr = (await stakingPoolFactory.services(namehash(org))).pool;
@@ -29,19 +29,39 @@ export function stakingPoolTests(): void {
 
   beforeEach(async () => {
     patron = await getSigner();
-    await setupStakingPool();
-  })
+  });
 
   it("initial stakes consists only from principal", async () => {
+    await setupStakingPool();
     expect((await stakingPool.totalStake()).eq(principal)).true;
   });
 
   it("should not be possible to put a stake without having patron role", async () => {
+    await setupStakingPool();
+
     return expect(stakingPool.putStake({ value: amount }))
       .rejectedWith("StakingPool: patron is not registered with patron role");
   });
 
+  it("should be possible to stake when no patron roles are required", async () => {
+    await setupStakingPool([]);
+
+    const stakePut = waitFor(
+      stakingPool.filters.StakePut(
+        await patron.getAddress(),
+        amount,
+        null
+      ),
+      stakingPool
+    );
+
+    stakingPool.connect(patron).putStake({ value: amount });
+
+    return expect(stakePut).fulfilled;
+  });
+
   it("having patron role should be able to put a stake", async () => {
+    await setupStakingPool();
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
 
     const stakePut = waitFor(
@@ -59,6 +79,7 @@ export function stakingPoolTests(): void {
   });
 
   it("putting stake should increase total stake", async () => {
+    await setupStakingPool();
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
     await stakingPool.connect(patron).putStake({ value: amount });
 
@@ -66,6 +87,7 @@ export function stakingPoolTests(): void {
   })
 
   it("should not be possible to replenish stake", async () => {
+    await setupStakingPool();
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
     await stakingPool.connect(patron).putStake({ value: amount });
 
@@ -74,6 +96,7 @@ export function stakingPoolTests(): void {
   });
 
   it("should not be possible to request withdraw before minimal staking period is expired", async () => {
+    await setupStakingPool();
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
     await stakingPool.connect(patron).putStake({ value: amount });
 
@@ -82,6 +105,7 @@ export function stakingPoolTests(): void {
   });
 
   it("should be able to request withdraw after minimal staking period is expired", async () => {
+    await setupStakingPool();
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
     await stakingPool.connect(patron).putStake({ value: amount });
     await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * minStakingPeriod) });
@@ -96,6 +120,7 @@ export function stakingPoolTests(): void {
   });
 
   it("should not be possible to repeat withdrawal request", async () => {
+    await setupStakingPool();
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
     await stakingPool.connect(patron).putStake({ value: amount });
     await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * minStakingPeriod) });
@@ -106,6 +131,7 @@ export function stakingPoolTests(): void {
   });
 
   it("should not be possible to withdraw before withdraw delay is expired", async () => {
+    await setupStakingPool();
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
     await stakingPool.connect(patron).putStake({ value: amount });
     await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * minStakingPeriod) });
@@ -116,6 +142,7 @@ export function stakingPoolTests(): void {
   });
 
   it("should be able to withdraw after withdraw delay is expired", async () => {
+    await setupStakingPool();
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
     await stakingPool.connect(patron).putStake({ value: amount });
     await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * minStakingPeriod) });
@@ -132,6 +159,7 @@ export function stakingPoolTests(): void {
   });
 
   it("stake withdrawal should reduce total stake", async () => {
+    await setupStakingPool();
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
     await stakingPool.connect(patron).putStake({ value: amount });
 
@@ -146,6 +174,7 @@ export function stakingPoolTests(): void {
   })
 
   it("should not be possible to repeat withdraw", async () => {
+    await setupStakingPool();
     await requestRole({ claimManager, roleName: patronRole, version, agreementSigner: patron, proofSigner: ewc });
     await stakingPool.connect(patron).putStake({ value: amount });
     await new Promise((resolve) => { setTimeout(resolve, 2 * 1000 * minStakingPeriod) });
