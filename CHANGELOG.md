@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.15.2...v1.16.0) (2021-07-14)
+
+
+### Features
+
+* **staking:** allow patron without role ([53c8f12](https://github.com/energywebfoundation/iam-contracts/commit/53c8f12a7ae9f7e4c1903c2222c7d8d224ab4cb8))
+
 ## [1.15.2](https://github.com/energywebfoundation/iam-contracts/compare/v1.15.1...v1.15.2) (2021-07-07)
 
 
