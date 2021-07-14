@@ -52,23 +52,24 @@ contract StakingPool {
     patronRewardPortion = _patronRewardPortion;
   }
   
-  modifier hasPatronRole() {
-    bool hasPatronRole = false;
+  function hasPatronRole() internal returns (bool) {
+    if (patronRoles.length == 0) {
+      return true;
+    }
     ClaimManager cm = ClaimManager(claimManager);
     for (uint i = 0; i < patronRoles.length; i++) {
       if (cm.hasRole(msg.sender, patronRoles[i], 0)) {
-        hasPatronRole = true;
-        break;
+        return true;
       }
     }
-    require(
-      hasPatronRole,
-      "StakingPool: patron is not registered with patron role"
-    );
-    _;
+    return false;
   }
   
-  function putStake() payable external hasPatronRole {
+  function putStake() payable external {
+    require(
+      hasPatronRole(),
+      "StakingPool: patron is not registered with patron role"
+    );
     address patron = msg.sender;
     Stake storage stake = stakes[patron];
     require(
