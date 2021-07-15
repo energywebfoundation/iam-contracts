@@ -138,7 +138,12 @@ contract StakingPool {
       stake.status != StakeStatus.NONSTAKING,
       "StakingPool: No stake"
     );
-    reward = RewardPool(rewardPool).checkReward(stake.amount, stake.depositEnd - stake.depositStart, patronRewardPortion);
+    if (stake.status == StakeStatus.STAKING) {
+      reward = RewardPool(rewardPool).checkReward(stake.amount, block.timestamp - stake.depositStart, patronRewardPortion);
+    }
+    else {
+      reward = RewardPool(rewardPool).checkReward(stake.amount, stake.depositEnd - stake.depositStart, patronRewardPortion);
+    }
   }
   
   function addPatron(address _patron) internal {
