@@ -21,7 +21,7 @@ async function deployStakingFactory() {
   )).deployed();
 
   console.log("staking pool factory: ", stakingPoolFactory.address);
-  console.log("staking pool factory: ", await stakingPoolFactory.rewardPool());
+  console.log("reward pool: ", await stakingPoolFactory.rewardPool());
 }
 
 deployStakingFactory();
