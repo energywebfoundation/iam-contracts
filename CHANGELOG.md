@@ -1,3 +1,11 @@
+## [1.16.1](https://github.com/energywebfoundation/iam-contracts/compare/v1.16.0...v1.16.1) (2021-07-15)
+
+
+### Bug Fixes
+
+* **staking:** check reward depending on status ([bcdb85f](https://github.com/energywebfoundation/iam-contracts/commit/bcdb85f02fb3d8f5e3304d5a370c19c534c8db0f))
+* **staking:** init deposit end with deposit start ([bc60d9f](https://github.com/energywebfoundation/iam-contracts/commit/bc60d9fb6f1014fb0a2439fb06688ed88ec0120d))
+
 # [1.16.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.15.2...v1.16.0) (2021-07-14)
 
 
