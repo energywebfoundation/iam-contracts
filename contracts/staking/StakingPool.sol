@@ -5,8 +5,8 @@ import "./RewardPool.sol";
 contract StakingPool {
   struct Stake {
     uint amount;
-    uint start;
-    uint withdrawalRequested;
+    uint depositStart;
+    uint depositEnd;
     StakeStatus status;
   }
   
@@ -78,15 +78,15 @@ contract StakingPool {
     );
     uint amount = msg.value;
     require(amount > 0, "StakingPool: stake amount is not provided");
-    uint start = block.timestamp;
+    uint depositStart = block.timestamp;
     stake.amount = amount;
-    stake.start = start;
-    stake.withdrawalRequested = 0;
+    stake.depositStart = depositStart;
+    stake.depositEnd = depositStart;
     stake.status = StakeStatus.STAKING;
     totalStake += stake.amount;
     addPatron(patron);
     
-    emit StakePut(patron, stake.amount, stake.start);
+    emit StakePut(patron, stake.amount, stake.depositStart);
   }
   
   /**
@@ -100,13 +100,13 @@ contract StakingPool {
       "StakingPool: No stake to withdraw"
     );
     require(
-      block.timestamp >= stake.start + minStakingPeriod,
+      block.timestamp >= stake.depositStart + minStakingPeriod,
        "StakingPool: Minimum staking period is not expired yet"
     );
     stake.status = StakeStatus.WITHDRAWING;
-    stake.withdrawalRequested = block.timestamp;
+    stake.depositEnd = block.timestamp;
     
-    emit StakeWithdrawalRequested(patron, stake.withdrawalRequested);
+    emit StakeWithdrawalRequested(patron, stake.depositEnd);
   }
   
   /**
@@ -120,10 +120,10 @@ contract StakingPool {
       "StakingPool: Stake hasn't requested to withdraw"
     );
     require(
-      block.timestamp >= stake.withdrawalRequested + withdrawDelay,
+      block.timestamp >= stake.depositEnd + withdrawDelay,
       "StakingPool: Withdrawal delay hasn't expired yet"
     );
-    RewardPool(rewardPool).payReward(payable(patron), stake.amount, stake.withdrawalRequested - stake.start, patronRewardPortion);
+    RewardPool(rewardPool).payReward(payable(patron), stake.amount, stake.depositEnd - stake.depositStart, patronRewardPortion);
     payable(patron).transfer(stake.amount);   
     totalStake -= stake.amount;
     delete stakes[patron];
@@ -138,7 +138,12 @@ contract StakingPool {
       stake.status != StakeStatus.NONSTAKING,
       "StakingPool: No stake"
     );
-    reward = RewardPool(rewardPool).checkReward(stake.amount, stake.withdrawalRequested - stake.start, patronRewardPortion);
+    if (stake.status == StakeStatus.STAKING) {
+      reward = RewardPool(rewardPool).checkReward(stake.amount, block.timestamp - stake.depositStart, patronRewardPortion);
+    }
+    else {
+      reward = RewardPool(rewardPool).checkReward(stake.amount, stake.depositEnd - stake.depositStart, patronRewardPortion);
+    }
   }
   
   function addPatron(address _patron) internal {
