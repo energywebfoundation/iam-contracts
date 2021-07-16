@@ -1,3 +1,10 @@
+## [1.16.2](https://github.com/energywebfoundation/iam-contracts/compare/v1.16.1...v1.16.2) (2021-07-16)
+
+
+### Bug Fixes
+
+* redeploy_staking_pool_factory ([3e36aeb](https://github.com/energywebfoundation/iam-contracts/commit/3e36aeba8cf12f37da60bc7b7f7084c4d4f204dd))
+
 ## [1.16.1](https://github.com/energywebfoundation/iam-contracts/compare/v1.16.0...v1.16.1) (2021-07-15)
 
 
