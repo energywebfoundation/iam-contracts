@@ -18,9 +18,9 @@ contract StakingPool {
   
   uint principal;
   uint public totalStake;
-  uint immutable minStakingPeriod; // seconds
+  uint immutable public minStakingPeriod; // seconds
 
-  uint immutable withdrawDelay; // seconds
+  uint immutable public withdrawDelay; // seconds
   
   address immutable claimManager;
   bytes32[] patronRoles;
