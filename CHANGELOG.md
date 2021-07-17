@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.16.2...v1.17.0) (2021-07-17)
+
+
+### Features
+
+* **staking:** public withdrawal delay and min staking period ([5a1711a](https://github.com/energywebfoundation/iam-contracts/commit/5a1711a1a63ddcb5c2273c20417cab96bab7310b))
+
 ## [1.16.2](https://github.com/energywebfoundation/iam-contracts/compare/v1.16.1...v1.16.2) (2021-07-16)
 
 
