@@ -166,7 +166,7 @@ export class DomainReader {
   }
 
   protected reviveDates(key: string, value: string | number | Date): string | number | Date {
-    if (key === "minDate" || key === "maxDate") {
+    if ((key === "minDate" || key === "maxDate") && value !== null) {
       return new Date(value);
     }
     return value;
