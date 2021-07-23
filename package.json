@@ -34,7 +34,8 @@
     "build:typechain:stakingpool": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/StakingPool.json'",
     "build:typechain:stakingpoolfactory": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/StakingPoolFactory.json'",
     "build:typechain:rewardpool": "typechain --target ethers-v4 --outDir ethers-v4 './build/contracts/RewardPool.json'",
-    "deploy:stakingpoolfactory": "node -r ts-node/register ./scripts/deploy_staking_pool_factory"
+    "deploy:stakingpoolfactory": "node -r ts-node/register ./scripts/deploy_staking_pool_factory",
+    "deploy:stakingpool": "node -r ts-node/register ./scripts/deploy_staking_pool"
   },
   "homepage": "https://github.com/energywebfoundation/iam-contracts/#readme",
   "repository": {
