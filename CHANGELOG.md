@@ -1,3 +1,10 @@
+## [1.17.1](https://github.com/energywebfoundation/iam-contracts/compare/v1.17.0...v1.17.1) (2021-07-26)
+
+
+### Bug Fixes
+
+* deploy staking pool ([f51d580](https://github.com/energywebfoundation/iam-contracts/commit/f51d58018bbeaec8f9103798af62682a4061991b))
+
 # [1.17.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.16.2...v1.17.0) (2021-07-17)
 
 
