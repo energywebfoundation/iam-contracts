@@ -34,7 +34,7 @@ export function rewardPoolTests(): void {
   it("should calculate reward", async () => {
     const amount = parseEther("1");
     const period = new BigNumber(60 * 60 * 24 * 365);
-    const patronRewardPortion = 500;
+    const patronRewardPortion = 1000;
 
     expect(
       (await rewardPool.checkReward(amount, period, patronRewardPortion))

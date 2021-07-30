@@ -48,8 +48,8 @@ contract RewardPool {
     )
     internal view returns (uint reward) {
     require(
-      patronRewardPortion > 0 && patronRewardPortion < 1000,
-      "RewardPool: patron reward portion should be in 0...1000"
+      patronRewardPortion > 0 && patronRewardPortion <= 1000,
+      "RewardPool: patron reward portion should be positive and doesn't exceed 1000"
     );
     uint depositPeriodInDays = depositPeriod / (1 days);
     uint accumulatedStake = stakeAmount;
