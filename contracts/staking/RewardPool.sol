@@ -3,8 +3,8 @@ pragma solidity 0.8.6;
 import "./StakingPoolFactory.sol";
 
 contract RewardPool {
-  uint constant dailyInterestNumerator = 125039;
-  uint constant dailyInterestDenominator = 125000;
+  uint constant dailyInterestNumerator = 100027;
+  uint constant dailyInterestDenominator = 100000;
   address immutable stakingPoolFactory;
   
   constructor() {
