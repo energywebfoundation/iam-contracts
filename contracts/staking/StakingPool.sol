@@ -117,11 +117,11 @@ contract StakingPool {
     Stake storage stake = stakes[patron];
     require(
       stake.status == StakeStatus.WITHDRAWING, 
-      "StakingPool: Stake hasn't requested to withdraw"
+      "StakingPool: Stake has not requested to withdraw"
     );
     require(
       block.timestamp >= stake.depositEnd + withdrawDelay,
-      "StakingPool: Withdrawal delay hasn't expired yet"
+      "StakingPool: Withdrawal delay has not expired yet"
     );
     RewardPool(rewardPool).payReward(payable(patron), stake.amount, stake.depositEnd - stake.depositStart, patronRewardPortion);
     payable(patron).transfer(stake.amount);   
