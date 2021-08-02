@@ -11,8 +11,8 @@ const calculateReward = (
   depositPeriod: utils.BigNumber,
   patronRewardPortion: utils.BigNumber
 ): utils.BigNumber => {
-  const dailyInterestNumerator = new BigNumber(125039);
-  const dailyInterestDenominator = new BigNumber(125000);
+  const dailyInterestNumerator = new BigNumber(100027);
+  const dailyInterestDenominator = new BigNumber(100000);
   const secInDay = new BigNumber(60 * 60 * 24);
   const depositPeriodInDays = depositPeriod.div(secInDay);
   let accumulatedStake = stakeAmount;
@@ -34,7 +34,7 @@ export function rewardPoolTests(): void {
   it("should calculate reward", async () => {
     const amount = parseEther("1");
     const period = new BigNumber(60 * 60 * 24 * 365);
-    const patronRewardPortion = 500;
+    const patronRewardPortion = 1000;
 
     expect(
       (await rewardPool.checkReward(amount, period, patronRewardPortion))

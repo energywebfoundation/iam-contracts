@@ -3,8 +3,8 @@ pragma solidity 0.8.6;
 import "./StakingPoolFactory.sol";
 
 contract RewardPool {
-  uint constant dailyInterestNumerator = 125039;
-  uint constant dailyInterestDenominator = 125000;
+  uint constant dailyInterestNumerator = 100027;
+  uint constant dailyInterestDenominator = 100000;
   address immutable stakingPoolFactory;
   
   constructor() {
@@ -48,8 +48,8 @@ contract RewardPool {
     )
     internal view returns (uint reward) {
     require(
-      patronRewardPortion > 0 && patronRewardPortion < 1000,
-      "RewardPool: patron reward portion should be in 0...1000"
+      patronRewardPortion > 0 && patronRewardPortion <= 1000,
+      "RewardPool: patron reward portion should be positive and doesn't exceed 1000"
     );
     uint depositPeriodInDays = depositPeriod / (1 days);
     uint accumulatedStake = stakeAmount;
