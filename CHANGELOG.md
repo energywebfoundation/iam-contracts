@@ -1,3 +1,12 @@
+## [1.17.2](https://github.com/energywebfoundation/iam-contracts/compare/v1.17.1...v1.17.2) (2021-08-02)
+
+
+### Bug Fixes
+
+* **staking:** allow full reward to patron ([4c82d75](https://github.com/energywebfoundation/iam-contracts/commit/4c82d7552d4868054506a7079012354a33be5753))
+* **staking:** daily interest ([8b1dda5](https://github.com/energywebfoundation/iam-contracts/commit/8b1dda5137fd1f40e59b70bd1b5f91cb996d4b4d))
+* **staking:** redeploy staking factory ([6bb2bce](https://github.com/energywebfoundation/iam-contracts/commit/6bb2bce647c8e897623acb62ef5b2fa73fb2940e))
+
 ## [1.17.1](https://github.com/energywebfoundation/iam-contracts/compare/v1.17.0...v1.17.1) (2021-07-26)
 
 
