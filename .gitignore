@@ -73,7 +73,6 @@ ethers-v4
 
 # Build outputs
 dist
-ethers-v4
-ethers-v4-for-tests
+ethers
 build/contracts
 bin/contracts
