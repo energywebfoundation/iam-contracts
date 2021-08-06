@@ -54,7 +54,9 @@ export class DomainTransactionFactory {
     const namespaceHash = utils.namehash(domain) as string;
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.functions.setName.encode([namespaceHash, domain])
+      data: this._roleDefResolverInterface.encodeFunctionData(
+        "setName",
+        [namespaceHash, domain])
     };
   }
 
@@ -70,7 +72,10 @@ export class DomainTransactionFactory {
   }): EncodedCall {
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.functions.multicall.encode([transactionsToCombine.map(t => t.data)])
+      data: this._roleDefResolverInterface.encodeFunctionData(
+        "multicall",
+        [transactionsToCombine.map(t => t.data)]
+      )
     };
   }
 
@@ -127,11 +132,13 @@ export class DomainTransactionFactory {
   }): EncodedCall {
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.functions.setText.encode([
-        utils.namehash(domain),
-        "metadata",
-        JSON.stringify(data)
-      ])
+      data: this._roleDefResolverInterface.encodeFunctionData(
+        "setText",
+        [
+          utils.namehash(domain),
+          "metadata",
+          JSON.stringify(data)
+        ])
     };
   }
 
@@ -142,9 +149,11 @@ export class DomainTransactionFactory {
   }): EncodedCall {
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.functions.domainUpdated.encode([
-        utils.namehash(domain),
-      ])
+      data: this._roleDefResolverInterface.encodeFunctionData(
+        "domainUpdated",
+        [
+          utils.namehash(domain),
+        ])
     };
   }
 
@@ -157,10 +166,12 @@ export class DomainTransactionFactory {
   }): EncodedCall {
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.functions.setVersionNumber.encode([
-        utils.namehash(domain),
-        versionNumber
-      ])
+      data: this._roleDefResolverInterface.encodeFunctionData(
+        "setVersionNumber",
+        [
+          utils.namehash(domain),
+          versionNumber
+        ])
     };
   }
 
@@ -180,10 +191,12 @@ export class DomainTransactionFactory {
       const addresses = issuers.did.map((didString) => new DID(didString).id);
       return {
         to: this._resolverAddress,
-        data: this._roleDefResolverInterface.functions.setIssuerDids.encode([
-          utils.namehash(domain),
-          addresses
-        ])
+        data: this._roleDefResolverInterface.encodeFunctionData(
+          "setIssuerDids",
+          [
+            utils.namehash(domain),
+            addresses
+          ])
       };
     }
     else if (issuers.issuerType?.toUpperCase() === "ROLE") {
@@ -192,10 +205,12 @@ export class DomainTransactionFactory {
       }
       return {
         to: this._resolverAddress,
-        data: this._roleDefResolverInterface.functions.setIssuerRole.encode([
-          utils.namehash(domain),
-          namehash(issuers.roleName)
-        ])
+        data: this._roleDefResolverInterface.encodeFunctionData(
+          "setIssuerRole",
+          [
+            utils.namehash(domain),
+            namehash(issuers.roleName)
+          ])
       };
     }
     throw new Error(`IssuerType of ${issuers.issuerType} is not supported`);
@@ -210,10 +225,12 @@ export class DomainTransactionFactory {
   }): EncodedCall {
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.functions.setIssuerType.encode([
-        utils.namehash(domain),
-        issuerType
-      ])
+      data: this._roleDefResolverInterface.encodeFunctionData(
+        "setIssuerType",
+        [
+          utils.namehash(domain),
+          issuerType
+        ])
     };
   }
 
@@ -227,11 +244,13 @@ export class DomainTransactionFactory {
     const prequisiteRoleDomains = prerequisiteRoles.map(role => utils.namehash(role));
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.functions.setPrerequisiteRoles.encode([
-        utils.namehash(domain),
-        prequisiteRoleDomains,
-        false // mustHaveAll = false so only need to have one of the set
-      ])
+      data: this._roleDefResolverInterface.encodeFunctionData(
+        "setPrerequisiteRoles",
+        [
+          utils.namehash(domain),
+          prequisiteRoleDomains,
+          false // mustHaveAll = false so only need to have one of the set
+        ])
     };
   }
 
