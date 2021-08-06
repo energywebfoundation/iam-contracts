@@ -1,13 +1,18 @@
-import { Contract, ContractFactory, EventFilter, Signer, Wallet , providers, utils} from "ethers";
-import { ClaimManager } from "../../ethers-v4/ClaimManager";
-import { ENSRegistry } from "../../ethers-v4/ENSRegistry";
-import { DomainTransactionFactory, ENSRegistry__factory, DomainNotifier__factory, RoleDefinitionResolver__factory, ClaimManager__factory, StakingPoolFactory__factory } from "../../src";
+import { Contract, ContractFactory, EventFilter, Signer, Wallet, providers, utils } from "ethers";
+import { ClaimManager } from "../../ethers/ClaimManager";
+import { ENSRegistry } from "../../ethers/ENSRegistry";
+import { ENSRegistry__factory } from "../../ethers/factories/ENSRegistry__factory";
+import { DomainNotifier__factory } from "../../ethers/factories/DomainNotifier__factory";
+import { RoleDefinitionResolver__factory } from "../../ethers/factories/RoleDefinitionResolver__factory";
+import { ClaimManager__factory } from "../../ethers/factories/ClaimManager__factory";
+import { StakingPoolFactory__factory } from "../../ethers/factories/StakingPoolFactory__factory";
+import { DomainTransactionFactory } from "../../src";
 import { abi as erc1056Abi, bytecode as erc1056Bytecode } from "../test_utils/ERC1056.json";
 import { hashLabel } from "../iam-contracts.test";
 import { stakingPoolTests } from "./StakingPool.testSuite";
 import { stakingPoolFactoryTests } from "./stakingPoolFactory.testSuite";
-import { RoleDefinitionResolver } from "../../ethers-v4/RoleDefinitionResolver";
-import { StakingPoolFactory } from "../../ethers-v4/StakingPoolFactory";
+import { RoleDefinitionResolver } from "../../ethers/RoleDefinitionResolver";
+import { StakingPoolFactory } from "../../ethers/StakingPoolFactory";
 import { rewardPoolTests } from "./RewardPool.testSuite";
 
 const { JsonRpcProvider } = providers;
@@ -29,7 +34,7 @@ export const root = `0x${"0".repeat(64)}`;
 export const patronRole = "patron";
 
 export const waitFor = (filter: EventFilter, contract: Contract): Promise<void> => new Promise((resolve) => {
-  contract.addListener(filter, resolve)
+  contract.on(filter, resolve)
 })
   .then(() => {
     contract.removeAllListeners(filter);

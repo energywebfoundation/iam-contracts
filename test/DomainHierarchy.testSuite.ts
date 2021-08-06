@@ -1,10 +1,10 @@
 import { ContractFactory, utils, providers } from 'ethers';
 import { DomainHierarchy } from '../src/DomainHierarchy';
 import { DomainReader, DomainTransactionFactory, EncodedCall, IRoleDefinition, ResolverContractType } from '../src';
-import { ENSRegistry } from '../ethers-v4/ENSRegistry';
-import { RoleDefinitionResolver } from '../ethers-v4/RoleDefinitionResolver';
-import { DomainNotifier } from '../ethers-v4/DomainNotifier';
-import { PublicResolver } from '../ethers-v4/PublicResolver';
+import { ENSRegistry } from '../ethers/ENSRegistry';
+import { RoleDefinitionResolver } from '../ethers/RoleDefinitionResolver';
+import { DomainNotifier } from '../ethers/DomainNotifier';
+import { PublicResolver } from '../ethers/PublicResolver';
 import { hashLabel } from './iam-contracts.test';
 import { expect } from 'chai';
 import { LegacyDomainDefTransactionFactory } from './LegacyDomainDefTransactionFactory';

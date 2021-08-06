@@ -1,5 +1,5 @@
 import { utils } from "ethers";
-import { PublicResolver } from "../ethers-v4/PublicResolver";
+import { PublicResolver } from "../ethers/PublicResolver";
 import { EncodedCall, IRoleDefinition } from "../src/index";
 
 /**
@@ -19,7 +19,7 @@ export class LegacyDomainDefTransactionFactory {
     const namespaceHash = utils.namehash(domain) as string;
     return {
       to: this.publicResolver.address,
-      data: this.publicResolver.interface.functions.setName.encode([namespaceHash, domain])
+      data: this.publicResolver.interface.encodeFunctionData("setName", [namespaceHash, domain])
     };
   }
 
@@ -30,7 +30,7 @@ export class LegacyDomainDefTransactionFactory {
   }): EncodedCall {
     return {
       to: this.publicResolver.address,
-      data: this.publicResolver.interface.functions.multicall.encode([transactionsToCombine.map(t => t.data)])
+      data: this.publicResolver.interface.encodeFunctionData("multicall", [transactionsToCombine.map(t => t.data)])
     };
   }
 
@@ -43,11 +43,13 @@ export class LegacyDomainDefTransactionFactory {
   }): EncodedCall {
     return {
       to: this.publicResolver.address,
-      data: this.publicResolver.interface.functions.setText.encode([
-        utils.namehash(domain),
-        "metadata",
-        JSON.stringify(data)
-      ])
+      data: this.publicResolver.interface.encodeFunctionData(
+        "setText",
+        [
+          utils.namehash(domain),
+          "metadata",
+          JSON.stringify(data)
+        ])
     };
   }
 }

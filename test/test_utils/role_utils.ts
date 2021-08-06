@@ -1,5 +1,5 @@
 import { Signer, utils } from "ethers";
-import { ClaimManager } from "../../ethers-v4/ClaimManager";
+import { ClaimManager } from "../../ethers/ClaimManager";
 
 const { solidityKeccak256, defaultAbiCoder, arrayify } = utils;
 

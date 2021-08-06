@@ -2,8 +2,8 @@ import { Signer, utils } from "ethers";
 import { expect } from "chai";
 import { requestRole } from "../test_utils/role_utils";
 import { claimManager, waitFor, ewc, patronRole, stakingPoolFactory, serviceProvider, org, minStakingPeriod, withdrawDelay, getSigner } from "./staking.testSuite";
-import { StakingPool } from "../../ethers-v4/StakingPool";
-import { StakingPool__factory } from "../../src";
+import { StakingPool } from "../../ethers/StakingPool";
+import { StakingPool__factory } from "../../ethers/factories/StakingPool__factory";
 
 const { namehash, parseEther } = utils;
 
