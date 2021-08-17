@@ -1,3 +1,21 @@
+# [2.0.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.17.2...v2.0.0) (2021-08-17)
+
+
+### Bug Fixes
+
+* parse event logs ([c95bb49](https://github.com/energywebfoundation/iam-contracts/commit/c95bb49cd8c3b898c7026c9dc8d5f08ec4f67e1b))
+* transaction encoding ([44225f2](https://github.com/energywebfoundation/iam-contracts/commit/44225f2b03e3bd1fc462df9cd6e6a76a160b56a0))
+
+
+### Build System
+
+* dont export contract types ([8ed3084](https://github.com/energywebfoundation/iam-contracts/commit/8ed3084015054a4a4d04386a1e5dbc6214d8b574))
+
+
+### BREAKING CHANGES
+
+*
+
 ## [1.17.2](https://github.com/energywebfoundation/iam-contracts/compare/v1.17.1...v1.17.2) (2021-08-02)
 
 
