@@ -1,14 +1,14 @@
 import { providers, utils } from 'ethers'
 import { IAppDefinition, IIssuerDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from './types/DomainDefinitions'
 import { VOLTA_CHAIN_ID, VOLTA_PUBLIC_RESOLVER_ADDRESS, VOLTA_RESOLVER_V1_ADDRESS } from "./chainConstants";
-import { ENSRegistry__factory } from "../ethers-v4/factories/ENSRegistry__factory";
-import { PublicResolver } from "../ethers-v4/PublicResolver";
-import { PublicResolver__factory } from "../ethers-v4/factories/PublicResolver__factory";
-import { RoleDefinitionResolver } from "../ethers-v4/RoleDefinitionResolver"
-import { RoleDefinitionResolver__factory } from "../ethers-v4/factories/RoleDefinitionResolver__factory";
+import { ENSRegistry__factory } from "../ethers/factories/ENSRegistry__factory";
+import { PublicResolver } from "../ethers/PublicResolver";
+import { PublicResolver__factory } from "../ethers/factories/PublicResolver__factory";
+import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver"
+import { RoleDefinitionResolver__factory } from "../ethers/factories/RoleDefinitionResolver__factory";
 import { ResolverContractType } from "./types/ResolverContractType";
 import { ERROR_MESSAGES } from "./types/ErrorMessages";
-import { ENSRegistry } from '../ethers-v4/ENSRegistry';
+import { ENSRegistry } from '../ethers/ENSRegistry';
 
 export class DomainReader {
   public static isOrgDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IOrganizationDefinition =>

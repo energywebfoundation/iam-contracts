@@ -1,14 +1,14 @@
 import { utils, ContractFactory, Signer, Contract, Wallet, providers } from 'ethers';
 import { expect } from 'chai';
 import { abi as erc1056Abi, bytecode as erc1056Bytecode } from '../test_utils/ERC1056.json';
-import { ClaimManager__factory as ClaimManagerFactory } from '../../ethers-v4/factories/ClaimManager__factory';
-import { ClaimManager } from '../../ethers-v4/ClaimManager';
-import { IdentityManager__factory as IdentityManagerFactory } from '../../ethers-v4-for-tests/factories/IdentityManager__factory';
-import { IdentityManager } from '../../ethers-v4-for-tests/IdentityManager';
-import { OfferableIdentity__factory as OfferableIdentityFactory } from '../../ethers-v4-for-tests/factories/OfferableIdentity__factory';
+import { ClaimManager__factory as ClaimManagerFactory } from '../../ethers/factories/ClaimManager__factory';
+import { ClaimManager } from '../../ethers/ClaimManager';
+import { IdentityManager__factory as IdentityManagerFactory } from '../../ethers/factories/IdentityManager__factory';
+import { IdentityManager } from '../../ethers/IdentityManager';
+import { OfferableIdentity__factory as OfferableIdentityFactory } from '../../ethers/factories/OfferableIdentity__factory';
 import { DomainTransactionFactory } from '../../src';
-import { ENSRegistry } from '../../ethers-v4/ENSRegistry';
-import { RoleDefinitionResolver } from '../../ethers-v4/RoleDefinitionResolver';
+import { ENSRegistry } from '../../ethers/ENSRegistry';
+import { RoleDefinitionResolver } from '../../ethers/RoleDefinitionResolver';
 import { PreconditionType } from '../../src/types/DomainDefinitions';
 import { defaultVersion, requestRole } from '../test_utils/role_utils';
 
@@ -224,7 +224,7 @@ function testSuite() {
 
   it('Agreement can be signed by proxyIdentity owner', async () => {
     const event = (await (await proxyIdentityManager.connect(authority).createIdentity(authorityAddr)).wait())
-      .events?.find((e) => e.event === proxyIdentityManager.interface.events.IdentityCreated.name);
+      .events?.find((e) => e.event === proxyIdentityManager.interface.events['IdentityCreated(address,address,uint256)'].name);
     const proxyIdentityAddr = (event?.args as string[])[0];
     const proxyIdentity = OfferableIdentityFactory.connect(proxyIdentityAddr, provider);
     const owner = await proxyIdentity.owner();

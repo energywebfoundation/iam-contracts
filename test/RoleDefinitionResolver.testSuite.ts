@@ -1,9 +1,9 @@
 import chai from "chai";
 import chaiAsPromised from "chai-as-promised";
-import { ContractFactory, ContractTransaction, providers, utils } from "ethers";
-import { ENSRegistry } from "../ethers-v4/ENSRegistry";
-import { RoleDefinitionResolver } from "../ethers-v4/RoleDefinitionResolver";
-import { DomainNotifier } from "../ethers-v4/DomainNotifier";
+import { ContractFactory, ContractTransaction, providers, utils, BigNumber } from "ethers";
+import { ENSRegistry } from "../ethers/ENSRegistry";
+import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver";
+import { DomainNotifier } from "../ethers/DomainNotifier";
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
@@ -58,7 +58,7 @@ interface IEvent {
     node?: string,
     newPrerequisiteRoles?: string[],
     newType?: string,
-    newVersion?: utils.BigNumber
+    newVersion?: BigNumber
   }
 }
 

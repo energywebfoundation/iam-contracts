@@ -1,14 +1,15 @@
 import { EventFilter, utils, providers } from "ethers";
-import { ENSRegistry } from "../ethers-v4/ENSRegistry";
+import { ENSRegistry } from "../ethers/ENSRegistry";
 import { abi as ensRegistryContract } from "../build/contracts/ENS.json";
 import { abi as ensResolverContract } from "../build/contracts/PublicResolver.json";
 import { abi as domainNotifierContract } from '../build/contracts/DomainNotifier.json';
 import { emptyAddress } from "./constants";
 import { DomainReader } from "./DomainReader";
-import { PublicResolver__factory } from "../ethers-v4/factories/PublicResolver__factory";
-import { DomainNotifier__factory } from "../ethers-v4/factories/DomainNotifier__factory";
-import { PublicResolver } from "../ethers-v4/PublicResolver";
-import { DomainNotifier } from "../ethers-v4/DomainNotifier";
+import { PublicResolver__factory } from "../ethers/factories/PublicResolver__factory";
+import { DomainNotifier__factory } from "../ethers/factories/DomainNotifier__factory";
+import { PublicResolver } from "../ethers/PublicResolver";
+import { DomainNotifier } from "../ethers/DomainNotifier";
+import { Result } from "@ethersproject/abi";
 
 export class DomainHierarchy {
   protected readonly _domainReader: DomainReader;
@@ -61,7 +62,7 @@ export class DomainHierarchy {
 
     if (mode === "ALL") {
       const getParser = (nameReader: (node: string) => Promise<string>) => {
-        return async ({ node }: { node: string, }) => {
+        return async ({ node }: Result) => {
           try {
             const name = await nameReader(node);
             if (name.endsWith(domain) && name !== domain) {
@@ -129,7 +130,7 @@ export class DomainHierarchy {
   }): Promise<string[]> => {
     if (!domain) throw new Error("You need to pass a domain name");
     const notRelevantDomainEndings = ["roles", "apps"]
-    const parser = async ({ node, label, owner }: { node: string, label: string, owner: string }) => {
+    const parser = async ({ node, label, owner }: Result) => {
       try {
         if (owner === emptyAddress) return "";
         const namehash = utils.keccak256(node + label.slice(2));
@@ -184,7 +185,7 @@ export class DomainHierarchy {
     contractInterface
   }: {
     provider: providers.Provider;
-    parser: (log: { node: string; label: string; owner: string }) => Promise<string>;
+    parser: (log: Result) => Promise<string>;
     event: EventFilter;
     contractInterface: utils.Interface;
   }) => {
@@ -197,7 +198,8 @@ export class DomainHierarchy {
     const logs = await provider.getLogs(filter);
     const rawLogs = logs.map(log => {
       const parsedLog = contractInterface.parseLog(log);
-      return parsedLog.values;
+      /** ethers_v5 Interface.parseLog incorrectly parses log, so have to use lowlevel alternative */
+      return contractInterface.decodeEventLog(parsedLog.name, log.data, log.topics);
     });
     const domains = await Promise.all(rawLogs.map(parser));
     const nonEmptyDomains = domains.filter(domain => domain != '');

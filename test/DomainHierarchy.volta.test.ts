@@ -1,5 +1,5 @@
 import { providers } from 'ethers';
-import { ENSRegistry__factory } from '../ethers-v4/factories/ENSRegistry__factory'
+import { ENSRegistry__factory } from '../ethers/factories/ENSRegistry__factory'
 import { VOLTA_DOMAIN_NOTIFER_ADDRESS, VOLTA_ENS_REGISTRY_ADDRESS, VOLTA_PUBLIC_RESOLVER_ADDRESS } from '../src/chainConstants'
 import { DomainHierarchy } from '../src/DomainHierarchy';
 import { DomainReader } from '../src';

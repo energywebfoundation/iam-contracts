@@ -12,10 +12,10 @@ import {
 import { PreconditionType } from "../src/types/DomainDefinitions";
 import { ERROR_MESSAGES } from "../src/types/ErrorMessages";
 import { LegacyDomainDefTransactionFactory } from "./LegacyDomainDefTransactionFactory";
-import { ENSRegistry } from "../ethers-v4/ENSRegistry";
-import { RoleDefinitionResolver } from "../ethers-v4/RoleDefinitionResolver";
-import { DomainNotifier } from "../ethers-v4/DomainNotifier";
-import { PublicResolver } from "../ethers-v4/PublicResolver";
+import { ENSRegistry } from "../ethers/ENSRegistry";
+import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver";
+import { DomainNotifier } from "../ethers/DomainNotifier";
+import { PublicResolver } from "../ethers/PublicResolver";
 import { hashLabel } from "./iam-contracts.test";
 
 chai.use(chaiAsPromised);
