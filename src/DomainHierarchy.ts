@@ -196,6 +196,7 @@ export class DomainHierarchy {
       topics: event.topics || []
     };
     const logs = await provider.getLogs(filter);
+    logs.filter(log => log.address !== emptyAddress);
     const rawLogs = logs.map(log => {
       const parsedLog = contractInterface.parseLog(log);
       /** ethers_v5 Interface.parseLog incorrectly parses log, so have to use lowlevel alternative */
