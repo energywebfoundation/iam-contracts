@@ -9,9 +9,9 @@ contract StakingPoolFactory {
     address provider;
     address pool;
   }
-  uint immutable principalThreshold;
+  uint immutable public principalThreshold;
   
-  uint immutable withdrawDelay;
+  uint immutable public withdrawDelay;
   
   address immutable claimManager;
   address immutable ensRegistry;

@@ -16,7 +16,7 @@ contract StakingPool {
   event StakeWithdrawalRequested(address indexed patron, uint indexed timestamp);
   event StakeWithdrawn(address indexed patron, uint indexed timestamp);
   
-  uint principal;
+  uint public immutable principal;
   uint public totalStake;
   uint immutable public minStakingPeriod; // seconds
 
@@ -26,7 +26,7 @@ contract StakingPool {
   bytes32[] patronRoles;
   
   address payable immutable rewardPool;
-  uint immutable patronRewardPortion;
+  uint immutable public patronRewardPortion;
   
   mapping(address => Stake) public stakes;
   address[] patrons;
@@ -144,6 +144,10 @@ contract StakingPool {
     else {
       reward = RewardPool(rewardPool).checkReward(stake.amount, stake.depositEnd - stake.depositStart, patronRewardPortion);
     }
+  }
+  
+  function getPatronRoles() public view returns (bytes32[] memory) {
+    return patronRoles;
   }
   
   function addPatron(address _patron) internal {
