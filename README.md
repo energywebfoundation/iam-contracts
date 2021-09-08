@@ -2,6 +2,32 @@
 
 This package consists of EVM smart contracts related to EnergyWeb IAM.
 
+## Usage
+
+### DomainReader
+
+The `DomainReader` class can be used as shown to read a domain definition.
+```typescript
+import {
+  DomainReader,
+  VOLTA_ENS_REGISTRY_ADDRESS,
+} from "@energyweb/iam-contracts";
+import { providers, utils } from "ethers";
+
+(async () => {
+  const provider = new providers.JsonRpcProvider(
+    "https://volta-rpc.energyweb.org"
+  );
+  const reader = new DomainReader({
+    ensRegistryAddress: VOLTA_ENS_REGISTRY_ADDRESS,
+    provider,
+  });
+  const roleDefinition = await reader.read({
+    node: utils.namehash("manufacturer.roles.flex.apps.exampleco.iam.ewc"),
+  });
+})();
+```
+
 ## Contract Descriptions
 
 ### RoleDefinitionResolver.sol
