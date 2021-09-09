@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "prebuild": "rimraf dist ethers && patch-package",
-    "build": "npm run compile:contracts && npm run build:typechain && npm run compile:ts && copyfiles build/contracts/**/*.json -u 1 dist",
+    "build": "npm run compile:contracts && npm run build:typechain && npm run compile:ts && copyfiles build/contracts/**/*.json -u 1 dist && copyfiles \"ethers/**/*.d.ts\" dist",
     "compile:ts": "bili",
     "test": "run-with-testrpc -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000 \"npm run test-ganache\" ",
     "ganache": "ganache-cli -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000",
