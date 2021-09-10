@@ -1,3 +1,15 @@
+# [3.0.0](https://github.com/energywebfoundation/iam-contracts/compare/v2.0.1...v3.0.0) (2021-09-10)
+
+
+### Bug Fixes
+
+* **DomainHierarchy:** use ENSRegistryAddress ([2808b60](https://github.com/energywebfoundation/iam-contracts/commit/2808b60583215a4c8ace22606a1fcf601837a943))
+
+
+### BREAKING CHANGES
+
+* **DomainHierarchy:** address is used instead of Contract type
+
 ## [2.0.1](https://github.com/energywebfoundation/iam-contracts/compare/v2.0.0...v2.0.1) (2021-09-10)
 
 
