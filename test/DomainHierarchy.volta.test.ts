@@ -14,11 +14,10 @@ xdescribe('[DomainHierarchy VOLTA]', async function () {
   this.timeout(0);
   const provider = new JsonRpcProvider('https://volta-rpc.energyweb.org');
 
-  const ensRegistry = ENSRegistry__factory.connect(VOLTA_ENS_REGISTRY_ADDRESS, provider)
   const domainReader = new DomainReader({ ensRegistryAddress: VOLTA_ENS_REGISTRY_ADDRESS, provider })
   const domainHierarchy = new DomainHierarchy({
     domainReader,
-    ensRegistry,
+    ensRegistryAddress: VOLTA_ENS_REGISTRY_ADDRESS,
     provider,
     domainNotifierAddress: VOLTA_DOMAIN_NOTIFER_ADDRESS,
     publicResolverAddress: VOLTA_PUBLIC_RESOLVER_ADDRESS

@@ -1,5 +1,6 @@
 import { EventFilter, utils, providers } from "ethers";
 import { ENSRegistry } from "../ethers/ENSRegistry";
+import { ENSRegistry__factory } from "../ethers/factories/ENSRegistry__factory";
 import { abi as ensRegistryContract } from "../build/contracts/ENS.json";
 import { abi as ensResolverContract } from "../build/contracts/PublicResolver.json";
 import { abi as domainNotifierContract } from '../build/contracts/DomainNotifier.json';
@@ -20,21 +21,21 @@ export class DomainHierarchy {
 
   constructor({
     domainReader,
-    ensRegistry,
+    ensRegistryAddress,
     provider,
     domainNotifierAddress,
     publicResolverAddress,
   }: {
     domainReader: DomainReader,
-    ensRegistry: ENSRegistry,
+    ensRegistryAddress: string,
     provider: providers.Provider,
     domainNotifierAddress: string
     publicResolverAddress?: string,
   }) {
     if (!domainReader) throw new Error("You need to pass a DomainReader");
     this._domainReader = domainReader;
-    if (!ensRegistry) throw new Error("You need to pass an ensRegistry ethers contract");
-    this._ensRegistry = ensRegistry;
+    if (!ensRegistryAddress) throw new Error("You need to pass the address of ensRegistry ethers contract");
+    this._ensRegistry = ENSRegistry__factory.connect(ensRegistryAddress, provider);
     if (!provider) throw new Error("You need to pass a provider");
     this._provider = provider;
     if (!domainNotifierAddress) throw new Error("You need to pass the address of a domain notifier contract");
