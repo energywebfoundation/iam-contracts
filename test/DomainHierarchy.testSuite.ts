@@ -84,7 +84,7 @@ export function domainHierarchyTestSuite(): void {
       domainHierarchy = new DomainHierarchy({
         domainReader,
         provider,
-        ensRegistry,
+        ensRegistryAddress: ensRegistry.address,
         domainNotifierAddress: domainNotifier.address,
         publicResolverAddress: ensPublicResolver.address
       })
