@@ -22,8 +22,8 @@ export const deployer = provider.getSigner(1);
 export const ewc = provider.getSigner(2);
 const faucet = provider.getSigner(9);
 
-export const minStakingPeriod = 1;
-export const withdrawDelay = 1;
+export const defaultMinStakingPeriod = 1;
+export const defaultWithdrawDelay = 1;
 
 export let claimManager: ClaimManager;
 export let roleFactory: DomainTransactionFactory;
@@ -87,7 +87,7 @@ export function stakingTests(): void {
   async function setupStakingPoolFactory() {
     stakingPoolFactory = await (await new StakingPoolFactory__factory(deployer).deploy(
       principalThreshold,
-      withdrawDelay,
+      defaultWithdrawDelay,
       claimManager.address,
       ensRegistry.address,
     )).deployed();
