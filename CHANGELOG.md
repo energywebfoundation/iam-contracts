@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/energywebfoundation/iam-contracts/compare/v2.0.0...v2.0.1) (2021-09-10)
+
+
+### Bug Fixes
+
+* add missing files declaration to dist ([491e857](https://github.com/energywebfoundation/iam-contracts/commit/491e857696d1911782641616cd9f3347d8992008))
+
 # [2.0.0](https://github.com/energywebfoundation/iam-contracts/compare/v1.17.2...v2.0.0) (2021-08-17)
 
 
