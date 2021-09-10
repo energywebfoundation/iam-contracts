@@ -11,7 +11,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v2-beta
         with:
-          node-version: '12'
+          node-version: "12"
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
@@ -19,6 +19,10 @@ jobs:
 
       - name: Build packages (Compile contracts, generate contract types and compile typescript)
         run: npm run build
+
+      - name: Build type checking
+        if: success()
+        run: npx tsc --project tsconfig.type-checking.json
 
       - name: Run test
         run: npm test
