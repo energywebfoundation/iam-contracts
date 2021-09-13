@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/energywebfoundation/iam-contracts/compare/v3.0.0...v3.0.1) (2021-09-13)
+
+
+### Bug Fixes
+
+* increase staking period in test ([afe1822](https://github.com/energywebfoundation/iam-contracts/commit/afe18225f0963796f70c6f3195173700b7ef9201))
+
 # [3.0.0](https://github.com/energywebfoundation/iam-contracts/compare/v2.0.1...v3.0.0) (2021-09-10)
 
 
