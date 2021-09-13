@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { utils } from "ethers";
-import { patronRole, stakingPoolFactory, serviceProvider, principalThreshold, org, getSigner, minStakingPeriod } from "./staking.testSuite";
+import { patronRole, stakingPoolFactory, serviceProvider, principalThreshold, org, getSigner, defaultMinStakingPeriod } from "./staking.testSuite";
 
 const { namehash } = utils;
 
@@ -12,7 +12,7 @@ export function stakingPoolFactoryTests(): void {
     
     await stakingPoolFactory.connect(serviceProvider).launchStakingPool(
       namehash(org),
-      minStakingPeriod,
+      defaultMinStakingPeriod,
       patronRewardPortion,
       [namehash(patronRole)],
       { value: principalThreshold.mul(2) }
@@ -26,7 +26,7 @@ export function stakingPoolFactoryTests(): void {
 
     return expect(stakingPoolFactory.connect(nonOwner).launchStakingPool(
       namehash(org),
-      minStakingPeriod,
+      defaultMinStakingPeriod,
       patronRewardPortion,
       [namehash(patronRole)],
       { value: principalThreshold }
@@ -36,7 +36,7 @@ export function stakingPoolFactoryTests(): void {
   it("can't launch when principal less than threshold", async () => {
     return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
       namehash(org),
-      minStakingPeriod,
+      defaultMinStakingPeriod,
       patronRewardPortion,
       [namehash(patronRole)],
       { value: principalThreshold.div(2) }
@@ -46,7 +46,7 @@ export function stakingPoolFactoryTests(): void {
   it("can't launch several pools for service", async () => {
     await stakingPoolFactory.connect(serviceProvider).launchStakingPool(
       namehash(org),
-      minStakingPeriod,
+      defaultMinStakingPeriod,
       patronRewardPortion,
       [namehash(patronRole)],
       { value: principalThreshold.mul(2) }
@@ -54,7 +54,7 @@ export function stakingPoolFactoryTests(): void {
 
     return expect(stakingPoolFactory.connect(serviceProvider).launchStakingPool(
       namehash(org),
-      minStakingPeriod,
+      defaultMinStakingPeriod,
       patronRewardPortion,
       [namehash(patronRole)],
       { value: principalThreshold.mul(2) }
