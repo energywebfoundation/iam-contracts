@@ -39,6 +39,10 @@ const role: IRoleDefinition = {
     issuerType: "DID",
     did: [`did:ethr:0x7aA65E31d404A8857BA083f6195757a730b51CFe`]
   },
+  revoker: {
+    revokerType: "DID",
+    did: [`did:ethr:0x7aA65E31d404A8857BA083f6195757a730b51CFe`]
+  },
   metadata: [{
     "myProperty": 42
   }],

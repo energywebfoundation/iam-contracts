@@ -115,6 +115,7 @@ function testSuite() {
           enrolmentPreconditions: [],
           fields: [],
           issuer: { issuerType: "DID", did: [`did:ethr:${await authority.getAddress()}`] },
+          revoker: { revokerType: "DID", did: [`did:ethr:${await authority.getAddress()}`] },
           metadata: [],
           roleType: '',
           version: defaultVersion
@@ -130,6 +131,7 @@ function testSuite() {
           enrolmentPreconditions: [],
           fields: [],
           issuer: { issuerType: "ROLE", roleName: installerRole },
+          revoker: { revokerType: "ROLE", roleName: installerRole },
           metadata: [],
           roleType: '',
           version: defaultVersion
@@ -145,6 +147,7 @@ function testSuite() {
           enrolmentPreconditions: [{ type: PreconditionType.Role, conditions: [deviceRole] }],
           fields: [],
           issuer: { issuerType: "ROLE", roleName: installerRole },
+          revoker: { revokerType: "ROLE", roleName: installerRole },
           metadata: [],
           roleType: '',
           version: defaultVersion
@@ -160,6 +163,7 @@ function testSuite() {
           enrolmentPreconditions: [],
           fields: [],
           issuer: { issuerType: "ROLE", roleName: authorityRole },
+          revoker: { revokerType: "ROLE", roleName: authorityRole },
           metadata: [],
           roleType: '',
           version: defaultVersion
