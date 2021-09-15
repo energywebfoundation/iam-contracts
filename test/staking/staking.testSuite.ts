@@ -67,6 +67,7 @@ async function setupContracts(): Promise<void> {
         enrolmentPreconditions: [],
         fields: [],
         issuer: { issuerType: "DID", did: [`did:ethr:${await ewc.getAddress()}`] },
+        revoker: { revokerType: "DID", did: [`did:ethr:${await ewc.getAddress()}`] },
         metadata: [],
         roleType: "",
         version: 1

@@ -296,6 +296,8 @@ export function roleDefinitionResolverTestSuite(): void {
       expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('versionNumber(bytes32)'))).to.be.true;
       expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('issuerType(bytes32)'))).to.be.true;
       expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('issuers(bytes32)'))).to.be.true;
+      expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('revokerType(bytes32)'))).to.be.true;
+      expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('revokers(bytes32)'))).to.be.true;
       expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('prerequisiteRoles(bytes32)'))).to.be.true;
       expect(await roleDefinitionResolver.supportsInterface(computeInterfaceId('domainUpdated(bytes32)'))).to.be.true;
     });
@@ -316,6 +318,7 @@ export function roleDefinitionResolverTestSuite(): void {
 
         // TextResolver
         expect(computeInterfaceId('text(bytes32,string)')).to.equal('0x59d1d43c');
+        console.log(computeInterfaceId('issuerType(bytes32)'));
       });
     })
 
