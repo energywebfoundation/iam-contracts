@@ -8,6 +8,7 @@ import { domainCrudTestSuite } from "./DomainCRUD.testSuite";
 import { domainHierarchyTestSuite } from "./DomainHierarchy.testSuite";
 import { claimManagerTests } from "./ClaimManagerTests/ClaimManager.testSuite";
 import { stakingTests } from "./staking/staking.testSuite";
+import { revocationRegistryTests } from "./RevocationRegistry.testSuite";
 
 const { JsonRpcProvider } = providers;
 
@@ -39,4 +40,5 @@ describe("[IAM CONTRACTS]", function () {
   describe("DomainHierarchy Test", domainHierarchyTestSuite);
   describe("ClaimManager Test", claimManagerTests);
   describe("Staking Test", stakingTests);
+  describe("Revocation Test", revocationRegistryTests);
 });
