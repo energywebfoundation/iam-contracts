@@ -1,5 +1,5 @@
 import { providers, utils } from 'ethers'
-import { IAppDefinition, IIssuerDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from './types/DomainDefinitions'
+import { IAppDefinition, IIssuerDefinition, IOrganizationDefinition, IRevokerDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from './types/DomainDefinitions'
 import { VOLTA_CHAIN_ID, VOLTA_PUBLIC_RESOLVER_ADDRESS, VOLTA_RESOLVER_V1_ADDRESS } from "./chainConstants";
 import { ENSRegistry__factory } from "../ethers/factories/ENSRegistry__factory";
 import { PublicResolver } from "../ethers/PublicResolver";
@@ -132,7 +132,9 @@ export class DomainReader {
   // TODO: Muliticalify (make all the queries in one)
   protected async readRoleDefResolver_v1(node: string, roleDefinitionText: IRoleDefinitionText, ensResolver: RoleDefinitionResolver): Promise<IRoleDefinition> {
     const issuersData = await ensResolver.issuers(node);
+    const revokersData = await ensResolver.revokers(node);
     let issuer: IIssuerDefinition;
+    let revoker: IRevokerDefinition;
     if (issuersData.dids.length > 0) {
       issuer = {
         issuerType: 'DID',
@@ -148,6 +150,21 @@ export class DomainReader {
     else {
       issuer = {}
     }
+    if (revokersData.dids.length > 0) {
+      revoker = {
+        revokerType: 'DID',
+        did: revokersData.dids.map(address => `did:ethr:${address}`),
+      }
+    }
+    else if (revokersData.role != "") {
+      revoker = {
+        revokerType: 'ROLE',
+        roleName: await this.readName(issuersData.role)
+      }
+    }
+    else {
+      revoker = {}
+    }
 
     const prerequisiteRolesNodes = await ensResolver.prerequisiteRoles(node)
     const prerequisiteRoles = await Promise.all(prerequisiteRolesNodes[0].map(node => ensResolver.name(node)))
@@ -160,6 +177,7 @@ export class DomainReader {
     return {
       ...roleDefinitionText,
       issuer,
+      revoker,
       version,
       enrolmentPreconditions
     };

@@ -6,6 +6,8 @@ import "./DomainNotifier.sol";
 import "./profiles/enrolment-conditions/EnrolmentPrerequisiteRolesResolver.sol";
 import "./profiles/issuance/IssuersResolver.sol";
 import "./profiles/issuance/IssuerTypeResolver.sol";
+import "./profiles/revocation/RevokersResolver.sol";
+import "./profiles/revocation/RevokerTypeResolver.sol";
 import "./profiles/VersionNumberResolver.sol";
 
 /**
@@ -16,6 +18,8 @@ contract RoleDefinitionResolver is
     VersionNumberResolver,
     IssuerTypeResolver,
     IssuersResolver,
+    RevokerTypeResolver,
+    RevokersResolver,
     EnrolmentPrerequisiteRolesResolver
 {
     bytes4 private constant DOMAIN_UPDATED_INTERFACE_ID = 0x61610164;
@@ -51,6 +55,8 @@ contract RoleDefinitionResolver is
             VersionNumberResolver,
             IssuerTypeResolver,
             IssuersResolver,
+            RevokerTypeResolver,
+            RevokersResolver,
             EnrolmentPrerequisiteRolesResolver
         )
         returns (bool)
