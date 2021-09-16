@@ -7,14 +7,11 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165Checker.sol";
 import "@ew-did-registry/proxyidentity/contracts/IOwned.sol";
 import "./RoleDefinitionResolver.sol";
+import {ClaimManager} from "./ClaimManager.sol";
 
 interface EthereumDIDRegistry {
-  function identityOwner(address identity) external view returns(address);
-function validDelegate(address identity, bytes32 delegateType, address delegate) external view returns(bool);
-}
-
-interface ClaimManager {
-  function hasRole(address subject, bytes32 role, uint256 version) external view returns(bool);
+    function identityOwner(address identity) external view returns(address);
+    function validDelegate(address identity, bytes32 delegateType, address delegate) external view returns(bool);
 }
     
 contract RevocationRegistryOnChain {
@@ -43,7 +40,7 @@ contract RevocationRegistryOnChain {
 
     function revokeClaim(bytes32 claimDigest, bytes32 role, address revoker, bytes32 revokerRole) public {
         require(revokedClaims[claimDigest].revokedTimestamp == 0, "The claim is already revoked");
-        verifyRevoker(revoker, revokerRole, role);
+        verifyRevoker(revoker, role);
         revokedClaims[claimDigest].revoker = revoker;
         revokedClaims[claimDigest].revokedTimestamp = block.number;
         revokedClaims[claimDigest].revokerRole = revokerRole;
@@ -51,7 +48,7 @@ contract RevocationRegistryOnChain {
     }
 
     function revokeClaimInList(bytes32 [] memory claimList,bytes32 role, address revoker, bytes32 revokerRole) public{
-        verifyRevoker(revoker, revokerRole, role);
+        verifyRevoker(revoker, role);
         for(uint i=0; i<claimList.length ; i++) {
             require(revokedClaims[claimList[i]].revokedTimestamp == 0, "The claim is already revoked");
             revokedClaims[claimList[i]].revoker = revoker;
@@ -61,7 +58,7 @@ contract RevocationRegistryOnChain {
         }
     }
 
-    function verifyRevoker(address revoker, bytes32 revokerRole, bytes32 role) internal view {
+    function verifyRevoker(address revoker, bytes32 role) internal view {
         address resolver = ENSRegistry(ensRegistry).resolver(role);
         (address[] memory dids, bytes32 revoker_role) = RevokersResolver(resolver).revokers(role);
         if (dids.length > 0) {
@@ -74,7 +71,7 @@ contract RevocationRegistryOnChain {
             revert("Revocation Registry: Revoker is not listed in role revokers list");
         } else if (revoker_role != "") {
             ClaimManager cm = ClaimManager(claimManager);
-            bool hasRole = cm.hasRole(revoker, revokerRole, 0);
+            bool hasRole = cm.hasRole(revoker, revoker_role, 0);
             if (hasRole) {
                 bytes32 revokerClaimDigest = keccak256(abi.encodePacked(revoker, revoker_role));
                 bool roleStatus = isRevoked(revokerClaimDigest);
