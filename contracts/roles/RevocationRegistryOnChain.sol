@@ -75,7 +75,7 @@ contract RevocationRegistryOnChain {
             if (hasRole) {
                 bytes32 revokerClaimDigest = keccak256(abi.encodePacked(revoker, revoker_role));
                 bool roleStatus = isRevoked(revokerClaimDigest);
-                if (roleStatus) {
+                if (!roleStatus) {
                     return;
                 } else {
                     revert("Revocation Registry: Revoker's role has been revoked");
