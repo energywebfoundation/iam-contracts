@@ -318,7 +318,6 @@ export function roleDefinitionResolverTestSuite(): void {
 
         // TextResolver
         expect(computeInterfaceId('text(bytes32,string)')).to.equal('0x59d1d43c');
-        console.log(computeInterfaceId('issuerType(bytes32)'));
       });
     })
 

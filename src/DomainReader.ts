@@ -159,7 +159,7 @@ export class DomainReader {
     else if (revokersData.role != "") {
       revoker = {
         revokerType: 'ROLE',
-        roleName: await this.readName(issuersData.role)
+        roleName: await this.readName(revokersData.role)
       }
     }
     else {

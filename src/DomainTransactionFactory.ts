@@ -1,6 +1,6 @@
 import { utils } from 'ethers'
 import { DomainReader } from "./DomainReader";
-import { IAppDefinition, IIssuerDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from "./types/DomainDefinitions"
+import { IAppDefinition, IIssuerDefinition, IRevokerDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from "./types/DomainDefinitions"
 import { DID } from "./types/DID";
 import { EncodedCall } from "./types/Transaction";
 import { VOLTA_RESOLVER_V1_ADDRESS } from "./chainConstants";
@@ -92,6 +92,10 @@ export class DomainTransactionFactory {
     // IssuerType hardcoded to zero for now which means approval by some identity (i.e. an identity from a list of DIDs, or an identity with a given role
     const setIssuerTypeTx = this.setIssuerTypeTx({ domain, issuerType: 0 });
 
+    const setRevokersTx = this.setRevokersTx({ domain, revokers: data.revoker });
+    // IssuerType hardcoded to zero for now which means approval by some identity (i.e. an identity from a list of DIDs, or an identity with a given role
+    const setRevokerTypeTx = this.setRevokerTypeTx({ domain, revokerType: 0 });
+
     let prerequisiteRolesTx;
     const roleConditiions = data?.enrolmentPreconditions?.filter(condition => condition.type === PreconditionType.Role);
     if (!roleConditiions || roleConditiions.length < 1) {
@@ -120,7 +124,7 @@ export class DomainTransactionFactory {
 
     const domainUpdatedTx = this.domainUpdated({ domain })
 
-    return this.createMultiCallTx({ transactionsToCombine: [setVersionTx, setIssuersTx, setIssuerTypeTx, setTextTx, prerequisiteRolesTx, domainUpdatedTx] });
+    return this.createMultiCallTx({ transactionsToCombine: [setVersionTx, setIssuersTx, setIssuerTypeTx, setRevokersTx, setRevokerTypeTx, setTextTx, prerequisiteRolesTx, domainUpdatedTx] });
   }
 
   protected setTextTx({
@@ -216,6 +220,45 @@ export class DomainTransactionFactory {
     throw new Error(`IssuerType of ${issuers.issuerType} is not supported`);
   }
 
+  protected setRevokersTx({
+    domain,
+    revokers
+  }: {
+    domain: string;
+    revokers: IRevokerDefinition;
+  }): EncodedCall {
+    if (revokers.revokerType?.toUpperCase() === "DID") {
+      if (!revokers.did) {
+        throw Error("RevokerType set to DID but no DIDs provided");
+      }
+      const addresses = revokers.did.map((didString) => new DID(didString).id);
+      return {
+        to: this._resolverAddress,
+        data: this._roleDefResolverInterface.encodeFunctionData(
+          "setRevokerDids",
+          [
+            utils.namehash(domain),
+            addresses
+          ])
+      };
+    }
+    else if (revokers.revokerType?.toUpperCase() === "ROLE") {
+      if (!revokers.roleName) {
+        throw Error("RevokerType set to roleName but no roleName provided");
+      }
+      return {
+        to: this._resolverAddress,
+        data: this._roleDefResolverInterface.encodeFunctionData(
+          "setRevokerRole",
+          [
+            utils.namehash(domain),
+            namehash(revokers.roleName)
+          ])
+      };
+    }
+    throw new Error(`IssuerType of ${revokers.revokerType} is not supported`);
+  }
+
   protected setIssuerTypeTx({
     domain,
     issuerType
@@ -230,6 +273,24 @@ export class DomainTransactionFactory {
         [
           utils.namehash(domain),
           issuerType
+        ])
+    };
+  }
+
+  protected setRevokerTypeTx({
+    domain,
+    revokerType
+  }: {
+    domain: string;
+    revokerType: number;
+  }): EncodedCall {
+    return {
+      to: this._resolverAddress,
+      data: this._roleDefResolverInterface.encodeFunctionData(
+        "setRevokerType",
+        [
+          utils.namehash(domain),
+          revokerType
         ])
     };
   }
