@@ -22,7 +22,7 @@ contract RevocationRegistryOnChain {
     struct RevokedClaim {
         address revoker;
         uint revokedTimestamp;
-        bytes32 revokerRole; //namehash
+        bytes32 revokerRoleDigest; //namehash
     }
 
     mapping(bytes32 => RevokedClaim) revokedClaims;
@@ -38,12 +38,12 @@ contract RevocationRegistryOnChain {
         claimManager = _claimManager;
     }
 
-    function revokeClaim(bytes32 claimDigest, bytes32 role, address revoker, bytes32 revokerRole) public {
+    function revokeClaim(bytes32 claimDigest, bytes32 role, address revoker, bytes32 revokerRoleDigest) public {
         require(revokedClaims[claimDigest].revokedTimestamp == 0, "The claim is already revoked");
-        verifyRevoker(revoker, role);
+        verifyRevoker(revoker, role, revokerRoleDigest);
         revokedClaims[claimDigest].revoker = revoker;
         revokedClaims[claimDigest].revokedTimestamp = block.number;
-        revokedClaims[claimDigest].revokerRole = revokerRole;
+        revokedClaims[claimDigest].revokerRoleDigest = revokerRoleDigest;
         emit Revoked(revoker, claimDigest);
     }
 
@@ -58,7 +58,7 @@ contract RevocationRegistryOnChain {
         }
     }
 
-    function verifyRevoker(address revoker, bytes32 role) internal view {
+    function verifyRevoker(address revoker, bytes32 role, bytes32 revokerRoleDigest) internal view {
         address resolver = ENSRegistry(ensRegistry).resolver(role);
         (address[] memory dids, bytes32 revoker_role) = RevokersResolver(resolver).revokers(role);
         if (dids.length > 0) {
@@ -73,8 +73,7 @@ contract RevocationRegistryOnChain {
             ClaimManager cm = ClaimManager(claimManager);
             bool hasRole = cm.hasRole(revoker, revoker_role, 0);
             if (hasRole) {
-                bytes32 revokerClaimDigest = keccak256(abi.encodePacked(revoker, revoker_role));
-                bool roleStatus = isRevoked(revokerClaimDigest);
+                bool roleStatus = isRevoked(revokerRoleDigest);
                 if (!roleStatus) {
                     return;
                 } else {

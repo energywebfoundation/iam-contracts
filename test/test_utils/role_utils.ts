@@ -124,6 +124,6 @@ export async function revokeRole({
       utils.namehash(subjectRole+subjectAddr),
       utils.namehash(subjectRole),
       revokerAddr,
-      utils.namehash(revokerRole),
+      utils.namehash(revokerRole+revokerAddr),
     )).wait(); 
   }
