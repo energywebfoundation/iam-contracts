@@ -47,13 +47,13 @@ contract RevocationRegistryOnChain {
         emit Revoked(revoker, claimDigest);
     }
 
-    function revokeClaimInList(bytes32 [] memory claimList,bytes32 role, address revoker, bytes32 revokerRole) public{
-        verifyRevoker(revoker, role);
+    function revokeClaimInList(bytes32 [] memory claimList,bytes32 role, address revoker, bytes32 revokerRoleDigest) public{
+        verifyRevoker(revoker, role, revokerRoleDigest);
         for(uint i=0; i<claimList.length ; i++) {
             require(revokedClaims[claimList[i]].revokedTimestamp == 0, "The claim is already revoked");
             revokedClaims[claimList[i]].revoker = revoker;
             revokedClaims[claimList[i]].revokedTimestamp = block.number;
-            revokedClaims[claimList[i]].revokerRole = revokerRole;
+            revokedClaims[claimList[i]].revokerRoleDigest = revokerRoleDigest;
             emit Revoked(revoker, claimList[i]);
         }
     }
