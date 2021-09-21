@@ -1,3 +1,10 @@
+# [3.1.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.0.1...v3.1.0) (2021-09-21)
+
+
+### Features
+
+* **DomainHierarchy:** filter out apps and roles ([34f015a](https://github.com/energywebfoundation/iam-contracts/commit/34f015a7a01f23895d7ccd9723c5989e2d73ee66))
+
 ## [3.0.1](https://github.com/energywebfoundation/iam-contracts/compare/v3.0.0...v3.0.1) (2021-09-13)
 
 
