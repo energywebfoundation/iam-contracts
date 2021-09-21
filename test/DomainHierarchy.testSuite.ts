@@ -140,6 +140,61 @@ export function domainHierarchyTestSuite(): void {
         })
         expect(subDomains.length).to.equal(2);
       });
+
+      it("filter out apps and roles domains and subdomains (mode: ALL)", async () => {
+        await addSubdomain("ewc", "iam", "PUBLIC");
+        await Promise.all([
+          addSubdomain("iam.ewc", "apps", "ROLEDEF"),
+          addSubdomain("iam.ewc", "roles", "ROLEDEF"),
+        ]);
+        await Promise.all([
+          addSubdomain("apps.iam.ewc", "flex", "ROLEDEF"),
+          addSubdomain("roles.iam.ewc", "operator", "ROLEDEF"),
+        ]);
+        await addSubdomain("flex.apps.iam.ewc", "roles", "ROLEDEF");
+        await Promise.all([
+          addSubdomain("roles.flex.apps.iam.ewc", "tso", "ROLEDEF"),
+          addSubdomain("roles.flex.apps.iam.ewc", "dso", "ROLEDEF"),
+        ]);
+        const subDomains = await domainHierarchy.getSubdomainsUsingResolver({
+          domain: domain,
+          mode: "ALL"
+        });
+
+        expect(subDomains).to.contains('iam.ewc');
+        expect(subDomains).to.contains('flex.apps.iam.ewc');
+        expect(subDomains).to.contains('operator.roles.iam.ewc');
+        expect(subDomains).to.contains('tso.roles.flex.apps.iam.ewc');
+        expect(subDomains).to.contains('dso.roles.flex.apps.iam.ewc');
+        expect(subDomains.length).to.equal(5);
+      });
+
+      it("filter out apps and roles domains and subdomains (mode: FIRSTLEVEL)", async () => {
+        await Promise.all([
+          addSubdomain("ewc", "apps", "ROLEDEF"),
+          addSubdomain("ewc", "roles", "ROLEDEF"),
+          addSubdomain("ewc", "iam", "PUBLIC"),
+          addSubdomain("ewc", "flex", "PUBLIC"),
+        ]);
+        await Promise.all([
+          addSubdomain("iam.ewc", "apps", "ROLEDEF"),
+          addSubdomain("iam.ewc", "roles", "ROLEDEF"),
+          addSubdomain("apps.ewc", "flex", "ROLEDEF"),
+          addSubdomain("roles.ewc", "operator", "ROLEDEF"),
+        ]);
+        await Promise.all([
+          addSubdomain("apps.iam.ewc", "flex", "ROLEDEF"),
+          addSubdomain("roles.iam.ewc", "operator", "ROLEDEF"),
+        ]);
+        const subDomains = await domainHierarchy.getSubdomainsUsingResolver({
+          domain: domain,
+          mode: "FIRSTLEVEL"
+        });
+
+        expect(subDomains).to.contains('iam.ewc');
+        expect(subDomains).to.contains('flex.ewc');
+        expect(subDomains.length).to.equal(2);
+      });
     })
 
     describe("getSubdomainsUsingRegistry", () => {

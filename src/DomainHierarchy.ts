@@ -61,11 +61,22 @@ export class DomainHierarchy {
   }): Promise<string[]> => {
     if (!domain) throw new Error("You need to pass a domain name");
 
+    // Filter out apps and roles
+    const isRelevantDomainEndings = (name: string) => {
+      const notRelevantDomainEndings = ["roles", "apps"];
+      const leafLabel = name.split(".")[0];
+      return notRelevantDomainEndings.includes(leafLabel);
+    } 
+
     if (mode === "ALL") {
       const getParser = (nameReader: (node: string) => Promise<string>) => {
         return async ({ node }: Result) => {
           try {
             const name = await nameReader(node);
+            if (isRelevantDomainEndings(name)) {
+              return ""
+            }
+
             if (name.endsWith(domain) && name !== domain) {
               const owner = await this._ensRegistry.owner(node);
               if (owner === emptyAddress) return "";
@@ -107,6 +118,9 @@ export class DomainHierarchy {
             this._ensRegistry.owner(namehash)
           ]);
           if (ownerAddress === emptyAddress) return "";
+          if (isRelevantDomainEndings(name)) {
+              return ""
+          }
           return name;
         }
         catch {
