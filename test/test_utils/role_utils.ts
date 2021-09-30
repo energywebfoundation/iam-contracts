@@ -121,9 +121,8 @@ export async function revokeRole({
     const subjectAddr = await subject.getAddress();
 
     await (await revocationRegistry.revokeClaim(
-      utils.namehash(subjectRole+subjectAddr),
       utils.namehash(subjectRole),
-      revokerAddr,
-      utils.namehash(revokerRole+revokerAddr),
+      subjectAddr,
+      revokerAddr
     )).wait(); 
   }

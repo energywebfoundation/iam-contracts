@@ -182,7 +182,7 @@ function testSuite() {
       expect(await claimManager.hasRole(authorityAddr, utils.namehash(authorityRole), defaultVersion)).true;
       
       await revokeRole({ revocationRegistry, revoker: authority, subject: authority, subjectRole: authorityRole, revokerRole:authorityRole });
-      expect(await revocationRegistry.isRevoked(utils.namehash(authorityRole+authorityAddr))).true;
+      expect(await revocationRegistry.isRevoked(utils.namehash(authorityRole), authorityAddr)).true;
     });
   
     it('Role can be revoked where revokerType is Role ', async () => {
@@ -191,7 +191,7 @@ function testSuite() {
       expect(await claimManager.hasRole(installerAddr, utils.namehash(installerRole), defaultVersion)).true;
 
       await revokeRole({ revocationRegistry, revoker: authority, subject: installer, subjectRole: installerRole, revokerRole:authorityRole });    
-      expect(await revocationRegistry.isRevoked(utils.namehash(installerRole+installerAddr))).true;
+      expect(await revocationRegistry.isRevoked(utils.namehash(installerRole), installerAddr)).true;
     });
 
     it('Role can be revoked where issuerType is "DID" and revokerType is "Role" ', async () => {
@@ -200,7 +200,7 @@ function testSuite() {
       await requestRole({ claimManager, roleName: installerRole, agreementSigner: installer, proofSigner: authority });
 
       await revokeRole({ revocationRegistry, revoker: installer, subject: device, subjectRole: deviceRole, revokerRole:installerRole });    
-      expect(await revocationRegistry.isRevoked(utils.namehash(deviceRole+deviceAddr))).true;
+      expect(await revocationRegistry.isRevoked(utils.namehash(deviceRole), deviceAddr)).true;
     });
 
     it('Revoker can revoke his/her own role', async () => {
@@ -208,7 +208,7 @@ function testSuite() {
       expect(await claimManager.hasRole(authorityAddr, utils.namehash(authorityRole), defaultVersion)).true;
       
       await revokeRole({ revocationRegistry, revoker: authority, subject: authority, subjectRole: authorityRole, revokerRole:authorityRole });
-      expect(await revocationRegistry.isRevoked(utils.namehash(authorityRole+authorityAddr))).true;
+      expect(await revocationRegistry.isRevoked(utils.namehash(authorityRole), authorityAddr)).true;
     });
 
     it('Revoker can revoke role issued by other authorities', async () => {
@@ -217,7 +217,7 @@ function testSuite() {
       await requestRole({ claimManager, roleName: installerRole, agreementSigner: installer, proofSigner: authority });
 
       await revokeRole({ revocationRegistry, revoker: installer, subject: device, subjectRole: deviceRole, revokerRole:installerRole });    
-      expect(await revocationRegistry.isRevoked(utils.namehash(deviceRole+deviceAddr))).true;
+      expect(await revocationRegistry.isRevoked(utils.namehash(deviceRole), deviceAddr)).true;
     });
 
     it('Revoker can revoke role issued by him/her', async () => {
@@ -226,7 +226,7 @@ function testSuite() {
       expect(await claimManager.hasRole(installerAddr, utils.namehash(installerRole), defaultVersion)).true;
 
       await revokeRole({ revocationRegistry, revoker: authority, subject: installer, subjectRole: installerRole, revokerRole:authorityRole });    
-      expect(await revocationRegistry.isRevoked(utils.namehash(installerRole+installerAddr))).true;
+      expect(await revocationRegistry.isRevoked(utils.namehash(installerRole), installerAddr)).true;
     });
 
     it('Role cannot be revoked if the revokers role has been revoked', async () => {
@@ -234,7 +234,7 @@ function testSuite() {
       await requestRole({ claimManager, roleName: installerRole, agreementSigner: installer, proofSigner: authority });
       
       await revokeRole({ revocationRegistry, revoker: authority, subject: authority, subjectRole: authorityRole, revokerRole:authorityRole });
-      expect(await revocationRegistry.isRevoked(utils.namehash(authorityRole+authorityAddr))).true;
+      expect(await revocationRegistry.isRevoked(utils.namehash(authorityRole), authorityAddr)).true;
 
       expect(
         revokeRole({ revocationRegistry, revoker: authority, subject: installer, subjectRole: installerRole, revokerRole:authorityRole })
@@ -245,7 +245,7 @@ function testSuite() {
       await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
       
       await revokeRole({ revocationRegistry, revoker: authority, subject: authority, subjectRole: authorityRole, revokerRole:authorityRole });
-      expect(await revocationRegistry.isRevoked(utils.namehash(authorityRole+authorityAddr))).true;
+      expect(await revocationRegistry.isRevoked(utils.namehash(authorityRole), authorityAddr)).true;
 
       expect(
         revokeRole({ revocationRegistry, revoker: authority, subject: authority, subjectRole: authorityRole, revokerRole:authorityRole })
@@ -262,7 +262,7 @@ function testSuite() {
       await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
 
       await revokeRole({ revocationRegistry, revoker: delegate, subject: authority, subjectRole: authorityRole, revokerRole:authorityRole });    
-      expect(await revocationRegistry.isRevoked(utils.namehash(authorityRole+authorityAddr))).true;
+      expect(await revocationRegistry.isRevoked(utils.namehash(authorityRole), authorityAddr)).true;
     });
   
 }
