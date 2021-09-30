@@ -16,21 +16,18 @@ interface EthereumDIDRegistry {
     
 contract RevocationRegistryOnChain {
     bytes32 constant private ASSERTION_DELEGATE_TYPE = 0x766572694b657900000000000000000000000000000000000000000000000000;
-    string constant private ERC712_DOMAIN_NAME = "Revocation Registry";
-    string constant private ERC712_DOMAIN_VERSION = "1.0";
 
     struct RevokedClaim {
         address revoker;
         uint revokedTimestamp;
-        bytes32 revokerRoleDigest; //namehash
     }
 
-    mapping(bytes32 => RevokedClaim) revokedClaims;
+    mapping (bytes32 => mapping(address => RevokedClaim)) revokedClaims;
     address private didRegistry;
     address private ensRegistry;
     address private claimManager;
     
-    event Revoked(address revoker, bytes32 claimDigest);
+    event Revoked(bytes32 role, address subject, address revoker);
 
     constructor(address _didRegistry, address _ensRegistry, address _claimManager){
         didRegistry = _didRegistry;
@@ -38,27 +35,25 @@ contract RevocationRegistryOnChain {
         claimManager = _claimManager;
     }
 
-    function revokeClaim(bytes32 claimDigest, bytes32 role, address revoker, bytes32 revokerRoleDigest) public {
-        require(revokedClaims[claimDigest].revokedTimestamp == 0, "The claim is already revoked");
-        verifyRevoker(revoker, role, revokerRoleDigest);
-        revokedClaims[claimDigest].revoker = revoker;
-        revokedClaims[claimDigest].revokedTimestamp = block.number;
-        revokedClaims[claimDigest].revokerRoleDigest = revokerRoleDigest;
-        emit Revoked(revoker, claimDigest);
+    function revokeClaim(bytes32 role, address subject, address revoker) public {
+        require(revokedClaims[role][subject].revokedTimestamp == 0, "The claim is already revoked");
+        verifyRevoker(role, revoker);
+        revokedClaims[role][subject].revoker = revoker;
+        revokedClaims[role][subject].revokedTimestamp = block.number;
+        emit Revoked(role, subject, revoker);
     }
 
-    function revokeClaimInList(bytes32 [] memory claimList,bytes32 role, address revoker, bytes32 revokerRoleDigest) public{
-        verifyRevoker(revoker, role, revokerRoleDigest);
-        for(uint i=0; i<claimList.length ; i++) {
-            require(revokedClaims[claimList[i]].revokedTimestamp == 0, "The claim is already revoked");
-            revokedClaims[claimList[i]].revoker = revoker;
-            revokedClaims[claimList[i]].revokedTimestamp = block.number;
-            revokedClaims[claimList[i]].revokerRoleDigest = revokerRoleDigest;
-            emit Revoked(revoker, claimList[i]);
+    function revokeClaimsInList(bytes32 role, address [] memory subjects, address revoker) public{
+        verifyRevoker(role, revoker);
+        for(uint i=0; i<subjects.length ; i++) {
+            require(revokedClaims[role][subjects[i]].revokedTimestamp == 0, "The claim is already revoked");
+            revokedClaims[role][subjects[i]].revoker = revoker;
+            revokedClaims[role][subjects[i]].revokedTimestamp = block.number;
+            emit Revoked(role, subjects[i], revoker);
         }
     }
 
-    function verifyRevoker(address revoker, bytes32 role, bytes32 revokerRoleDigest) internal view {
+    function verifyRevoker(bytes32 role, address revoker) internal view {
         address resolver = ENSRegistry(ensRegistry).resolver(role);
         (address[] memory dids, bytes32 revoker_role) = RevokersResolver(resolver).revokers(role);
         if (dids.length > 0) {
@@ -73,7 +68,7 @@ contract RevocationRegistryOnChain {
             ClaimManager cm = ClaimManager(claimManager);
             bool hasRole = cm.hasRole(revoker, revoker_role, 0);
             if (hasRole) {
-                bool roleStatus = isRevoked(revokerRoleDigest);
+                bool roleStatus = isRevoked(revoker_role, revoker);
                 if (!roleStatus) {
                     return;
                 } else {
@@ -86,12 +81,16 @@ contract RevocationRegistryOnChain {
         }
     }
 
-    function isRevoked(bytes32 claimDigest) public view returns(bool) {
-        if (revokedClaims[claimDigest].revokedTimestamp == 0) {
+    function isRevoked(bytes32 role, address subject) public view returns(bool) {
+        if (revokedClaims[role][subject].revokedTimestamp == 0) {
             return false;
         }
         else {
             return true;
         }
+    }
+
+    function getRevocationDetail(bytes32 role, address subject) public view returns (address, uint) { 
+        return (revokedClaims[role][subject].revoker, revokedClaims[role][subject].revokedTimestamp);
     }
 }
