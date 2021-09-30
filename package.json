@@ -94,7 +94,7 @@
         "@semantic-release/commit-analyzer",
         {
           "preset": "angular",
-          "releaseRules": [
+          "release": [
             {
               "type": "docs",
               "release": "patch"
