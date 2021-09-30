@@ -107,14 +107,12 @@ export async function revokeRole({
   revocationRegistry,
   revoker,
   subject,
-  subjectRole,
-  revokerRole,
+  subjectRole
   } : {
     revocationRegistry : RevocationRegistry,
     revoker : Signer,
     subject : Signer,
-    subjectRole : string,
-    revokerRole : string
+    subjectRole : string
   }) : Promise<void> {
 
     const revokerAddr = await revoker.getAddress();
@@ -126,3 +124,28 @@ export async function revokeRole({
       revokerAddr
     )).wait(); 
   }
+
+  export async function revokeRoles({
+    revocationRegistry,
+    revoker,
+    subjects,
+    subjectRole
+    } : {
+      revocationRegistry : RevocationRegistry,
+      revoker : Signer,
+      subjects : Signer[],
+      subjectRole : string
+    }) : Promise<void> {
+      let revocationSubjects = [''];
+      const revokerAddr = await revoker.getAddress();
+      for(let i in subjects) {
+        const subjectAddr = await subjects[i].getAddress();
+        revocationSubjects[i] = subjectAddr;
+      }
+      
+      await (await revocationRegistry.revokeClaimsInList(
+        utils.namehash(subjectRole),
+        revocationSubjects,
+        revokerAddr
+      )).wait(); 
+    }
