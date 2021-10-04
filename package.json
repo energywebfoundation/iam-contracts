@@ -103,7 +103,6 @@
               "type": "refactor",
               "release": "minor"
             },
-            {},
             {
               "scope": "build",
               "release": "patch"
