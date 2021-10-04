@@ -1,3 +1,15 @@
+# [3.2.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.1.0...v3.2.0) (2021-10-04)
+
+
+### Bug Fixes
+
+* **commit-analyzer:** remove empty release rule ([66679d8](https://github.com/energywebfoundation/iam-contracts/commit/66679d8c71cda47f951a6a092194975aa7b952ca))
+
+
+### Features
+
+* **deps:** update critical vulnerabilities ([f225b4e](https://github.com/energywebfoundation/iam-contracts/commit/f225b4ee575942a4ab6079a6f22bc8a4bc6398db))
+
 # [3.1.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.0.1...v3.1.0) (2021-09-21)
 
 
