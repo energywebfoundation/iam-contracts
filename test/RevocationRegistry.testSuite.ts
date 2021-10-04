@@ -22,7 +22,7 @@ const installerRole = 'installer';
 const hashLabel = (label: string): string => utils.keccak256(utils.toUtf8Bytes(label));
 
 let claimManager: ClaimManager;
-let proxyIdentityManager: IdentityManager;
+let ensRegistry : ENSRegistry;
 let roleFactory: DomainTransactionFactory;
 let roleResolver: RoleDefinitionResolver;
 let erc1056: Contract;
@@ -72,17 +72,15 @@ function testSuite() {
       erc1056 = await (await erc1056Factory.deploy()).deployed();
   
       const { ensFactory, domainNotifierFactory, roleDefResolverFactory } = this;
-      const ensRegistry: ENSRegistry = await (await ensFactory.connect(deployer).deploy()).deployed();
+      ensRegistry = await (await ensFactory.connect(deployer).deploy()).deployed();
   
       const notifier = await (await domainNotifierFactory.connect(deployer).deploy(ensRegistry.address)).deployed();
       roleResolver = await (await (roleDefResolverFactory.connect(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
   
       claimManager = await (await new ClaimManagerFactory(deployer).deploy(erc1056.address, ensRegistry.address)).deployed();
-      const offerableIdentity = await (await new OfferableIdentityFactory(deployer).deploy()).deployed();
-      proxyIdentityManager = await (await new IdentityManagerFactory(deployer).deploy(offerableIdentity.address)).deployed();
       roleFactory = new DomainTransactionFactory({ domainResolverAddress: roleResolver.address });
      
-      revocationRegistry = await (await new RevocationRegistryOnChainFactory(deployer).deploy(erc1056.address, ensRegistry.address, claimManager.address)).deployed();
+      revocationRegistry = await (await new RevocationRegistryOnChainFactory(authority).deploy(erc1056.address, ensRegistry.address, claimManager.address)).deployed();
   
       await (await ensRegistry.setSubnodeOwner(root, hashLabel(authorityRole), deployerAddr)).wait();
       await (await ensRegistry.setSubnodeOwner(root, hashLabel(deviceRole), deployerAddr)).wait();
@@ -262,9 +260,9 @@ function testSuite() {
       const veriKey = "0x766572694b657900000000000000000000000000000000000000000000000000";
   
       await erc1056.connect(authority).addDelegate(authorityAddr, veriKey, delegateAddr, 60 * 60);
-  
       await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
 
+      const revocationRegistry = await (await new RevocationRegistryOnChainFactory(delegate).deploy(erc1056.address, ensRegistry.address, claimManager.address)).deployed();
       await revokeRole({ revocationRegistry, revoker: delegate, subject: authority, subjectRole: authorityRole});    
       expect(await revocationRegistry.isRevoked(utils.namehash(authorityRole), authorityAddr)).true;
     });

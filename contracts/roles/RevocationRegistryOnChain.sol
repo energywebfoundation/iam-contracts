@@ -60,7 +60,9 @@ contract RevocationRegistryOnChain {
           EthereumDIDRegistry registry = EthereumDIDRegistry(didRegistry);
             for (uint i = 0; i < dids.length; i++) {
                 if (dids[i] == revoker || registry.validDelegate(dids[i], ASSERTION_DELEGATE_TYPE, revoker)) {
-                    return;
+                    if (revoker == msg.sender || registry.validDelegate(msg.sender, ASSERTION_DELEGATE_TYPE, revoker)) {
+                        return;
+                    }
                 }
             }
             revert("Revocation Registry: Revoker is not listed in role revokers list");
