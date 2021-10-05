@@ -73,7 +73,7 @@ export class DomainReader {
    * @param node the ENS node hash of a domain name
    * @returns
    */
-  public async read({ node }: { node: string }): Promise<IRoleDefinition | IAppDefinition | IOrganizationDefinition> {
+  public async read({ node }: { node: string, withHistory: boolean }): Promise<IRoleDefinition | IAppDefinition | IOrganizationDefinition> {
     const { resolverAddress, resolverType } = await this.getResolverInfo(node);
 
     if (resolverType === ResolverContractType.PublicResolver) {
