@@ -4,11 +4,13 @@ import { VOLTA_CHAIN_ID, VOLTA_PUBLIC_RESOLVER_ADDRESS, VOLTA_RESOLVER_V1_ADDRES
 import { ENSRegistry__factory } from "../ethers/factories/ENSRegistry__factory";
 import { PublicResolver } from "../ethers/PublicResolver";
 import { PublicResolver__factory } from "../ethers/factories/PublicResolver__factory";
-import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver"
 import { RoleDefinitionResolver__factory } from "../ethers/factories/RoleDefinitionResolver__factory";
 import { ResolverContractType } from "./types/ResolverContractType";
 import { ERROR_MESSAGES } from "./types/ErrorMessages";
 import { ENSRegistry } from '../ethers/ENSRegistry';
+import { RoleDefinitionResolver } from '../ethers/RoleDefinitionResolver';
+import { DomainNotifier__factory } from '../ethers/factories/DomainNotifier__factory';
+import { DomainNotifier } from '../ethers/DomainNotifier';
 
 export class DomainReader {
   public static isOrgDefinition = (domainDefinition: IRoleDefinitionText | IOrganizationDefinition | IAppDefinition): domainDefinition is IOrganizationDefinition =>
@@ -108,57 +110,62 @@ export class DomainReader {
     throw Error(ERROR_MESSAGES.RESOLVER_NOT_SUPPORTED)
   }
 
-  public getAllRolesHistory = async (): Promise<IRoleDefinition[]> => {
-    const network = await this._provider.getNetwork();
-    const chainId = network.chainId;
-    const resolversForChain = this._knownEnsResolvers[chainId];
-    const getEnsAddress = (resolverContractType: ResolverContractType) => {
-      return Object.keys(resolversForChain).find(key => resolversForChain[key] === resolverContractType) || "";
-    }
-
-    const resolvers = [
-      {
-        resolver: PublicResolver__factory.connect(getEnsAddress(ResolverContractType.PublicResolver), this._provider),
-      },
-      {
-        resolver: RoleDefinitionResolver__factory.connect(getEnsAddress(ResolverContractType.RoleDefinitionResolver_v1), this._provider),
-        additionalParser: this.readRoleDefResolver_v1,
-      },
-    ];
-
-    const rolesDefinition = await Promise.all(
-      resolvers.map(async ({ resolver, additionalParser }) => {
-        if (!resolver) return [];
-        const filter = {
-          fromBlock: 0,
-          toBlock: "latest",
-          ...resolver.filters.TextChanged(),
-        };
-        const logs = await resolver.provider.getLogs(filter);
-        const definitions = await Promise.all(
-          logs.map(async (log: providers.Log) => {
-            const parsedLog = resolver.interface.parseLog(log);
-            /** ethers_v5 Interface.parseLog incorrectly parses log, so have to use lowlevel alternative */
-            const decodedLog = resolver.interface.decodeEventLog(parsedLog.name, log.data, log.topics);
-            const textDefinition = await resolver.text(decodedLog.node, "metadata");
-            try {
-              const definition = JSON.parse(textDefinition);
-              if (!DomainReader.isRoleDefinition(definition)) return;
-              return additionalParser && resolver instanceof RoleDefinitionResolver
-                ? await additionalParser(decodedLog.node, definition, resolver)
-                : definition;
-            } catch {
-              return;
-            }
-          })
-        );
-        return definitions.filter((definition): definition is IRoleDefinition => definition !== undefined);
-      })
+  public getAllRolesHistory = async ({domain} : {publicAddress:string, domain:string}): Promise<IRoleDefinition[]> => {
+    // const publicResolver = PublicResolver__factory.connect(publicAddress, this._provider);
+    const domainNotifier = DomainNotifier__factory.connect(domain, this._provider);
+    
+    const [definitionsFromPublicResolver, definitionsFromDomainNotifier] = await Promise.all(
+      [
+        // this.getAllRolesDefinitionFromResolvers({
+        //   resolver: publicResolver,
+        //   ...publicResolver.filters.TextChanged(),
+        // }),
+        this.getAllRolesDefinitionFromResolvers({
+          resolver: domainNotifier,
+          ...domainNotifier.filters.DomainUpdated(),
+        }),
+      ]
     );
 
-    // Flat array
-    return rolesDefinition.reduce((a, b) => [...a, ...b], []);
-  };
+    return [...definitionsFromPublicResolver, ...definitionsFromDomainNotifier];
+  }
+
+  protected async getAllRolesDefinitionFromResolvers({
+    resolver,
+    address,
+    topics,
+  } : {
+    resolver: PublicResolver | DomainNotifier
+    address?: string;
+    topics?: Array<string | Array<string> | null>;
+  }): Promise<IRoleDefinition[]> {
+    const filter = {
+      fromBlock: 0,
+      toBlock: "latest",
+      address,
+      topics,
+    };
+    const logs = await resolver.provider.getLogs(filter);
+    const asyncDefinitions = logs.map(async (log: providers.Log) => {
+      const parsedLog = resolver.interface.parseLog(log);
+      // console.log(parsedLog)
+      /** ethers_v5 Interface.parseLog incorrectly parses log, so have to use lowlevel alternative */
+      const decodedLog = resolver.interface.decodeEventLog(parsedLog.name, log.data, log.topics);
+      try {
+        const namespace = await this.readName(decodedLog.node);
+        if (!namespace) return;
+        return this.read(decodedLog.node);
+      } catch {
+        return;
+      }
+    });
+    const definitions = await Promise.all(asyncDefinitions);
+    console.log(definitions)
+    
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return definitions.filter(definition => Boolean(definition) && DomainReader.isRoleDefinition(definition))
+  }
 
   protected async getResolverInfo(node: string): Promise<{ resolverAddress: string, resolverType: ResolverContractType }> {
     const network = await this._provider.getNetwork();
