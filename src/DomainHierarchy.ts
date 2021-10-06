@@ -8,13 +8,9 @@ import { emptyAddress } from "./constants";
 import { DomainReader } from "./DomainReader";
 import { PublicResolver__factory } from "../ethers/factories/PublicResolver__factory";
 import { DomainNotifier__factory } from "../ethers/factories/DomainNotifier__factory";
-import { RoleDefinitionResolver__factory } from "../ethers/factories/RoleDefinitionResolver__factory";
-import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver";
 import { PublicResolver } from "../ethers/PublicResolver";
 import { DomainNotifier } from "../ethers/DomainNotifier";
 import { Result } from "@ethersproject/abi";
-import { IRoleDefinitionText } from ".";
-import { IIssuerDefinition, IRoleDefinition, PreconditionType } from "./types/DomainDefinitions";
 
 export class DomainHierarchy {
   protected readonly _domainReader: DomainReader;
@@ -22,7 +18,6 @@ export class DomainHierarchy {
   protected readonly _provider: providers.Provider;
   protected readonly _domainNotifier: DomainNotifier;
   protected readonly _publicResolver?: PublicResolver;
-  protected readonly _roleDefinitionResolver?: RoleDefinitionResolver;
 
   constructor({
     domainReader,
@@ -30,14 +25,12 @@ export class DomainHierarchy {
     provider,
     domainNotifierAddress,
     publicResolverAddress,
-    roleDefinitionResolverAddress,
   }: {
     domainReader: DomainReader;
     ensRegistryAddress: string;
     provider: providers.Provider;
     domainNotifierAddress: string;
     publicResolverAddress?: string;
-    roleDefinitionResolverAddress?: string;
   }) {
     if (!domainReader) throw new Error("You need to pass a DomainReader");
     this._domainReader = domainReader;
@@ -50,10 +43,6 @@ export class DomainHierarchy {
 
     if (publicResolverAddress) {
       this._publicResolver = PublicResolver__factory.connect(publicResolverAddress, provider);
-    }
-
-    if (roleDefinitionResolverAddress) {
-      this._roleDefinitionResolver = RoleDefinitionResolver__factory.connect(roleDefinitionResolverAddress, provider);
     }
   }
 
@@ -142,49 +131,6 @@ export class DomainHierarchy {
     return [...singleLevel].filter(Boolean); // Boolean filter to remove empty string
   };
 
-  public getAllRolesHistory = async (): Promise<IRoleDefinition[]> => {
-    const resolvers = [
-      {
-        resolver: this._publicResolver,
-      },
-      {
-        resolver: this._roleDefinitionResolver,
-        additionalParser: this.readRoleDefResolver_v1,
-      },
-    ];
-
-    const rolesDefinition = await Promise.all(
-      resolvers.flatMap(async ({ resolver, additionalParser }) => {
-        if (!resolver) return [];
-        const filter = {
-          fromBlock: 0,
-          toBlock: "latest",
-          ...resolver.filters.TextChanged(),
-        };
-        const logs = await resolver.provider.getLogs(filter);
-        const definitions = await Promise.all(
-          logs.map(async (log: providers.Log) => {
-            const parsedLog = resolver.interface.parseLog(log);
-            /** ethers_v5 Interface.parseLog incorrectly parses log, so have to use lowlevel alternative */
-            const decodedLog = resolver.interface.decodeEventLog(parsedLog.name, log.data, log.topics);
-            const textDefinition = await resolver.text(decodedLog.node, "metadata");
-            try {
-              const definition = JSON.parse(textDefinition);
-              if (!DomainReader.isRoleDefinition(definition)) return;
-              return additionalParser && resolver instanceof RoleDefinitionResolver
-                ? await additionalParser(decodedLog.node, definition, resolver)
-                : definition;
-            } catch {
-              return;
-            }
-          })
-        );
-        return definitions.filter((definition): definition is IRoleDefinition => definition !== undefined);
-      })
-    );
-    return rolesDefinition.flat();
-  };
-
   /**
    * Retrieves list of subdomains from on-chain for a given parent domain
    * based on the ENS Registry contract logs.
@@ -241,42 +187,6 @@ export class DomainHierarchy {
     }
     return [...subDomains].filter(Boolean); // Boolean filter to remove empty string
   };
-
-  protected async readRoleDefResolver_v1(
-    node: string,
-    roleDefinitionText: IRoleDefinitionText,
-    ensResolver: RoleDefinitionResolver
-  ): Promise<IRoleDefinition> {
-    const issuersData = await ensResolver.issuers(node);
-    let issuer: IIssuerDefinition;
-    if (issuersData.dids.length > 0) {
-      issuer = {
-        issuerType: "DID",
-        did: issuersData.dids.map((address) => `did:ethr:${address}`),
-      };
-    } else if (issuersData.role != "") {
-      issuer = {
-        issuerType: "ROLE",
-        roleName: "ISSUEDATAROLE",
-      };
-    } else {
-      issuer = {};
-    }
-
-    const prerequisiteRolesNodes = await ensResolver.prerequisiteRoles(node);
-    const prerequisiteRoles = await Promise.all(prerequisiteRolesNodes[0].map((node) => ensResolver.name(node)));
-    const enrolmentPreconditions =
-      prerequisiteRoles.length >= 1 ? [{ type: PreconditionType.Role, conditions: prerequisiteRoles }] : [];
-
-    const version = (await ensResolver.versionNumber(node)).toNumber();
-
-    return {
-      ...roleDefinitionText,
-      issuer,
-      version,
-      enrolmentPreconditions,
-    };
-  }
 
   private getDomainsFromLogs = async ({
     provider,

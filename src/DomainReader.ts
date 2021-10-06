@@ -73,7 +73,7 @@ export class DomainReader {
    * @param node the ENS node hash of a domain name
    * @returns
    */
-  public async read({ node }: { node: string, withHistory: boolean }): Promise<IRoleDefinition | IAppDefinition | IOrganizationDefinition> {
+  public async read({ node }: { node: string }): Promise<IRoleDefinition | IAppDefinition | IOrganizationDefinition> {
     const { resolverAddress, resolverType } = await this.getResolverInfo(node);
 
     if (resolverType === ResolverContractType.PublicResolver) {
@@ -107,6 +107,58 @@ export class DomainReader {
     }
     throw Error(ERROR_MESSAGES.RESOLVER_NOT_SUPPORTED)
   }
+
+  public getAllRolesHistory = async (): Promise<IRoleDefinition[]> => {
+    const network = await this._provider.getNetwork();
+    const chainId = network.chainId;
+    const resolversForChain = this._knownEnsResolvers[chainId];
+    const getEnsAddress = (resolverContractType: ResolverContractType) => {
+      return Object.keys(resolversForChain).find(key => resolversForChain[key] === resolverContractType) || "";
+    }
+
+    const resolvers = [
+      {
+        resolver: PublicResolver__factory.connect(getEnsAddress(ResolverContractType.PublicResolver), this._provider),
+      },
+      {
+        resolver: RoleDefinitionResolver__factory.connect(getEnsAddress(ResolverContractType.RoleDefinitionResolver_v1), this._provider),
+        additionalParser: this.readRoleDefResolver_v1,
+      },
+    ];
+
+    const rolesDefinition = await Promise.all(
+      resolvers.map(async ({ resolver, additionalParser }) => {
+        if (!resolver) return [];
+        const filter = {
+          fromBlock: 0,
+          toBlock: "latest",
+          ...resolver.filters.TextChanged(),
+        };
+        const logs = await resolver.provider.getLogs(filter);
+        const definitions = await Promise.all(
+          logs.map(async (log: providers.Log) => {
+            const parsedLog = resolver.interface.parseLog(log);
+            /** ethers_v5 Interface.parseLog incorrectly parses log, so have to use lowlevel alternative */
+            const decodedLog = resolver.interface.decodeEventLog(parsedLog.name, log.data, log.topics);
+            const textDefinition = await resolver.text(decodedLog.node, "metadata");
+            try {
+              const definition = JSON.parse(textDefinition);
+              if (!DomainReader.isRoleDefinition(definition)) return;
+              return additionalParser && resolver instanceof RoleDefinitionResolver
+                ? await additionalParser(decodedLog.node, definition, resolver)
+                : definition;
+            } catch {
+              return;
+            }
+          })
+        );
+        return definitions.filter((definition): definition is IRoleDefinition => definition !== undefined);
+      })
+    );
+
+    // Flat array
+    return rolesDefinition.reduce((a, b) => [...a, ...b], []);
+  };
 
   protected async getResolverInfo(node: string): Promise<{ resolverAddress: string, resolverType: ResolverContractType }> {
     const network = await this._provider.getNetwork();
