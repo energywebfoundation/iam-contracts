@@ -93,7 +93,7 @@ export class DomainTransactionFactory {
     const setIssuerTypeTx = this.setIssuerTypeTx({ domain, issuerType: 0 });
 
     const setRevokersTx = this.setRevokersTx({ domain, revokers: data.revoker });
-    // IssuerType hardcoded to zero for now which means approval by some identity (i.e. an identity from a list of DIDs, or an identity with a given role
+    // RevokerType hardcoded to zero for now which means approval by some identity (i.e. an identity from a list of DIDs, or an identity with a given role
     const setRevokerTypeTx = this.setRevokerTypeTx({ domain, revokerType: 0 });
 
     let prerequisiteRolesTx;
@@ -256,7 +256,7 @@ export class DomainTransactionFactory {
           ])
       };
     }
-    throw new Error(`IssuerType of ${revokers.revokerType} is not supported`);
+    throw new Error(`RevokerType of ${revokers.revokerType} is not supported`);
   }
 
   protected setIssuerTypeTx({

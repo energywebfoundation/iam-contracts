@@ -6,8 +6,8 @@ import "@ensdomains/ens-contracts/contracts/resolvers/ResolverBase.sol";
  * Profile for resolving type of revocation expect for a role.
  * The types are mutually exclusive. A role can only have a single type at a time.
  * These possible types are:
- * 00: Approval by some identity (i.e. an identity from a list of DIDs, or an identity with a given role)
- * 10: “Real-time” approval by a smart contract.
+ * 00: Revocations allowed for some identity (i.e. an identity from a list of DIDs, or an identity with a given role)
+ * 10: “Real-time” revocation by a smart contract.
  */
 abstract contract RevokerTypeResolver is ResolverBase {
     bytes4 private constant REVOKER_TYPE_INTERFACE_ID = 0xec7adf27;
