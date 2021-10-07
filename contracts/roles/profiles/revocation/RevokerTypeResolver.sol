@@ -14,7 +14,7 @@ abstract contract RevokerTypeResolver is ResolverBase {
 
     event RevokerTypeChanged(bytes32 indexed node, uint8 newType);
 
-    // uint used instead of enum so that new types can be added with needing to update the resolver
+    // uint used instead of enum so that new types can be added without needing to update the resolver
     mapping(bytes32 => uint8) public revokerTypes;
 
     /**
