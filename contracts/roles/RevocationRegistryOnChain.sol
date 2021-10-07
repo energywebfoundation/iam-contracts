@@ -27,7 +27,7 @@ contract RevocationRegistryOnChain {
     address private ensRegistry;
     address private claimManager;
     
-    event Revoked(bytes32 role, address subject, address revoker);
+    event Revoked(bytes32 indexed role, address indexed subject, address indexed revoker);
 
     constructor(address _didRegistry, address _ensRegistry, address _claimManager){
         didRegistry = _didRegistry;
@@ -68,10 +68,8 @@ contract RevocationRegistryOnChain {
             revert("Revocation Registry: Revoker is not listed in role revokers list");
         } else if (revoker_role != "") {
             ClaimManager cm = ClaimManager(claimManager);
-            bool hasRole = cm.hasRole(revoker, revoker_role, 0);
-            if (hasRole) {
-                bool roleStatus = isRevoked(revoker_role, revoker);
-                if (!roleStatus) {
+            if (cm.hasRole(revoker, revoker_role, 0)) {
+                if (!isRevoked(revoker_role, revoker)) {
                     return;
                 } else {
                     revert("Revocation Registry: Revoker's role has been revoked");
