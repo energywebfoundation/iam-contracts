@@ -1,110 +1,170 @@
-import { utils } from 'ethers'
+import { utils } from "ethers";
 import { DomainReader } from "./DomainReader";
-import { IAppDefinition, IIssuerDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from "./types/DomainDefinitions"
+import {
+  IAppDefinition,
+  IIssuerDefinition,
+  IOrganizationDefinition,
+  IRoleDefinition,
+  IRoleDefinitionText,
+  PreconditionType,
+} from "./types/DomainDefinitions";
 import { DID } from "./types/DID";
 import { EncodedCall } from "./types/Transaction";
 import { VOLTA_RESOLVER_V1_ADDRESS } from "./chainConstants";
-import { abi } from "../build/contracts/RoleDefinitionResolver.json"
+import { abi } from "../build/contracts/RoleDefinitionResolver.json";
 
 const { namehash } = utils;
 
 export class DomainTransactionFactory {
-  protected readonly _roleDefResolverInterface: utils.Interface
-  protected readonly _resolverAddress: string
+  protected readonly _roleDefResolverInterface: utils.Interface;
+  protected readonly _resolverAddress: string;
 
-  constructor({ domainResolverAddress = VOLTA_RESOLVER_V1_ADDRESS }: { domainResolverAddress: string }) {
+  constructor({
+    domainResolverAddress = VOLTA_RESOLVER_V1_ADDRESS,
+  }: {
+    domainResolverAddress: string;
+  }) {
     this._resolverAddress = domainResolverAddress;
-    this._roleDefResolverInterface = new utils.Interface(abi)
+    this._roleDefResolverInterface = new utils.Interface(abi);
   }
 
   /**
-   * Creates transaction to set role definition and reverse name in resolver contract 
+   * Creates transaction to set role definition and reverse name in resolver contract
    */
-  public newRole({ domain, roleDefinition }: { domain: string, roleDefinition: IRoleDefinition }): EncodedCall {
+  public newRole({
+    domain,
+    roleDefinition,
+  }: {
+    domain: string;
+    roleDefinition: IRoleDefinition;
+  }): EncodedCall {
     const setDomainNameTx = this.setDomainNameTx({ domain });
-    const setRoleDefinitionTx = this.setRoleDefinitionTx({ data: roleDefinition, domain });
-    return this.createMultiCallTx({ transactionsToCombine: [setDomainNameTx, setRoleDefinitionTx] });
+    const setRoleDefinitionTx = this.setRoleDefinitionTx({
+      data: roleDefinition,
+      domain,
+    });
+    return this.createMultiCallTx({
+      transactionsToCombine: [setDomainNameTx, setRoleDefinitionTx],
+    });
   }
 
   /**
-   * Creates transaction to update domain definition in resolver contract 
+   * Creates transaction to update domain definition in resolver contract
    */
-  public editDomain({ domain, domainDefinition }: { domain: string, domainDefinition: IRoleDefinition | IAppDefinition | IOrganizationDefinition }): EncodedCall {
+  public editDomain({
+    domain,
+    domainDefinition,
+  }: {
+    domain: string;
+    domainDefinition:
+      | IRoleDefinition
+      | IAppDefinition
+      | IOrganizationDefinition;
+  }): EncodedCall {
     if (DomainReader.isRoleDefinition(domainDefinition)) {
       return this.setRoleDefinitionTx({ data: domainDefinition, domain });
-    }
-    else {
-      const setDomainDefinitionTx = this.setTextTx({ data: domainDefinition, domain });
+    } else {
+      const setDomainDefinitionTx = this.setTextTx({
+        data: domainDefinition,
+        domain,
+      });
       const domainUpdated = this.domainUpdated({ domain });
-      return this.createMultiCallTx({ transactionsToCombine: [setDomainDefinitionTx, domainUpdated] });
+      return this.createMultiCallTx({
+        transactionsToCombine: [setDomainDefinitionTx, domainUpdated],
+      });
     }
   }
 
   /**
-   * Creates transaction to set app/org definition and reverse name in resolver contract 
+   * Creates transaction to set app/org definition and reverse name in resolver contract
    */
-  public newDomain({ domain, domainDefinition }: { domain: string, domainDefinition: IAppDefinition | IOrganizationDefinition }): EncodedCall {
+  public newDomain({
+    domain,
+    domainDefinition,
+  }: {
+    domain: string;
+    domainDefinition: IAppDefinition | IOrganizationDefinition;
+  }): EncodedCall {
     const setDomainNameTx = this.setDomainNameTx({ domain });
-    const setDomainDefinitionTx = this.setTextTx({ data: domainDefinition, domain });
+    const setDomainDefinitionTx = this.setTextTx({
+      data: domainDefinition,
+      domain,
+    });
     const domainUpdated = this.domainUpdated({ domain });
-    return this.createMultiCallTx({ transactionsToCombine: [setDomainNameTx, setDomainDefinitionTx, domainUpdated] });
+    return this.createMultiCallTx({
+      transactionsToCombine: [
+        setDomainNameTx,
+        setDomainDefinitionTx,
+        domainUpdated,
+      ],
+    });
   }
 
   public setDomainNameTx({ domain }: { domain: string }): EncodedCall {
     const namespaceHash = utils.namehash(domain) as string;
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.encodeFunctionData(
-        "setName",
-        [namespaceHash, domain])
+      data: this._roleDefResolverInterface.encodeFunctionData("setName", [
+        namespaceHash,
+        domain,
+      ]),
     };
   }
 
   /**
    * Encodes a call to the ENS Resolver multicall function
-   * @param transactionsToCombine 
+   * @param transactionsToCombine
    * @returns Combined encoded call
    */
   protected createMultiCallTx({
-    transactionsToCombine
+    transactionsToCombine,
   }: {
-    transactionsToCombine: EncodedCall[]
+    transactionsToCombine: EncodedCall[];
   }): EncodedCall {
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.encodeFunctionData(
-        "multicall",
-        [transactionsToCombine.map(t => t.data)]
-      )
+      data: this._roleDefResolverInterface.encodeFunctionData("multicall", [
+        transactionsToCombine.map((t) => t.data),
+      ]),
     };
   }
 
   protected setRoleDefinitionTx({
     domain,
-    data
+    data,
   }: {
     domain: string;
     data: IRoleDefinition;
   }): EncodedCall {
-    const setVersionTx = this.setVersionNumberTx({ domain, versionNumber: data.version });
+    const setVersionTx = this.setVersionNumberTx({
+      domain,
+      versionNumber: data.version,
+    });
 
     const setIssuersTx = this.setIssuersTx({ domain, issuers: data.issuer });
     // IssuerType hardcoded to zero for now which means approval by some identity (i.e. an identity from a list of DIDs, or an identity with a given role
     const setIssuerTypeTx = this.setIssuerTypeTx({ domain, issuerType: 0 });
 
     let prerequisiteRolesTx;
-    const roleConditiions = data?.enrolmentPreconditions?.filter(condition => condition.type === PreconditionType.Role);
+    const roleConditiions = data?.enrolmentPreconditions?.filter(
+      (condition) => condition.type === PreconditionType.Role,
+    );
     if (!roleConditiions || roleConditiions.length < 1) {
-      prerequisiteRolesTx = this.setPrerequisiteRolesTx({ domain, prerequisiteRoles: [] });
-    }
-    else if (roleConditiions.length == 1) {
+      prerequisiteRolesTx = this.setPrerequisiteRolesTx({
+        domain,
+        prerequisiteRoles: [],
+      });
+    } else if (roleConditiions.length == 1) {
       // TODO: check that each condition has a reverse name set
-      prerequisiteRolesTx = this.setPrerequisiteRolesTx({ domain, prerequisiteRoles: roleConditiions[0].conditions });
-    }
-    else if (roleConditiions.length > 1) {
-      throw Error("only one set of enrolment role preconditions should be provided");
-    }
-    else {
+      prerequisiteRolesTx = this.setPrerequisiteRolesTx({
+        domain,
+        prerequisiteRoles: roleConditiions[0].conditions,
+      });
+    } else if (roleConditiions.length > 1) {
+      throw Error(
+        "only one set of enrolment role preconditions should be provided",
+      );
+    } else {
       throw Error("error setting role preconditions");
     }
 
@@ -113,53 +173,54 @@ export class DomainTransactionFactory {
         roleName: roleDef.roleName,
         roleType: roleDef.roleType,
         fields: roleDef.fields,
-        metadata: roleDef.metadata
+        metadata: roleDef.metadata,
       };
     })(data);
     const setTextTx = this.setTextTx({ domain, data: textProps });
 
-    const domainUpdatedTx = this.domainUpdated({ domain })
+    const domainUpdatedTx = this.domainUpdated({ domain });
 
-    return this.createMultiCallTx({ transactionsToCombine: [setVersionTx, setIssuersTx, setIssuerTypeTx, setTextTx, prerequisiteRolesTx, domainUpdatedTx] });
+    return this.createMultiCallTx({
+      transactionsToCombine: [
+        setVersionTx,
+        setIssuersTx,
+        setIssuerTypeTx,
+        setTextTx,
+        prerequisiteRolesTx,
+        domainUpdatedTx,
+      ],
+    });
   }
 
   protected setTextTx({
     domain,
-    data
+    data,
   }: {
     domain: string;
     data: IAppDefinition | IOrganizationDefinition | IRoleDefinitionText;
   }): EncodedCall {
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.encodeFunctionData(
-        "setText",
-        [
-          utils.namehash(domain),
-          "metadata",
-          JSON.stringify(data)
-        ])
+      data: this._roleDefResolverInterface.encodeFunctionData("setText", [
+        utils.namehash(domain),
+        "metadata",
+        JSON.stringify(data),
+      ]),
     };
   }
 
-  protected domainUpdated({
-    domain,
-  }: {
-    domain: string;
-  }): EncodedCall {
+  protected domainUpdated({ domain }: { domain: string }): EncodedCall {
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.encodeFunctionData(
-        "domainUpdated",
-        [
-          utils.namehash(domain),
-        ])
+      data: this._roleDefResolverInterface.encodeFunctionData("domainUpdated", [
+        utils.namehash(domain),
+      ]),
     };
   }
 
   protected setVersionNumberTx({
     domain,
-    versionNumber
+    versionNumber,
   }: {
     domain: string;
     versionNumber: number;
@@ -168,16 +229,14 @@ export class DomainTransactionFactory {
       to: this._resolverAddress,
       data: this._roleDefResolverInterface.encodeFunctionData(
         "setVersionNumber",
-        [
-          utils.namehash(domain),
-          versionNumber
-        ])
+        [utils.namehash(domain), versionNumber],
+      ),
     };
   }
 
   protected setIssuersTx({
     domain,
-    issuers
+    issuers,
   }: {
     domain: string;
     issuers: IIssuerDefinition;
@@ -193,13 +252,10 @@ export class DomainTransactionFactory {
         to: this._resolverAddress,
         data: this._roleDefResolverInterface.encodeFunctionData(
           "setIssuerDids",
-          [
-            utils.namehash(domain),
-            addresses
-          ])
+          [utils.namehash(domain), addresses],
+        ),
       };
-    }
-    else if (issuers.issuerType?.toUpperCase() === "ROLE") {
+    } else if (issuers.issuerType?.toUpperCase() === "ROLE") {
       if (!issuers.roleName) {
         throw Error("IssuerType set to roleName but no roleName provided");
       }
@@ -207,10 +263,8 @@ export class DomainTransactionFactory {
         to: this._resolverAddress,
         data: this._roleDefResolverInterface.encodeFunctionData(
           "setIssuerRole",
-          [
-            utils.namehash(domain),
-            namehash(issuers.roleName)
-          ])
+          [utils.namehash(domain), namehash(issuers.roleName)],
+        ),
       };
     }
     throw new Error(`IssuerType of ${issuers.issuerType} is not supported`);
@@ -218,30 +272,30 @@ export class DomainTransactionFactory {
 
   protected setIssuerTypeTx({
     domain,
-    issuerType
+    issuerType,
   }: {
     domain: string;
     issuerType: number;
   }): EncodedCall {
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.encodeFunctionData(
-        "setIssuerType",
-        [
-          utils.namehash(domain),
-          issuerType
-        ])
+      data: this._roleDefResolverInterface.encodeFunctionData("setIssuerType", [
+        utils.namehash(domain),
+        issuerType,
+      ]),
     };
   }
 
   protected setPrerequisiteRolesTx({
     domain,
-    prerequisiteRoles
+    prerequisiteRoles,
   }: {
     domain: string;
     prerequisiteRoles: string[];
   }): EncodedCall {
-    const prequisiteRoleDomains = prerequisiteRoles.map(role => utils.namehash(role));
+    const prequisiteRoleDomains = prerequisiteRoles.map((role) =>
+      utils.namehash(role),
+    );
     return {
       to: this._resolverAddress,
       data: this._roleDefResolverInterface.encodeFunctionData(
@@ -249,9 +303,9 @@ export class DomainTransactionFactory {
         [
           utils.namehash(domain),
           prequisiteRoleDomains,
-          false // mustHaveAll = false so only need to have one of the set
-        ])
+          false, // mustHaveAll = false so only need to have one of the set
+        ],
+      ),
     };
   }
-
 }
