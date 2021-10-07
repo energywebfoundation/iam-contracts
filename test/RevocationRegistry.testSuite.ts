@@ -288,6 +288,12 @@ function testSuite() {
       expect(result.length).to.equal(2);
       expect(result[0]).equal(authorityAddr)
     });
-  
+    
+    it('Revocation status should be false if role is not revoked', async () => {
+      await requestRole({ claimManager, roleName: authorityRole, agreementSigner: authority, proofSigner: authority });
+      await requestRole({ claimManager, roleName: adminRole, agreementSigner: admin, proofSigner: authority });
+         
+      expect(await revocationRegistry.isRevoked(utils.namehash(adminRole), adminAddr)).false;
+    });
 }
   
