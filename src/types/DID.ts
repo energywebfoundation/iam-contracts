@@ -22,5 +22,4 @@ export class DID {
     this.method = method;
     this.id = id;
   }
-
 }

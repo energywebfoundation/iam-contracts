@@ -16,12 +16,12 @@ export interface IOrganizationDefinition {
 
 export interface IRoleDefinition extends IRoleDefinitionText {
   version: number;
-  issuer: IIssuerDefinition
+  issuer: IIssuerDefinition;
   enrolmentPreconditions: { type: PreconditionType; conditions: string[] }[];
 }
 
 export enum PreconditionType {
-  Role = "role"
+  Role = "role",
 }
 
 export interface IRoleDefinitionText {
