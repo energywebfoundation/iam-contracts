@@ -6,7 +6,7 @@ import "@ensdomains/ens-contracts/contracts/registry/ENSRegistry.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/introspection/ERC165Checker.sol";
 import "@ew-did-registry/proxyidentity/contracts/IOwned.sol";
-import "./RoleDefinitionResolver.sol";
+import "./RoleDefinitionResolverV2.sol";
 import {ClaimManager} from "./ClaimManager.sol";
 
 interface EthereumDIDRegistry {
