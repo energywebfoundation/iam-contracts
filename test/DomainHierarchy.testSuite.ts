@@ -1,20 +1,20 @@
 import { ContractFactory, utils, providers } from 'ethers';
 import { DomainHierarchy } from '../src/DomainHierarchy';
-import { DomainReader, DomainTransactionFactory, EncodedCall, IRoleDefinition, ResolverContractType } from '../src';
+import { DomainReader, DomainTransactionFactoryV2, EncodedCall, IRoleDefinitionV2, ResolverContractType } from '../src';
 import { ENSRegistry } from '../ethers/ENSRegistry';
-import { RoleDefinitionResolver } from '../ethers/RoleDefinitionResolver';
+import { RoleDefinitionResolverV2 } from '../ethers/RoleDefinitionResolverV2';
 import { DomainNotifier } from '../ethers/DomainNotifier';
 import { PublicResolver } from '../ethers/PublicResolver';
 import { hashLabel } from './iam-contracts.test';
 import { expect } from 'chai';
 import { LegacyDomainDefTransactionFactory } from './LegacyDomainDefTransactionFactory';
+import { RoleDefinitionResolverV2__factory} from '../ethers/factories/RoleDefinitionResolverV2__factory';
 
 let ensFactory: ContractFactory;
-let roleDefResolverFactory: ContractFactory;
 let domainNotifierFactory: ContractFactory;
 let publicResolverFactory: ContractFactory;
 let ensRegistry: ENSRegistry;
-let ensRoleDefResolver: RoleDefinitionResolver;
+let ensRoleDefResolverV2: RoleDefinitionResolverV2;
 let domainNotifier: DomainNotifier;
 let ensPublicResolver: PublicResolver;
 let owner: providers.JsonRpcSigner;
@@ -34,8 +34,8 @@ const addSubdomain = async (parentDomain: string, label: string, resolverType: "
   await ensRegistry.setSubnodeOwner(rootNode, hashLabel(label), await owner.getAddress());
   let call: EncodedCall
   if (resolverType === "ROLEDEF") {
-    await ensRegistry.setResolver(subNode, ensRoleDefResolver.address);
-    const domainDefTxFactory = new DomainTransactionFactory({ domainResolverAddress: ensRoleDefResolver.address });
+    await ensRegistry.setResolver(subNode, ensRoleDefResolverV2.address);
+    const domainDefTxFactory = new DomainTransactionFactoryV2({ domainResolverAddress: ensRoleDefResolverV2.address });
     call = domainDefTxFactory.newRole({ domain: subdomain, roleDefinition: role });
   }
   else {
@@ -46,7 +46,7 @@ const addSubdomain = async (parentDomain: string, label: string, resolverType: "
   await (await owner.sendTransaction(call)).wait()
 }
 
-const role: IRoleDefinition = {
+const role: IRoleDefinitionV2 = {
   fields: [],
   issuer: {
     issuerType: "DID",
@@ -67,7 +67,7 @@ export function domainHierarchyTestSuite(): void {
   describe("DomainHierarchy", () => {
     before(async function () {
       ({
-        publicResolverFactory, roleDefResolverFactory, ensFactory, domainNotifierFactory, provider, owner, chainId
+        publicResolverFactory, ensFactory, domainNotifierFactory, provider, owner, chainId
       } = this);
     });
 
@@ -76,15 +76,15 @@ export function domainHierarchyTestSuite(): void {
       await ensRegistry.deployed();
       domainNotifier = await domainNotifierFactory.deploy(ensRegistry.address) as DomainNotifier;
       await domainNotifier.deployed();
-      ensRoleDefResolver = await roleDefResolverFactory.deploy(ensRegistry.address, domainNotifier.address) as RoleDefinitionResolver;
-      await ensRoleDefResolver.deployed();
+      ensRoleDefResolverV2 = await new RoleDefinitionResolverV2__factory(owner).deploy(ensRegistry.address, domainNotifier.address);
+      await ensRoleDefResolverV2.deployed();
       ensPublicResolver = await publicResolverFactory.deploy(ensRegistry.address) as PublicResolver;
-      await ensRoleDefResolver.deployed();
-
+      await ensPublicResolver.deployed();
+      
       domainReader = new DomainReader({ ensRegistryAddress: ensRegistry.address, provider });
-      domainReader.addKnownResolver({ chainId, address: ensRoleDefResolver.address, type: ResolverContractType.RoleDefinitionResolver_v1 });
+      domainReader.addKnownResolver({ chainId, address: ensRoleDefResolverV2.address, type: ResolverContractType.RoleDefinitionResolver_v2 });
       domainReader.addKnownResolver({ chainId, address: ensPublicResolver.address, type: ResolverContractType.PublicResolver });
-
+      
       domainHierarchy = new DomainHierarchy({
         domainReader,
         provider,
@@ -97,10 +97,10 @@ export function domainHierarchyTestSuite(): void {
       const rootNameHash = "0x0000000000000000000000000000000000000000000000000000000000000000";
       await ensRegistry.setSubnodeOwner(rootNameHash, hashLabel(domain), await owner.getAddress());
       expect(await ensRegistry.owner(node)).to.equal(await owner.getAddress());
-      await ensRegistry.setResolver(node, ensRoleDefResolver.address);
-      const domainDefTxFactory = new DomainTransactionFactory({ domainResolverAddress: ensRoleDefResolver.address });
-      const call = domainDefTxFactory.newRole({ domain: domain, roleDefinition: role });
-      await (await owner.sendTransaction(call)).wait()
+      await ensRegistry.setResolver(node, ensRoleDefResolverV2.address);
+      const domainDefTxFactoryV2 = new DomainTransactionFactoryV2({ domainResolverAddress: ensRoleDefResolverV2.address });
+      const callV2 = domainDefTxFactoryV2.newRole({ domain: domain, roleDefinition: role });
+      await (await owner.sendTransaction(callV2)).wait()
     });
 
     describe("getSubdomainsUsingResolver", () => {
