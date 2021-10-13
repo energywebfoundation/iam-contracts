@@ -3,15 +3,15 @@ import { ClaimManager } from "../../ethers/ClaimManager";
 import { ENSRegistry } from "../../ethers/ENSRegistry";
 import { ENSRegistry__factory } from "../../ethers/factories/ENSRegistry__factory";
 import { DomainNotifier__factory } from "../../ethers/factories/DomainNotifier__factory";
-import { RoleDefinitionResolver__factory } from "../../ethers/factories/RoleDefinitionResolver__factory";
+import { RoleDefinitionResolverV2__factory } from "../../ethers/factories/RoleDefinitionResolverV2__factory";
 import { ClaimManager__factory } from "../../ethers/factories/ClaimManager__factory";
 import { StakingPoolFactory__factory } from "../../ethers/factories/StakingPoolFactory__factory";
-import { DomainTransactionFactory } from "../../src";
+import { DomainTransactionFactoryV2 } from "../../src";
 import { abi as erc1056Abi, bytecode as erc1056Bytecode } from "../test_utils/ERC1056.json";
 import { hashLabel } from "../iam-contracts.test";
 import { stakingPoolTests } from "./StakingPool.testSuite";
 import { stakingPoolFactoryTests } from "./stakingPoolFactory.testSuite";
-import { RoleDefinitionResolver } from "../../ethers/RoleDefinitionResolver";
+import { RoleDefinitionResolverV2 } from "../../ethers/RoleDefinitionResolverV2";
 import { StakingPoolFactory } from "../../ethers/StakingPoolFactory";
 import { rewardPoolTests } from "./RewardPool.testSuite";
 
@@ -26,8 +26,8 @@ export const defaultMinStakingPeriod = 1;
 export const defaultWithdrawDelay = 1;
 
 export let claimManager: ClaimManager;
-export let roleFactory: DomainTransactionFactory;
-export let roleResolver: RoleDefinitionResolver;
+export let roleFactory: DomainTransactionFactoryV2;
+export let roleResolver: RoleDefinitionResolverV2;
 export let ensRegistry: ENSRegistry;
 
 export const root = `0x${"0".repeat(64)}`;
@@ -52,9 +52,9 @@ async function setupContracts(): Promise<void> {
   const erc1056 = await (await erc1056Factory.deploy()).deployed();
   ensRegistry = await (await new ENSRegistry__factory(deployer).deploy()).deployed();
   const notifier = await (await new DomainNotifier__factory(deployer).deploy(ensRegistry.address)).deployed();
-  roleResolver = await (await (new RoleDefinitionResolver__factory(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
+  roleResolver = await (await (new RoleDefinitionResolverV2__factory(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
   claimManager = await (await new ClaimManager__factory(deployer).deploy(erc1056.address, ensRegistry.address)).deployed();
-  roleFactory = new DomainTransactionFactory({ domainResolverAddress: roleResolver.address });
+  roleFactory = new DomainTransactionFactoryV2({ domainResolverAddress: roleResolver.address });
 
   await (await ensRegistry.setSubnodeOwner(root, hashLabel(patronRole), deployerAddr)).wait();
   await (await ensRegistry.setResolver(namehash(patronRole), roleResolver.address)).wait();

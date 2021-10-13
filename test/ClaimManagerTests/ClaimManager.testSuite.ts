@@ -6,9 +6,10 @@ import { ClaimManager } from '../../ethers/ClaimManager';
 import { IdentityManager__factory as IdentityManagerFactory } from '../../ethers/factories/IdentityManager__factory';
 import { IdentityManager } from '../../ethers/IdentityManager';
 import { OfferableIdentity__factory as OfferableIdentityFactory } from '../../ethers/factories/OfferableIdentity__factory';
-import { DomainTransactionFactory } from '../../src';
+import { RoleDefinitionResolverV2__factory } from '../../ethers/factories/RoleDefinitionResolverV2__factory';
+import { DomainTransactionFactoryV2 } from '../../src';
 import { ENSRegistry } from '../../ethers/ENSRegistry';
-import { RoleDefinitionResolver } from '../../ethers/RoleDefinitionResolver';
+import { RoleDefinitionResolverV2 } from '../../ethers/RoleDefinitionResolverV2';
 import { PreconditionType } from '../../src/types/DomainDefinitions';
 import { defaultVersion, requestRole } from '../test_utils/role_utils';
 
@@ -22,8 +23,8 @@ const hashLabel = (label: string): string => utils.keccak256(utils.toUtf8Bytes(l
 
 let claimManager: ClaimManager;
 let proxyIdentityManager: IdentityManager;
-let roleFactory: DomainTransactionFactory;
-let roleResolver: RoleDefinitionResolver;
+let roleFactory: DomainTransactionFactoryV2;
+let roleResolver: RoleDefinitionResolverV2;
 let erc1056: Contract;
 let provider: providers.JsonRpcProvider;
 
@@ -86,16 +87,16 @@ function testSuite() {
     const erc1056Factory = new ContractFactory(erc1056Abi, erc1056Bytecode, deployer);
     erc1056 = await (await erc1056Factory.deploy()).deployed();
 
-    const { ensFactory, domainNotifierFactory, roleDefResolverFactory } = this;
+    const { ensFactory, domainNotifierFactory } = this;
     const ensRegistry: ENSRegistry = await (await ensFactory.connect(deployer).deploy()).deployed();
 
     const notifier = await (await domainNotifierFactory.connect(deployer).deploy(ensRegistry.address)).deployed();
-    roleResolver = await (await (roleDefResolverFactory.connect(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
+    roleResolver = await (await (new RoleDefinitionResolverV2__factory(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
 
     claimManager = await (await new ClaimManagerFactory(deployer).deploy(erc1056.address, ensRegistry.address)).deployed();
     const offerableIdentity = await (await new OfferableIdentityFactory(deployer).deploy()).deployed();
     proxyIdentityManager = await (await new IdentityManagerFactory(deployer).deploy(offerableIdentity.address)).deployed();
-    roleFactory = new DomainTransactionFactory({ domainResolverAddress: roleResolver.address });
+    roleFactory = new DomainTransactionFactoryV2({ domainResolverAddress: roleResolver.address });
 
     await (await ensRegistry.setSubnodeOwner(root, hashLabel(authorityRole), deployerAddr)).wait();
     await (await ensRegistry.setSubnodeOwner(root, hashLabel(deviceRole), deployerAddr)).wait();

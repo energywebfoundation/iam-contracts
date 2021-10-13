@@ -5,9 +5,10 @@ import { ClaimManager__factory as ClaimManagerFactory } from '../ethers/factorie
 import { ClaimManager } from '../ethers/ClaimManager';
 import { RevocationRegistryOnChain__factory as RevocationRegistryOnChainFactory } from '../ethers/factories/RevocationRegistryOnChain__factory';
 import { RevocationRegistryOnChain } from '../ethers/RevocationRegistryOnChain';
-import { DomainTransactionFactory } from '../src';
+import { DomainTransactionFactoryV2 } from '../src';
 import { ENSRegistry } from '../ethers/ENSRegistry';
-import { RoleDefinitionResolver } from '../ethers/RoleDefinitionResolver';
+import { RoleDefinitionResolverV2 } from '../ethers/RoleDefinitionResolverV2';
+import { RoleDefinitionResolverV2__factory } from '../ethers/factories/RoleDefinitionResolverV2__factory';
 import { defaultVersion, requestRole , revokeRole, revokeRoles} from './test_utils/role_utils';
 
 const root = `0x${'0'.repeat(64)}`;
@@ -20,8 +21,8 @@ const hashLabel = (label: string): string => utils.keccak256(utils.toUtf8Bytes(l
 
 let claimManager: ClaimManager;
 let ensRegistry : ENSRegistry;
-let roleFactory: DomainTransactionFactory;
-let roleResolver: RoleDefinitionResolver;
+let roleFactory: DomainTransactionFactoryV2;
+let roleResolver: RoleDefinitionResolverV2;
 let erc1056: Contract;
 let provider: providers.JsonRpcProvider;
 let revocationRegistry : RevocationRegistryOnChain
@@ -67,16 +68,15 @@ function testSuite() {
     beforeEach(async function () {
       const erc1056Factory = new ContractFactory(erc1056Abi, erc1056Bytecode, deployer);
       erc1056 = await (await erc1056Factory.deploy()).deployed();
-  
       const { ensFactory, domainNotifierFactory, roleDefResolverFactory } = this;
       ensRegistry = await (await ensFactory.connect(deployer).deploy()).deployed();
   
       const notifier = await (await domainNotifierFactory.connect(deployer).deploy(ensRegistry.address)).deployed();
-      roleResolver = await (await (roleDefResolverFactory.connect(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
+      roleResolver = await (await (new RoleDefinitionResolverV2__factory(deployer).deploy(ensRegistry.address, notifier.address))).deployed();
   
       claimManager = await (await new ClaimManagerFactory(deployer).deploy(erc1056.address, ensRegistry.address)).deployed();
-      roleFactory = new DomainTransactionFactory({ domainResolverAddress: roleResolver.address });
-     
+      roleFactory = new DomainTransactionFactoryV2({ domainResolverAddress: roleResolver.address });
+
       revocationRegistry = await (await new RevocationRegistryOnChainFactory(authority).deploy(erc1056.address, ensRegistry.address, claimManager.address)).deployed();
   
       await (await ensRegistry.setSubnodeOwner(root, hashLabel(authorityRole), deployerAddr)).wait();
@@ -88,7 +88,7 @@ function testSuite() {
       await (await ensRegistry.setResolver(utils.namehash(deviceRole), roleResolver.address)).wait();
       await (await ensRegistry.setResolver(utils.namehash(installerRole), roleResolver.address)).wait();
       await (await ensRegistry.setResolver(utils.namehash(adminRole), roleResolver.address)).wait();
-  
+      
       await (await deployer.sendTransaction({
         ...roleFactory.newRole({
           domain: authorityRole,
