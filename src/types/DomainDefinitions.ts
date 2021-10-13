@@ -17,6 +17,12 @@ export interface IOrganizationDefinition {
 export interface IRoleDefinition extends IRoleDefinitionText {
   version: number;
   issuer: IIssuerDefinition
+  enrolmentPreconditions: { type: PreconditionType; conditions: string[] }[];
+}
+
+export interface IRoleDefinitionV2 extends IRoleDefinitionText {
+  version: number;
+  issuer: IIssuerDefinition
   revoker: IRevokerDefinition
   enrolmentPreconditions: { type: PreconditionType; conditions: string[] }[];
 }
