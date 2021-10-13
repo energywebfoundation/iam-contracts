@@ -1,8 +1,9 @@
 import { utils } from "ethers";
 import { DomainReader } from "./DomainReader"
 import { DomainTransactionFactory } from "./DomainTransactionFactory"
+import { DomainTransactionFactoryV2 } from "./DomainTransactionFactoryV2"
 import { DomainHierarchy } from "./DomainHierarchy"
-import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType } from "./types/DomainDefinitions"
+import { IAppDefinition, IOrganizationDefinition, IRoleDefinition, IRoleDefinitionV2, IRoleDefinitionText, PreconditionType } from "./types/DomainDefinitions"
 import { ResolverContractType } from "./types/ResolverContractType";
 import { EncodedCall } from "./types/Transaction"
 
@@ -12,7 +13,8 @@ Logger.setLogLevel(Logger.levels.ERROR);
 
 export { DomainReader }
 export { DomainTransactionFactory }
-export { IOrganizationDefinition, IAppDefinition, IRoleDefinition, IRoleDefinitionText, PreconditionType }
+export { DomainTransactionFactoryV2 }
+export { IOrganizationDefinition, IAppDefinition, IRoleDefinition, IRoleDefinitionV2, IRoleDefinitionText, PreconditionType }
 export { EncodedCall }
 export * from "./chainConstants";
 export { PRINCIPAL_THRESHOLD, WITHDRAW_DELAY } from "./constants";
