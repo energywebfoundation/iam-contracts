@@ -39,10 +39,6 @@ const role: IRoleDefinition = {
     issuerType: "DID",
     did: [`did:ethr:0x7aA65E31d404A8857BA083f6195757a730b51CFe`]
   },
-  revoker: {
-    revokerType: "DID",
-    did: [`did:ethr:0x7aA65E31d404A8857BA083f6195757a730b51CFe`]
-  },
   metadata: [{
     "myProperty": 42
   }],
@@ -212,4 +208,5 @@ export function domainCrudTestSuite(): void {
       await expect(domainReader.read({ node: unregisteredRole })).to.eventually.rejectedWith(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED);
     });
   });
+  
 }
