@@ -2,6 +2,7 @@ import { ContractFactory, utils, providers } from "ethers";
 import { DomainHierarchy } from "../src/DomainHierarchy";
 import {
   DomainReader,
+  DomainTransactionFactoryV2,
   EncodedCall,
   IRoleDefinitionV2,
   ResolverContractType,
