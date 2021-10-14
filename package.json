@@ -1,6 +1,6 @@
 {
   "name": "@energyweb/iam-contracts",
-  "version": "3.0.1",
+  "version": "3.2.0",
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org"
@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "prebuild": "rimraf dist ethers && patch-package",
-    "build": "npm run compile:contracts && npm run build:typechain && npm run compile:ts && copyfiles build/contracts/**/*.json -u 1 dist && copyfiles \"ethers/**/*.d.ts\" dist",
+    "build": "npm run compile:contracts && npm run build:typechain && npm run compile:ts && copyfiles build/contracts/**/*.json -u 1 dist && copyfiles \"ethers/**/*.d.ts\" dist && copyfiles \"contracts/**/*\" -u 1 dist/contracts",
     "compile:ts": "bili",
     "test": "run-with-testrpc -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000 \"npm run test-ganache\" ",
     "ganache": "ganache-cli -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000",
@@ -56,7 +56,7 @@
   "dependencies": {
     "@ensdomains/buffer": "0.0.13",
     "@ensdomains/ens-contracts": "0.0.4",
-    "@openzeppelin/contracts": "4.0.0",
+    "@openzeppelin/contracts": "4.3.2",
     "ethers": "5.4.4"
   },
   "devDependencies": {
@@ -80,6 +80,8 @@
     "copyfiles": "^2.4.1",
     "eslint": "^7.24.0",
     "ganache-cli": "^6.12.2",
+    "husky": "^4.3.8",
+    "lint-staged": "^11.1.1",
     "mocha": "7.1.0",
     "patch-package": "^6.4.7",
     "rimraf": "^3.0.2",
@@ -94,11 +96,41 @@
   "release": {
     "branches": "master",
     "plugins": [
-      "@semantic-release/commit-analyzer",
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "angular",
+          "releaseRules": [
+            {
+              "type": "docs",
+              "release": "patch"
+            },
+            {
+              "type": "refactor",
+              "release": "minor"
+            },
+            {
+              "scope": "build",
+              "release": "patch"
+            }
+          ]
+        }
+      ],
       "@semantic-release/release-notes-generator",
       "@semantic-release/changelog",
       "@semantic-release/npm",
       "@semantic-release/git"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,js}": [
+      "prettier --write",
+      "eslint --fix"
     ]
   }
 }

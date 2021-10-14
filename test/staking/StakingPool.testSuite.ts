@@ -36,7 +36,7 @@ export function stakingPoolTests(): void {
         minStakingPeriod,
         patronRewardPortion,
         patronRoles.map((r) => namehash(r)),
-        { value: principal }
+        { value: principal },
       )
     ).wait();
     const stakingPoolAddr = (await stakingPoolFactory.services(namehash(org)))
@@ -57,7 +57,7 @@ export function stakingPoolTests(): void {
     await setupStakingPool();
 
     return expect(stakingPool.putStake({ value: amount })).rejectedWith(
-      "StakingPool: patron is not registered with patron role"
+      "StakingPool: patron is not registered with patron role",
     );
   });
 
@@ -66,7 +66,7 @@ export function stakingPoolTests(): void {
 
     const stakePut = waitFor(
       stakingPool.filters.StakePut(await patron.getAddress(), amount, null),
-      stakingPool
+      stakingPool,
     );
 
     stakingPool.connect(patron).putStake({ value: amount });
@@ -86,7 +86,7 @@ export function stakingPoolTests(): void {
 
     const stakePut = waitFor(
       stakingPool.filters.StakePut(await patron.getAddress(), amount, null),
-      stakingPool
+      stakingPool,
     );
 
     stakingPool.connect(patron).putStake({ value: amount });
@@ -120,7 +120,7 @@ export function stakingPoolTests(): void {
     await stakingPool.connect(patron).putStake({ value: amount });
 
     return expect(
-      stakingPool.connect(patron).putStake({ value: amount })
+      stakingPool.connect(patron).putStake({ value: amount }),
     ).rejectedWith("StakingPool: Replenishment of the stake is not allowed");
   });
 
@@ -136,7 +136,7 @@ export function stakingPoolTests(): void {
     await stakingPool.connect(patron).putStake({ value: amount });
 
     return expect(stakingPool.connect(patron).requestWithdraw()).rejectedWith(
-      "StakingPool: Minimum staking period is not expired yet"
+      "StakingPool: Minimum staking period is not expired yet",
     );
   });
 
@@ -157,9 +157,9 @@ export function stakingPoolTests(): void {
     const withdrawnRequested = waitFor(
       stakingPool.filters.StakeWithdrawalRequested(
         await patron.getAddress(),
-        null
+        null,
       ),
-      stakingPool
+      stakingPool,
     );
     stakingPool.connect(patron).requestWithdraw();
 
@@ -183,7 +183,7 @@ export function stakingPoolTests(): void {
     await stakingPool.connect(patron).requestWithdraw();
 
     return expect(stakingPool.connect(patron).requestWithdraw()).rejectedWith(
-      "StakingPool: No stake to withdraw"
+      "StakingPool: No stake to withdraw",
     );
   });
 
@@ -203,7 +203,7 @@ export function stakingPoolTests(): void {
     await stakingPool.connect(patron).requestWithdraw();
 
     return expect(stakingPool.connect(patron).withdraw()).rejectedWith(
-      "StakingPool: Withdrawal delay hasn't expired yet"
+      "StakingPool: Withdrawal delay hasn't expired yet",
     );
   });
 
@@ -227,7 +227,7 @@ export function stakingPoolTests(): void {
 
     const withdrawn = waitFor(
       stakingPool.filters.StakeWithdrawn(await patron.getAddress(), null),
-      stakingPool
+      stakingPool,
     );
     stakingPool.connect(patron).withdraw();
 
@@ -280,7 +280,7 @@ export function stakingPoolTests(): void {
     await stakingPool.connect(patron).withdraw();
 
     return expect(stakingPool.connect(patron).withdraw()).rejectedWith(
-      "StakingPool: Stake hasn't requested to withdraw"
+      "StakingPool: Stake hasn't requested to withdraw",
     );
   });
 }
