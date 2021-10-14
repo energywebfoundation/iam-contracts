@@ -38,7 +38,8 @@
     "build:typechain:rewardpool": "typechain --target ethers-v5 --out-dir ethers './build/contracts/RewardPool.json'",
     "build:typechain:revocationregistryonchain": "typechain --target ethers-v5 --out-dir ethers './build/contracts/RevocationRegistryOnChain.json'",
     "deploy:stakingpoolfactory": "node -r ts-node/register ./scripts/deploy_staking_pool_factory",
-    "deploy:revocationregistryfactory": "node -r ts-node/register ./scripts/deploy_revocationRegistry"
+    "deploy:revocationregistryfactory": "node -r ts-node/register ./scripts/deploy_revocationRegistry",
+    "deploy:roleDefResolver": "node -r ts-node/register ./scripts/deploy_roleDefResolver"
   },
   "homepage": "https://github.com/energywebfoundation/iam-contracts/#readme",
   "repository": {
