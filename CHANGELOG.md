@@ -1,3 +1,10 @@
+# [3.3.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.2.0...v3.3.0) (2021-10-18)
+
+
+### Features
+
+* add revocationref typechain to build ([c86317c](https://github.com/energywebfoundation/iam-contracts/commit/c86317c63a8f1cdc88227e29596bf5f795bba648))
+
 # [3.2.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.1.0...v3.2.0) (2021-10-04)
 
 
