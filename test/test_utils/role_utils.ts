@@ -1,5 +1,6 @@
 import { Signer, utils } from "ethers";
 import { ClaimManager } from "../../ethers/ClaimManager";
+import { RevocationRegistryOnChain as RevocationRegistry } from "../../ethers/RevocationRegistryOnChain";
 
 const { solidityKeccak256, defaultAbiCoder, arrayify } = utils;
 
@@ -101,3 +102,50 @@ export async function requestRole({
     canonizeSig(proof)
   )).wait(); // testing on Volta needs at least 2 confirmation
 }
+
+export async function revokeRole({
+  revocationRegistry,
+  revoker,
+  subject,
+  subjectRole
+  } : {
+    revocationRegistry : RevocationRegistry,
+    revoker : Signer,
+    subject : Signer,
+    subjectRole : string
+  }) : Promise<void> {
+
+    const revokerAddr = await revoker.getAddress();
+    const subjectAddr = await subject.getAddress();
+
+    await (await revocationRegistry.revokeClaim(
+      utils.namehash(subjectRole),
+      subjectAddr,
+      revokerAddr
+    )).wait(); 
+  }
+
+  export async function revokeRoles({
+    revocationRegistry,
+    revoker,
+    subjects,
+    subjectRole
+    } : {
+      revocationRegistry : RevocationRegistry,
+      revoker : Signer,
+      subjects : Signer[],
+      subjectRole : string
+    }) : Promise<void> {
+      let revocationSubjects = [''];
+      const revokerAddr = await revoker.getAddress();
+      for(let i in subjects) {
+        const subjectAddr = await subjects[i].getAddress();
+        revocationSubjects[i] = subjectAddr;
+      }
+      
+      await (await revocationRegistry.revokeClaimsInList(
+        utils.namehash(subjectRole),
+        revocationSubjects,
+        revokerAddr
+      )).wait(); 
+    }

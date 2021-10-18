@@ -8,7 +8,8 @@ import {
   BigNumber,
 } from "ethers";
 import { ENSRegistry } from "../ethers/ENSRegistry";
-import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver";
+import { RoleDefinitionResolverV2 } from "../ethers/RoleDefinitionResolverV2";
+import { RoleDefinitionResolverV2__factory } from "../ethers/factories/RoleDefinitionResolverV2__factory";
 import { DomainNotifier } from "../ethers/DomainNotifier";
 
 chai.use(chaiAsPromised);
@@ -49,10 +50,9 @@ const roleNode = utils.namehash(`${roleDomain}`);
 const solidityDefaultString = "0x".padEnd(64 + "0x".length, "0");
 
 let ensFactory: ContractFactory;
-let roleDefResolverFactory: ContractFactory;
 let domainNotifierFactory: ContractFactory;
 let ens: ENSRegistry;
-let roleDefinitionResolver: RoleDefinitionResolver;
+let roleDefinitionResolver: RoleDefinitionResolverV2;
 let domainNotifier: DomainNotifier;
 let owner: providers.JsonRpcSigner;
 let ownerAddr: string;
@@ -71,13 +71,7 @@ interface IEvent {
 
 export function roleDefinitionResolverTestSuite(): void {
   before(async function () {
-    ({
-      roleDefResolverFactory,
-      ensFactory,
-      domainNotifierFactory,
-      owner,
-      anotherAccount,
-    } = this);
+    ({ ensFactory, domainNotifierFactory, owner, anotherAccount } = this);
     ownerAddr = await owner.getAddress();
   });
 
@@ -89,10 +83,9 @@ export function roleDefinitionResolverTestSuite(): void {
       ens.address,
     )) as DomainNotifier;
     await domainNotifier.deployed();
-    roleDefinitionResolver = (await roleDefResolverFactory.deploy(
-      ens.address,
-      domainNotifier.address,
-    )) as RoleDefinitionResolver;
+    roleDefinitionResolver = await new RoleDefinitionResolverV2__factory(
+      owner,
+    ).deploy(ens.address, domainNotifier.address);
     await roleDefinitionResolver.deployed();
 
     // Set owner of "role" node hierarchy
@@ -113,10 +106,11 @@ export function roleDefinitionResolverTestSuite(): void {
     it("org owner can take over ownership", async () => {
       const roleOwner = anotherAccount;
       const roleOwnerAddr = await roleOwner.getAddress();
-      const anotherRoleDefResolver = (await roleDefResolverFactory.deploy(
-        ens.address,
-        domainNotifier.address,
-      )) as RoleDefinitionResolver;
+      const anotherRoleDefResolver =
+        await new RoleDefinitionResolverV2__factory(owner).deploy(
+          ens.address,
+          domainNotifier.address,
+        );
       await anotherRoleDefResolver.deployed();
 
       // Give ownership of org and role node to another account

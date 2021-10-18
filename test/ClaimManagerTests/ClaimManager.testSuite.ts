@@ -16,9 +16,10 @@ import { ClaimManager } from "../../ethers/ClaimManager";
 import { IdentityManager__factory as IdentityManagerFactory } from "../../ethers/factories/IdentityManager__factory";
 import { IdentityManager } from "../../ethers/IdentityManager";
 import { OfferableIdentity__factory as OfferableIdentityFactory } from "../../ethers/factories/OfferableIdentity__factory";
-import { DomainTransactionFactory } from "../../src";
+import { RoleDefinitionResolverV2__factory } from "../../ethers/factories/RoleDefinitionResolverV2__factory";
+import { DomainTransactionFactoryV2 } from "../../src";
 import { ENSRegistry } from "../../ethers/ENSRegistry";
-import { RoleDefinitionResolver } from "../../ethers/RoleDefinitionResolver";
+import { RoleDefinitionResolverV2 } from "../../ethers/RoleDefinitionResolverV2";
 import { PreconditionType } from "../../src/types/DomainDefinitions";
 import { defaultVersion, requestRole } from "../test_utils/role_utils";
 
@@ -33,8 +34,8 @@ const hashLabel = (label: string): string =>
 
 let claimManager: ClaimManager;
 let proxyIdentityManager: IdentityManager;
-let roleFactory: DomainTransactionFactory;
-let roleResolver: RoleDefinitionResolver;
+let roleFactory: DomainTransactionFactoryV2;
+let roleResolver: RoleDefinitionResolverV2;
 let erc1056: Contract;
 let provider: providers.JsonRpcProvider;
 
@@ -107,7 +108,7 @@ function testSuite() {
     );
     erc1056 = await (await erc1056Factory.deploy()).deployed();
 
-    const { ensFactory, domainNotifierFactory, roleDefResolverFactory } = this;
+    const { ensFactory, domainNotifierFactory } = this;
     const ensRegistry: ENSRegistry = await (
       await ensFactory.connect(deployer).deploy()
     ).deployed();
@@ -116,9 +117,10 @@ function testSuite() {
       await domainNotifierFactory.connect(deployer).deploy(ensRegistry.address)
     ).deployed();
     roleResolver = await (
-      await roleDefResolverFactory
-        .connect(deployer)
-        .deploy(ensRegistry.address, notifier.address)
+      await new RoleDefinitionResolverV2__factory(deployer).deploy(
+        ensRegistry.address,
+        notifier.address,
+      )
     ).deployed();
 
     claimManager = await (
@@ -135,7 +137,7 @@ function testSuite() {
         offerableIdentity.address,
       )
     ).deployed();
-    roleFactory = new DomainTransactionFactory({
+    roleFactory = new DomainTransactionFactoryV2({
       domainResolverAddress: roleResolver.address,
     });
 
@@ -205,6 +207,10 @@ function testSuite() {
               issuerType: "DID",
               did: [`did:ethr:${await authority.getAddress()}`],
             },
+            revoker: {
+              revokerType: "DID",
+              did: [`did:ethr:${await authority.getAddress()}`],
+            },
             metadata: [],
             roleType: "",
             version: defaultVersion,
@@ -222,6 +228,7 @@ function testSuite() {
             enrolmentPreconditions: [],
             fields: [],
             issuer: { issuerType: "ROLE", roleName: installerRole },
+            revoker: { revokerType: "ROLE", roleName: installerRole },
             metadata: [],
             roleType: "",
             version: defaultVersion,
@@ -241,6 +248,7 @@ function testSuite() {
             ],
             fields: [],
             issuer: { issuerType: "ROLE", roleName: installerRole },
+            revoker: { revokerType: "ROLE", roleName: installerRole },
             metadata: [],
             roleType: "",
             version: defaultVersion,
@@ -258,6 +266,7 @@ function testSuite() {
             enrolmentPreconditions: [],
             fields: [],
             issuer: { issuerType: "ROLE", roleName: authorityRole },
+            revoker: { revokerType: "ROLE", roleName: authorityRole },
             metadata: [],
             roleType: "",
             version: defaultVersion,

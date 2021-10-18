@@ -1,11 +1,13 @@
 import { utils } from "ethers";
 import { DomainReader } from "./DomainReader";
 import { DomainTransactionFactory } from "./DomainTransactionFactory";
+import { DomainTransactionFactoryV2 } from "./DomainTransactionFactoryV2";
 import { DomainHierarchy } from "./DomainHierarchy";
 import {
   IAppDefinition,
   IOrganizationDefinition,
   IRoleDefinition,
+  IRoleDefinitionV2,
   IRoleDefinitionText,
   PreconditionType,
 } from "./types/DomainDefinitions";
@@ -18,10 +20,12 @@ Logger.setLogLevel(Logger.levels.ERROR);
 
 export { DomainReader };
 export { DomainTransactionFactory };
+export { DomainTransactionFactoryV2 };
 export {
   IOrganizationDefinition,
   IAppDefinition,
   IRoleDefinition,
+  IRoleDefinitionV2,
   IRoleDefinitionText,
   PreconditionType,
 };

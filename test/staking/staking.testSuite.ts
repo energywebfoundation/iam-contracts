@@ -11,10 +11,10 @@ import { ClaimManager } from "../../ethers/ClaimManager";
 import { ENSRegistry } from "../../ethers/ENSRegistry";
 import { ENSRegistry__factory } from "../../ethers/factories/ENSRegistry__factory";
 import { DomainNotifier__factory } from "../../ethers/factories/DomainNotifier__factory";
-import { RoleDefinitionResolver__factory } from "../../ethers/factories/RoleDefinitionResolver__factory";
+import { RoleDefinitionResolverV2__factory } from "../../ethers/factories/RoleDefinitionResolverV2__factory";
 import { ClaimManager__factory } from "../../ethers/factories/ClaimManager__factory";
 import { StakingPoolFactory__factory } from "../../ethers/factories/StakingPoolFactory__factory";
-import { DomainTransactionFactory } from "../../src";
+import { DomainTransactionFactoryV2 } from "../../src";
 import {
   abi as erc1056Abi,
   bytecode as erc1056Bytecode,
@@ -22,7 +22,7 @@ import {
 import { hashLabel } from "../iam-contracts.test";
 import { stakingPoolTests } from "./StakingPool.testSuite";
 import { stakingPoolFactoryTests } from "./stakingPoolFactory.testSuite";
-import { RoleDefinitionResolver } from "../../ethers/RoleDefinitionResolver";
+import { RoleDefinitionResolverV2 } from "../../ethers/RoleDefinitionResolverV2";
 import { StakingPoolFactory } from "../../ethers/StakingPoolFactory";
 import { rewardPoolTests } from "./RewardPool.testSuite";
 
@@ -37,8 +37,8 @@ export const defaultMinStakingPeriod = 1;
 export const defaultWithdrawDelay = 1;
 
 export let claimManager: ClaimManager;
-export let roleFactory: DomainTransactionFactory;
-export let roleResolver: RoleDefinitionResolver;
+export let roleFactory: DomainTransactionFactoryV2;
+export let roleResolver: RoleDefinitionResolverV2;
 export let ensRegistry: ENSRegistry;
 
 export const root = `0x${"0".repeat(64)}`;
@@ -78,7 +78,7 @@ async function setupContracts(): Promise<void> {
     await new DomainNotifier__factory(deployer).deploy(ensRegistry.address)
   ).deployed();
   roleResolver = await (
-    await new RoleDefinitionResolver__factory(deployer).deploy(
+    await new RoleDefinitionResolverV2__factory(deployer).deploy(
       ensRegistry.address,
       notifier.address,
     )
@@ -89,7 +89,7 @@ async function setupContracts(): Promise<void> {
       ensRegistry.address,
     )
   ).deployed();
-  roleFactory = new DomainTransactionFactory({
+  roleFactory = new DomainTransactionFactoryV2({
     domainResolverAddress: roleResolver.address,
   });
 
@@ -112,6 +112,10 @@ async function setupContracts(): Promise<void> {
             issuerType: "DID",
             did: [`did:ethr:${await ewc.getAddress()}`],
           },
+          revoker: {
+            revokerType: "DID",
+            did: [`did:ethr:${await ewc.getAddress()}`],
+          },
           metadata: [],
           roleType: "",
           version: 1,
@@ -120,7 +124,6 @@ async function setupContracts(): Promise<void> {
     })
   ).wait();
 }
-
 const { namehash, parseEther } = utils;
 
 export let stakingPoolFactory: StakingPoolFactory;
