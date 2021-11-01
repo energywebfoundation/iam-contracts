@@ -290,8 +290,9 @@ export class DomainReader {
 
     const prerequisiteRolesNodes = await ensResolver.prerequisiteRoles(node);
     const prerequisiteRoles = await Promise.all(
-      prerequisiteRolesNodes[0].map((node) => ensResolver.name(node)),
+      prerequisiteRolesNodes[0].map((node) => this.readName(node)),
     );
+
     const enrolmentPreconditions =
       prerequisiteRoles.length >= 1
         ? [{ type: PreconditionType.Role, conditions: prerequisiteRoles }]
