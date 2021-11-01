@@ -1,3 +1,10 @@
+## [3.3.1](https://github.com/energywebfoundation/iam-contracts/compare/v3.3.0...v3.3.1) (2021-11-01)
+
+
+### Bug Fixes
+
+* **core:** roles preconditions can be from different resolver than role itself ([c1e9a18](https://github.com/energywebfoundation/iam-contracts/commit/c1e9a18a87f041608d3af8fb51e0d7994178bbc0))
+
 # [3.3.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.2.0...v3.3.0) (2021-10-18)
 
 
