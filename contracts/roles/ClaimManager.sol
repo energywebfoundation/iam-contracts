@@ -1,10 +1,13 @@
 pragma solidity 0.8.6;
 
 import "@ensdomains/ens-contracts/contracts/registry/ENSRegistry.sol";
-import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
-import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
-import "@openzeppelin/contracts/utils/introspection/ERC165Checker.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/cryptography/draft-EIP712Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/introspection/ERC165CheckerUpgradeable.sol";
 import "@ew-did-registry/proxyidentity/contracts/IOwned.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import "./RoleDefinitionResolver.sol";
 
 interface EthereumDIDRegistry {
@@ -12,7 +15,7 @@ interface EthereumDIDRegistry {
   function validDelegate(address identity, bytes32 delegateType, address delegate) external view returns(bool);
 }
 
-contract ClaimManager is EIP712 {
+contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP712Upgradeable {
   /**
   * @dev `veriKey` delegation type from EthereumDIDRegistry
    */
@@ -53,16 +56,18 @@ contract ClaimManager is EIP712 {
   address private didRegistry;
   address private ensRegistry;
   
-  constructor(address _didRegistry, address _ensRegistry) EIP712(ERC712_DOMAIN_NAME, ERC712_DOMAIN_VERSION) public {
+  function initialize(address _didRegistry, address _ensRegistry) public initializer{
     didRegistry = _didRegistry;
     ensRegistry = _ensRegistry;
+    __Ownable_init();
+    __EIP712_init(ERC712_DOMAIN_NAME, ERC712_DOMAIN_VERSION);
   }
   
   function isAuthorized(address identity, address approved) internal returns (bool) {
     EthereumDIDRegistry registry = EthereumDIDRegistry(didRegistry);
     if (
       registry.identityOwner(identity) == approved || 
-      (ERC165Checker.supportsInterface(identity, type(IOwned).interfaceId) && approved == IOwned(identity).owner()) ||
+      (ERC165CheckerUpgradeable.supportsInterface(identity, type(IOwned).interfaceId) && approved == IOwned(identity).owner()) ||
       registry.validDelegate(identity, ASSERTION_DELEGATE_TYPE, approved)
       ) {
         return true;
@@ -95,7 +100,7 @@ contract ClaimManager is EIP712 {
     require(VersionNumberResolver(ENSRegistry(ensRegistry).resolver(role)).versionNumber(role) >= version, 
     "ClaimManager: Such version of this role doesn't exist");
     
-    bytes32 agreementHash = ECDSA.toEthSignedMessageHash(
+    bytes32 agreementHash = ECDSAUpgradeable.toEthSignedMessageHash(
       _hashTypedDataV4(keccak256(abi.encode(
       AGREEMENT_TYPEHASH,
       subject,
@@ -103,7 +108,7 @@ contract ClaimManager is EIP712 {
       version
     ))));
     
-    bytes32 proofHash = ECDSA.toEthSignedMessageHash(
+    bytes32 proofHash = ECDSAUpgradeable.toEthSignedMessageHash(
       _hashTypedDataV4(keccak256(abi.encode(
       PROOF_TYPEHASH,
       subject,
@@ -112,8 +117,8 @@ contract ClaimManager is EIP712 {
       expiry,
       issuer
     ))));
-    agreementSigner = ECDSA.recover(agreementHash, subject_agreement);
-    proofSigner = ECDSA.recover(proofHash, role_proof);
+    agreementSigner = ECDSAUpgradeable.recover(agreementHash, subject_agreement);
+    proofSigner = ECDSAUpgradeable.recover(proofHash, role_proof);
     }
         
     require(
@@ -173,4 +178,8 @@ contract ClaimManager is EIP712 {
       revert("ClaimManager: Role issuers are not specified");
     }
   }
+
+  function _authorizeUpgrade(address) internal override onlyOwner {
+        // Allow only owner to authorize a smart contract upgrade
+    }
 }

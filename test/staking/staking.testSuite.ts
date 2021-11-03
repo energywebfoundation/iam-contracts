@@ -84,11 +84,9 @@ async function setupContracts(): Promise<void> {
     )
   ).deployed();
   claimManager = await (
-    await new ClaimManager__factory(deployer).deploy(
-      erc1056.address,
-      ensRegistry.address,
-    )
+    await new ClaimManager__factory(deployer).deploy()
   ).deployed();
+  claimManager.initialize(erc1056.address, ensRegistry.address);
   roleFactory = new DomainTransactionFactoryV2({
     domainResolverAddress: roleResolver.address,
   });

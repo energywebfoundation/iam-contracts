@@ -58,10 +58,12 @@
     "@ensdomains/buffer": "0.0.13",
     "@ensdomains/ens-contracts": "0.0.4",
     "@openzeppelin/contracts": "4.3.2",
+    "@openzeppelin/contracts-upgradeable": "4.3.2",
     "ethers": "5.4.7"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.4.0",
+    "@openzeppelin/truffle-upgrades" : "1.10.0",
     "@ew-did-registry/proxyidentity": "0.5.2-alpha.1076.0",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/commit-analyzer": "^8.0.1",
@@ -74,6 +76,8 @@
     "@types/mocha": "^8.2.2",
     "@typescript-eslint/eslint-plugin": "^4.22.0",
     "@typescript-eslint/parser": "^4.22.0",
+    "@truffle/deployer": "3.2.49",
+    "@truffle/contract": "4.3.38",
     "bili": "^5.0.5",
     "chai": "4.2.0",
     "chai-arrays": "2.2.0",
