@@ -20,6 +20,7 @@
     "ganache": "ganache-cli -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000",
     "test-ganache": "mocha -r ts-node/register test/*test.ts",
     "compile:contracts": "truffle compile",
+    "test:truffle": "rm -rf build/contracts && ts-node test/truffle/upgradedContract.ts && truffle test test/truffle/claimManager.upgrade.test.ts && rm -rf contracts/ClaimManagerUpgradeTest.sol",
     "build:typechain": "npm run build:typechain:did && npm run build:typechain:roles && npm run build:typechain:staking && npm run build:typechain:onchainroles",
     "build:typechain:did": "npm run build:typechain:identityManager && npm run build:typechain:offerableIdentity",
     "build:typechain:roles": "npm run build:typechain:ensregistry && npm run build:typechain:domainnotifier && npm run build:typechain:resolver && npm run build:typechain:resolverV2 && npm run build:typechain:publicresolver",
@@ -93,9 +94,9 @@
     "rollup-plugin-typescript2": "^0.30.0",
     "run-with-testrpc": "0.3.1",
     "semantic-release": "^17.4.2",
-    "truffle": "^5.4.3",
-    "ts-node": "^9.1.1",
-    "typechain": "^5.0.0",
+    "truffle": "5.4.18",
+    "ts-node": "9.1.1",
+    "typechain": "5.2.0",
     "typescript": "^4.2.3"
   },
   "release": {
