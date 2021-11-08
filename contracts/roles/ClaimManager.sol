@@ -179,6 +179,10 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
     }
   }
 
+  function version() external pure returns (string memory) {
+      return "v0.1";
+  }
+
   function _authorizeUpgrade(address) internal override onlyOwner {
         // Allow only owner to authorize a smart contract upgrade
     }
