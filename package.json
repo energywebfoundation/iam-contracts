@@ -20,7 +20,7 @@
     "ganache": "ganache-cli -m \"candy maple cake sugar pudding cream honey rich smooth crumble sweet treat\" --port 8544 --accounts 20 --networkId=9 --gasLimit=10000000",
     "test-ganache": "mocha -r ts-node/register test/*test.ts",
     "compile:contracts": "truffle compile",
-    "test:truffle": "rm -rf build/contracts && ts-node test/truffle/upgradedContract.ts && truffle test test/truffle/claimManager.upgrade.test.ts && rm -rf contracts/ClaimManagerUpgradeTest.sol",
+    "test:truffle": "rm -rf build/contracts && ts-node test/truffle/upgradedContract.ts && truffle test test/truffle/claimManager.upgrade.test.ts && rm -rf contracts/roles/ClaimManagerUpgradeTest.sol",
     "build:typechain": "npm run build:typechain:did && npm run build:typechain:roles && npm run build:typechain:staking && npm run build:typechain:onchainroles",
     "build:typechain:did": "npm run build:typechain:identityManager && npm run build:typechain:offerableIdentity",
     "build:typechain:roles": "npm run build:typechain:ensregistry && npm run build:typechain:domainnotifier && npm run build:typechain:resolver && npm run build:typechain:resolverV2 && npm run build:typechain:publicresolver",
