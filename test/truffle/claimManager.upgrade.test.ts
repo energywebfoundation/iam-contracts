@@ -6,7 +6,8 @@ const ClaimManagerUpgradeTest = artifacts.require('ClaimManagerUpgradeTest');
 
 contract('ClaimManager Upgrade Test', async () => {
     it('should upgrade contract', async () => {
-        const claimManager = await deployProxy(ClaimManager, ["0x84d0c7284A869213CB047595d34d6044d9a7E14A", "0xd7CeF70Ba7efc2035256d828d5287e2D285CD1ac"]);
+        //using random addresses for testing
+        const claimManager = await deployProxy(ClaimManager, ["0x5B38Da6a701c568545dCfcB03FcB875f56beddC4", "0x4B0897b0513fdC7C541B6d9D7E929C4e5364D2dB"]);
         const firstVersion = await claimManager.version();
 
         assert.equal(firstVersion, 'v0.1');
