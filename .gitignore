@@ -76,3 +76,6 @@ dist
 ethers
 build/contracts
 bin/contracts
+
+# Openzepplin outputs
+.openzeppelin
