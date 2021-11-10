@@ -8,7 +8,7 @@ import "@ew-did-registry/proxyidentity/contracts/IOwned.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
-import "./RoleDefinitionResolver.sol";
+import "./RoleDefinitionResolverV2.sol";
 
 interface EthereumDIDRegistry {
   function identityOwner(address identity) external view returns(address);
