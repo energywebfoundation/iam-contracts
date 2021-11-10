@@ -26,3 +26,6 @@ jobs:
 
       - name: Run test
         run: npm test
+      
+      - name: Run contract upgrade test
+        run: npm run test:truffle

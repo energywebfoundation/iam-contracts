@@ -124,11 +124,9 @@ function testSuite() {
     ).deployed();
 
     claimManager = await (
-      await new ClaimManagerFactory(deployer).deploy(
-        erc1056.address,
-        ensRegistry.address,
-      )
+      await new ClaimManagerFactory(deployer).deploy()
     ).deployed();
+    claimManager.initialize(erc1056.address, ensRegistry.address);
     const offerableIdentity = await (
       await new OfferableIdentityFactory(deployer).deploy()
     ).deployed();
