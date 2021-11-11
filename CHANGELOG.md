@@ -1,3 +1,10 @@
+# [3.4.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.3.1...v3.4.0) (2021-11-11)
+
+
+### Features
+
+* **ClaimManager:** import V2 of RoleDefResolver ([#65](https://github.com/energywebfoundation/iam-contracts/issues/65)) ([f48fa48](https://github.com/energywebfoundation/iam-contracts/commit/f48fa48ac0f6de61062a5cc5bdf0573072745e34))
+
 ## [3.3.1](https://github.com/energywebfoundation/iam-contracts/compare/v3.3.0...v3.3.1) (2021-11-01)
 
 
