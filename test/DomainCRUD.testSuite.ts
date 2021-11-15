@@ -37,6 +37,16 @@ const role: IRoleDefinition = {
       maxDate: new Date(),
     },
   ],
+  issuerFields: [
+    {
+      fieldType: "issuerFieldType",
+      label: "issuerFieldLabel",
+      required: true,
+      minLength: 7,
+      minDate: new Date(),
+      maxDate: new Date(),
+    },
+  ],
   issuer: {
     issuerType: "DID",
     did: [`did:ethr:0x7aA65E31d404A8857BA083f6195757a730b51CFe`],
