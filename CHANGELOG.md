@@ -1,3 +1,10 @@
+# [3.5.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.4.0...v3.5.0) (2021-11-16)
+
+
+### Features
+
+* **role:** issuerFields in role definition ([b2564e0](https://github.com/energywebfoundation/iam-contracts/commit/b2564e002d1e212116a0e88e9bba0a61da7ec582))
+
 # [3.4.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.3.1...v3.4.0) (2021-11-11)
 
 
