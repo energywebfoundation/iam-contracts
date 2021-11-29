@@ -7,7 +7,7 @@ const { solidityKeccak256, defaultAbiCoder, arrayify } = utils;
 export const defaultVersion = 1;
 const expiry = Math.floor(new Date().getTime() / 1000) + 60 * 60;
 // set it manually because ganache returns chainId same as network utils.id
-const chainId = 1;
+const chainId = 73799;
 
 function canonizeSig(sig: string) {
   let suffix = sig.substr(130);

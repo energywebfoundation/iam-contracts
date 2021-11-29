@@ -203,11 +203,11 @@ function testSuite() {
             fields: [],
             issuer: {
               issuerType: "DID",
-              did: [`did:ethr:${await authority.getAddress()}`],
+              did: [`did:ethr:volta:${await authority.getAddress()}`],
             },
             revoker: {
               revokerType: "DID",
-              did: [`did:ethr:${await authority.getAddress()}`],
+              did: [`did:ethr:volta:${await authority.getAddress()}`],
             },
             metadata: [],
             roleType: "",
