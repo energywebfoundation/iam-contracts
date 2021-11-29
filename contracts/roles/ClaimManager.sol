@@ -32,6 +32,7 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
     address subject;
     bytes32 role;
     uint256 version;
+    uint issuernonce;
   }
   
   struct Proof {
@@ -43,7 +44,7 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
   }
   
   bytes32 constant AGREEMENT_TYPEHASH = keccak256(
-    "Agreement(address subject,bytes32 role,uint256 version)"
+    "Agreement(address subject,bytes32 role,uint256 version,uint issuernonce)"
   );
 
   bytes32 constant public PROOF_TYPEHASH = keccak256(
@@ -53,6 +54,7 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
   event RoleRegistered(address subject, bytes32 role, uint256 version, uint256 expiry, address issuer);
   
   mapping(bytes32 => mapping(address => Record)) private roles;
+  mapping(address => uint) public nonce;
   address private didRegistry;
   address private ensRegistry;
   
@@ -105,9 +107,10 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
       AGREEMENT_TYPEHASH,
       subject,
       role,
-      version
+      version,
+      nonce[issuer]
     ))));
-    
+
     bytes32 proofHash = ECDSAUpgradeable.toEthSignedMessageHash(
       _hashTypedDataV4(keccak256(abi.encode(
       PROOF_TYPEHASH,
@@ -133,6 +136,7 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
     verifyPreconditions(subject, role);
     
     verifyIssuer(issuer, role);
+    nonce[issuer]++;
     
     Record storage r = roles[role][subject];
     r.expiry = expiry;
@@ -185,5 +189,5 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
 
   function _authorizeUpgrade(address) internal override onlyOwner {
         // Allow only owner to authorize a smart contract upgrade
-    }
+  }
 }
