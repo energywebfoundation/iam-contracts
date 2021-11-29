@@ -203,7 +203,7 @@ function testSuite() {
             fields: [],
             issuer: {
               issuerType: "DID",
-              did: [`did:ethr:${await authority.getAddress()}`],
+              did: [`did:ethr:73799:${await authority.getAddress()}`],
             },
             revoker: {
               revokerType: "DID",

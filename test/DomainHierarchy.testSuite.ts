@@ -73,7 +73,7 @@ const role: IRoleDefinitionV2 = {
   fields: [],
   issuer: {
     issuerType: "DID",
-    did: [`did:ethr:0x7aA65E31d404A8857BA083f6195757a730b51CFe`],
+    did: [`did:ethr:73799:0x7aA65E31d404A8857BA083f6195757a730b51CFe`],
   },
   revoker: {
     revokerType: "DID",

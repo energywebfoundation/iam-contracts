@@ -203,7 +203,12 @@ export class DomainReader {
         return textProps;
       }
       if (DomainReader.isRoleDefinition(textProps)) {
-        return await this.readRoleDefResolver_v1(node, textProps, ensResolver);
+        return await this.readRoleDefResolver_v1(
+          node,
+          textProps,
+          ensResolver,
+          resolverAddress,
+        );
       }
       throw Error(ERROR_MESSAGES.DOMAIN_TYPE_UNKNOWN);
     } else if (
@@ -236,7 +241,12 @@ export class DomainReader {
         return textProps;
       }
       if (DomainReader.isRoleDefinition(textProps)) {
-        return await this.readRoleDefResolver_v2(node, textProps, ensResolver);
+        return await this.readRoleDefResolver_v2(
+          node,
+          textProps,
+          ensResolver,
+          resolverAddress,
+        );
       }
       throw Error(ERROR_MESSAGES.DOMAIN_TYPE_UNKNOWN);
     }
@@ -266,18 +276,35 @@ export class DomainReader {
     return { resolverAddress, resolverType };
   }
 
+  protected getChainIdFromResolverAddress(
+    resolverAddress: string,
+  ): string | undefined {
+    return Object.keys(this._knownEnsResolvers).find((cid: string) => {
+      const hasResolverAddr = Object.keys(this._knownEnsResolvers[+cid]).some(
+        (addr) => addr === resolverAddress,
+      );
+      return hasResolverAddr;
+    });
+  }
+
   // TODO: Muliticalify (make all the queries in one)
   protected async readRoleDefResolver_v1(
     node: string,
     roleDefinitionText: IRoleDefinitionText,
     ensResolver: RoleDefinitionResolver,
+    resolverAddress: string,
   ): Promise<IRoleDefinition> {
     const issuersData = await ensResolver.issuers(node);
     let issuer: IIssuerDefinition;
+
+    const chainId = this.getChainIdFromResolverAddress(resolverAddress);
+
     if (issuersData.dids.length > 0) {
       issuer = {
         issuerType: "DID",
-        did: issuersData.dids.map((address) => `did:ethr:${address}`),
+        did: issuersData.dids.map((address) =>
+          chainId ? `did:ethr:${chainId}:${address}` : `did:ethr:${address}`,
+        ),
       };
     } else if (issuersData.role != "") {
       issuer = {
@@ -313,7 +340,9 @@ export class DomainReader {
     node: string,
     roleDefinitionText: IRoleDefinitionText,
     ensResolver: RoleDefinitionResolverV2,
+    resolverAddress: string,
   ): Promise<IRoleDefinitionV2> {
+    const chainId = this.getChainIdFromResolverAddress(resolverAddress);
     const issuersData = await ensResolver.issuers(node);
     const revokersData = await ensResolver.revokers(node);
     let issuer: IIssuerDefinition;
@@ -321,7 +350,9 @@ export class DomainReader {
     if (issuersData.dids.length > 0) {
       issuer = {
         issuerType: "DID",
-        did: issuersData.dids.map((address) => `did:ethr:${address}`),
+        did: issuersData.dids.map((address) =>
+          chainId ? `did:ethr:${chainId}:${address}` : `did:ethr:${address}`,
+        ),
       };
     } else if (issuersData.role != "") {
       issuer = {
@@ -334,7 +365,9 @@ export class DomainReader {
     if (revokersData.dids.length > 0) {
       revoker = {
         revokerType: "DID",
-        did: revokersData.dids.map((address) => `did:ethr:${address}`),
+        did: revokersData.dids.map((address) =>
+          chainId ? `did:ethr:${chainId}:${address}` : `did:ethr:${address}`,
+        ),
       };
     } else if (revokersData.role != "") {
       revoker = {
