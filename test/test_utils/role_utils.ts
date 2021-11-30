@@ -1,4 +1,4 @@
-import { Signer, utils, providers } from "ethers";
+import { Signer, utils } from "ethers";
 import { ClaimManager } from "../../ethers/ClaimManager";
 import { RevocationRegistryOnChain as RevocationRegistry } from "../../ethers/RevocationRegistryOnChain";
 
@@ -8,7 +8,6 @@ export const defaultVersion = 1;
 const expiry = Math.floor(new Date().getTime() / 1000) + 60 * 60;
 // set it manually because ganache returns chainId same as network utils.id
 const chainId = 1;
-const provider = new providers.JsonRpcProvider("http://localhost:8544");
 
 function canonizeSig(sig: string) {
   let suffix = sig.substr(130);
@@ -52,7 +51,7 @@ export async function requestRole({
     "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)",
   );
   const agreement_type_hash = utils.id(
-    "Agreement(address subject,bytes32 role,uint256 version,uint issuernonce)",
+    "Agreement(address subject,bytes32 role,uint256 version)",
   );
   const proof_type_hash = utils.id(
     "Proof(address subject,bytes32 role,uint256 version,uint256 expiry,address issuer)",
@@ -72,7 +71,7 @@ export async function requestRole({
   );
 
   const messageId = Buffer.from("1901", "hex");
-  const issuernonce = await provider.getTransactionCount(issuerAddr);
+
   const agreementHash = solidityKeccak256(
     ["bytes", "bytes32", "bytes32"],
     [
@@ -80,14 +79,8 @@ export async function requestRole({
       domainSeparator,
       utils.keccak256(
         defaultAbiCoder.encode(
-          ["bytes32", "address", "bytes32", "uint256", "uint"],
-          [
-            agreement_type_hash,
-            subjectAddr,
-            utils.namehash(roleName),
-            version,
-            issuernonce,
-          ],
+          ["bytes32", "address", "bytes32", "uint256"],
+          [agreement_type_hash, subjectAddr, utils.namehash(roleName), version],
         ),
       ),
     ],

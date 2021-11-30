@@ -32,7 +32,6 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
     address subject;
     bytes32 role;
     uint256 version;
-    uint issuernonce;
   }
   
   struct Proof {
@@ -44,7 +43,7 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
   }
   
   bytes32 constant AGREEMENT_TYPEHASH = keccak256(
-    "Agreement(address subject,bytes32 role,uint256 version,uint issuernonce)"
+    "Agreement(address subject,bytes32 role,uint256 version)"
   );
 
   bytes32 constant public PROOF_TYPEHASH = keccak256(
@@ -54,7 +53,7 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
   event RoleRegistered(address subject, bytes32 role, uint256 version, uint256 expiry, address issuer);
   
   mapping(bytes32 => mapping(address => Record)) private roles;
-  mapping(address => uint) public nonce;
+  mapping(bytes32 => bool) public proofHashes;
   address private didRegistry;
   address private ensRegistry;
   
@@ -107,8 +106,7 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
       AGREEMENT_TYPEHASH,
       subject,
       role,
-      version,
-      nonce[issuer]
+      version
     ))));
 
     bytes32 proofHash = ECDSAUpgradeable.toEthSignedMessageHash(
@@ -120,8 +118,12 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
       expiry,
       issuer
     ))));
+
+    require(proofHashes[proofHash] == false, "ClaimManager: The role has been issued already");
+
     agreementSigner = ECDSAUpgradeable.recover(agreementHash, subject_agreement);
     proofSigner = ECDSAUpgradeable.recover(proofHash, role_proof);
+    proofHashes[proofHash] = true;
     }
         
     require(
@@ -136,12 +138,11 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
     verifyPreconditions(subject, role);
     
     verifyIssuer(issuer, role);
-    nonce[issuer]++;
     
     Record storage r = roles[role][subject];
     r.expiry = expiry;
     r.version = version;
-    
+
     emit RoleRegistered(subject, role, version, expiry, issuer);
   }
   
