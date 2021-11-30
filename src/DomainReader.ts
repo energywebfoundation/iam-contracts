@@ -25,6 +25,7 @@ import { RoleDefinitionResolverV2__factory } from "../ethers/factories/RoleDefin
 import { ResolverContractType } from "./types/ResolverContractType";
 import { ERROR_MESSAGES } from "./types/ErrorMessages";
 import { ENSRegistry } from "../ethers/ENSRegistry";
+import { EWC_CHAIN_ID } from ".";
 
 export class DomainReader {
   public static isOrgDefinition = (
@@ -64,6 +65,15 @@ export class DomainReader {
       [VOLTA_RESOLVER_V2_ADDRESS]:
         ResolverContractType.RoleDefinitionResolver_v2,
     },
+  };
+
+  /**
+   * Allows to map between chainId to network name that is used in ethr DID
+   *
+   */
+  private readonly _knownDidEthrNetworkNames: Record<number, string> = {
+    [VOLTA_CHAIN_ID]: "volta",
+    [EWC_CHAIN_ID]: "ewc",
   };
 
   constructor({
@@ -203,12 +213,7 @@ export class DomainReader {
         return textProps;
       }
       if (DomainReader.isRoleDefinition(textProps)) {
-        return await this.readRoleDefResolver_v1(
-          node,
-          textProps,
-          ensResolver,
-          resolverAddress,
-        );
+        return await this.readRoleDefResolver_v1(node, textProps, ensResolver);
       }
       throw Error(ERROR_MESSAGES.DOMAIN_TYPE_UNKNOWN);
     } else if (
@@ -241,12 +246,7 @@ export class DomainReader {
         return textProps;
       }
       if (DomainReader.isRoleDefinition(textProps)) {
-        return await this.readRoleDefResolver_v2(
-          node,
-          textProps,
-          ensResolver,
-          resolverAddress,
-        );
+        return await this.readRoleDefResolver_v2(node, textProps, ensResolver);
       }
       throw Error(ERROR_MESSAGES.DOMAIN_TYPE_UNKNOWN);
     }
@@ -276,15 +276,26 @@ export class DomainReader {
     return { resolverAddress, resolverType };
   }
 
-  protected getChainIdFromResolverAddress(
-    resolverAddress: string,
-  ): string | undefined {
-    return Object.keys(this._knownEnsResolvers).find((cid: string) => {
-      const hasResolverAddr = Object.keys(this._knownEnsResolvers[+cid]).some(
-        (addr) => addr === resolverAddress,
-      );
-      return hasResolverAddr;
-    });
+  /**
+   * Because a given resolver represents the contract from which the role definition data is read,
+   * and because ethr DIDs are currently stored as addresses in the resolver contracts (so that they can be read by other smart contracts),
+   * the network of the provider configured for the resolver is the network that should be used for the ethr DIDs
+   * see {@link https://github.com/decentralized-identity/ethr-did-resolver#multi-network-configuration}
+   * @param ensResolver ensResolver that is to be used to obtain the DIDs
+   * @returns The network name that should be used for DID stored by this resolver
+   */
+  protected async getNetworkNameFromResolver(
+    ensResolver: RoleDefinitionResolver | RoleDefinitionResolverV2,
+  ): Promise<string> {
+    const { chainId } = await ensResolver.provider.getNetwork();
+    if (!chainId) {
+      throw new Error("Unable to read chainId from ensResolver provider");
+    }
+    const networkName = this._knownDidEthrNetworkNames[chainId];
+    if (!networkName) {
+      throw new Error(`No did:ethr networkName known for ${chainId}`);
+    }
+    return networkName;
   }
 
   // TODO: Muliticalify (make all the queries in one)
@@ -292,18 +303,16 @@ export class DomainReader {
     node: string,
     roleDefinitionText: IRoleDefinitionText,
     ensResolver: RoleDefinitionResolver,
-    resolverAddress: string,
   ): Promise<IRoleDefinition> {
     const issuersData = await ensResolver.issuers(node);
     let issuer: IIssuerDefinition;
 
-    const chainId = this.getChainIdFromResolverAddress(resolverAddress);
-
     if (issuersData.dids.length > 0) {
+      const networkName = this.getNetworkNameFromResolver(ensResolver);
       issuer = {
         issuerType: "DID",
-        did: issuersData.dids.map((address) =>
-          chainId ? `did:ethr:${chainId}:${address}` : `did:ethr:${address}`,
+        did: issuersData.dids.map(
+          (address) => `did:ethr:${networkName}:${address}`,
         ),
       };
     } else if (issuersData.role != "") {
@@ -340,18 +349,17 @@ export class DomainReader {
     node: string,
     roleDefinitionText: IRoleDefinitionText,
     ensResolver: RoleDefinitionResolverV2,
-    resolverAddress: string,
   ): Promise<IRoleDefinitionV2> {
-    const chainId = this.getChainIdFromResolverAddress(resolverAddress);
     const issuersData = await ensResolver.issuers(node);
     const revokersData = await ensResolver.revokers(node);
     let issuer: IIssuerDefinition;
     let revoker: IRevokerDefinition;
     if (issuersData.dids.length > 0) {
+      const networkName = this.getNetworkNameFromResolver(ensResolver);
       issuer = {
         issuerType: "DID",
-        did: issuersData.dids.map((address) =>
-          chainId ? `did:ethr:${chainId}:${address}` : `did:ethr:${address}`,
+        did: issuersData.dids.map(
+          (address) => `did:ethr:${networkName}:${address}`,
         ),
       };
     } else if (issuersData.role != "") {
@@ -363,10 +371,11 @@ export class DomainReader {
       issuer = {};
     }
     if (revokersData.dids.length > 0) {
+      const networkName = this.getNetworkNameFromResolver(ensResolver);
       revoker = {
         revokerType: "DID",
-        did: revokersData.dids.map((address) =>
-          chainId ? `did:ethr:${chainId}:${address}` : `did:ethr:${address}`,
+        did: revokersData.dids.map(
+          (address) => `did:ethr:${networkName}:${address}`,
         ),
       };
     } else if (revokersData.role != "") {
