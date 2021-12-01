@@ -12,14 +12,34 @@ export class DID {
 
   readonly id: string;
 
+  readonly chain?: string;
+
   constructor(did: string) {
     const idParts = did.split(":");
     if (idParts.length < 3) {
       throw new Error("DID should consists of at least 3 components");
     }
+
+    let didMethod: string;
+    let didChain: string | undefined;
+    let didId: string;
+
+    // Back compatibility with old format
+    if (idParts.length === 3) {
+      didMethod = idParts[1];
+      didChain = undefined;
+      didId = idParts[2];
+    } else if (idParts.length === 4) {
+      didMethod = idParts[1];
+      didChain = idParts[2];
+      didId = idParts[3];
+    } else {
+      throw new Error("Unsupported DID format");
+    }
+
     this.did = did;
-    const [, method, id] = idParts;
-    this.method = method;
-    this.id = id;
+    this.method = didMethod;
+    this.id = didId;
+    this.chain = didChain;
   }
 }

@@ -108,11 +108,11 @@ async function setupContracts(): Promise<void> {
           fields: [],
           issuer: {
             issuerType: "DID",
-            did: [`did:ethr:${await ewc.getAddress()}`],
+            did: [`did:ethr:volta:${await ewc.getAddress()}`],
           },
           revoker: {
             revokerType: "DID",
-            did: [`did:ethr:${await ewc.getAddress()}`],
+            did: [`did:ethr:volta:${await ewc.getAddress()}`],
           },
           metadata: [],
           roleType: "",

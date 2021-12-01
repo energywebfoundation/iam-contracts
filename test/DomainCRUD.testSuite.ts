@@ -49,7 +49,7 @@ const role: IRoleDefinition = {
   ],
   issuer: {
     issuerType: "DID",
-    did: [`did:ethr:0x7aA65E31d404A8857BA083f6195757a730b51CFe`],
+    did: [`did:ethr:volta:0x7aA65E31d404A8857BA083f6195757a730b51CFe`],
   },
   metadata: [
     {
@@ -164,7 +164,6 @@ export function domainCrudTestSuite(): void {
 
         const reverseName = await ensRoleDefResolver.name(node);
         expect(reverseName).to.equal(domain);
-
         role.version = role.version + 1;
         const updateRole = domainDefTxFactory.editDomain({
           domain: domain,
