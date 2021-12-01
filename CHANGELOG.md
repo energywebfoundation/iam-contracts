@@ -1,3 +1,10 @@
+# [3.6.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.5.0...v3.6.0) (2021-12-01)
+
+
+### Features
+
+* **DomainReader:** add networkName to DID resolution ([1b8ed5c](https://github.com/energywebfoundation/iam-contracts/commit/1b8ed5cfcfbcd43e353d26233ee02dd453cb5d87))
+
 # [3.5.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.4.0...v3.5.0) (2021-11-16)
 
 
