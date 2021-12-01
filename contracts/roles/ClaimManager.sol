@@ -119,7 +119,7 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
       issuer
     ))));
 
-    require(proofHashes[proofHash] == false, "ClaimManager: The role has been issued already");
+    require(proofHashes[proofHash] == false, "ClaimManager: The proof has been submitted already");
 
     agreementSigner = ECDSAUpgradeable.recover(agreementHash, subject_agreement);
     proofSigner = ECDSAUpgradeable.recover(proofHash, role_proof);

@@ -337,7 +337,7 @@ function testSuite() {
         agreementSigner: authority,
         proofSigner: authority,
       }),
-    ).rejectedWith("ClaimManager: The role has been issued already");
+    ).rejectedWith("ClaimManager: The proof has been submitted already");
   });
 
   it("Role proof signed by not authorized issuer should be rejected", async () => {
