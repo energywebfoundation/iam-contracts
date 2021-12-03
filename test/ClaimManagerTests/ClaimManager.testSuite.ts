@@ -314,6 +314,32 @@ function testSuite() {
     ).true;
   });
 
+  it("Role cannot be issued again", async () => {
+    await requestRole({
+      claimManager,
+      roleName: authorityRole,
+      agreementSigner: authority,
+      proofSigner: authority,
+    });
+
+    expect(
+      await claimManager.hasRole(
+        authorityAddr,
+        utils.namehash(authorityRole),
+        defaultVersion,
+      ),
+    ).true;
+
+    expect(
+      requestRole({
+        claimManager,
+        roleName: authorityRole,
+        agreementSigner: authority,
+        proofSigner: authority,
+      }),
+    ).rejectedWith("ClaimManager: The proof has been submitted already");
+  });
+
   it("Role proof signed by not authorized issuer should be rejected", async () => {
     expect(
       requestRole({

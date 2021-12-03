@@ -53,6 +53,7 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
   event RoleRegistered(address subject, bytes32 role, uint256 version, uint256 expiry, address issuer);
   
   mapping(bytes32 => mapping(address => Record)) private roles;
+  mapping(bytes32 => bool) public proofHashes;
   address private didRegistry;
   address private ensRegistry;
   
@@ -107,7 +108,7 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
       role,
       version
     ))));
-    
+
     bytes32 proofHash = ECDSAUpgradeable.toEthSignedMessageHash(
       _hashTypedDataV4(keccak256(abi.encode(
       PROOF_TYPEHASH,
@@ -117,8 +118,12 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
       expiry,
       issuer
     ))));
+
+    require(proofHashes[proofHash] == false, "ClaimManager: The proof has been submitted already");
+
     agreementSigner = ECDSAUpgradeable.recover(agreementHash, subject_agreement);
     proofSigner = ECDSAUpgradeable.recover(proofHash, role_proof);
+    proofHashes[proofHash] = true;
     }
         
     require(
@@ -137,7 +142,7 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
     Record storage r = roles[role][subject];
     r.expiry = expiry;
     r.version = version;
-    
+
     emit RoleRegistered(subject, role, version, expiry, issuer);
   }
   
@@ -185,5 +190,5 @@ contract ClaimManager is Initializable, UUPSUpgradeable, OwnableUpgradeable, EIP
 
   function _authorizeUpgrade(address) internal override onlyOwner {
         // Allow only owner to authorize a smart contract upgrade
-    }
+  }
 }
