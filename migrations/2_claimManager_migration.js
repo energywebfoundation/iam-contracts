@@ -5,5 +5,5 @@ const VOLTA_ENS_REGISTRY = "0xd7CeF70Ba7efc2035256d828d5287e2D285CD1ac";
 const ClaimManager = artifacts.require('ClaimManager');
 
 module.exports = async (deployer) => {
-    await deployProxy(ClaimManager, [VOLTA_ERC1056, VOLTA_ENS_REGISTRY], { deployer });
+    await deployProxy(ClaimManager, [VOLTA_ERC1056, VOLTA_ENS_REGISTRY], { deployer, kind : 'uups' });
 };
