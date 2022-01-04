@@ -26,6 +26,7 @@ import { RoleDefinitionResolverV2__factory } from "../ethers/factories/RoleDefin
 import { ResolverContractType } from "./types/ResolverContractType";
 import { ERROR_MESSAGES } from "./types/ErrorMessages";
 import { ENSRegistry } from "../ethers/ENSRegistry";
+import { Provider } from "@ethersproject/providers";
 
 export class DomainReader {
   public static isOrgDefinition = (
@@ -52,7 +53,7 @@ export class DomainReader {
   ): domainDefinition is IRoleDefinition =>
     (domainDefinition as IRoleDefinition).roleName !== undefined;
 
-  private readonly _provider: providers.Provider;
+  private readonly _provider: Provider;
   private readonly _ensRegistry: ENSRegistry;
   private readonly _knownEnsResolvers: Record<
     number,
@@ -81,7 +82,7 @@ export class DomainReader {
     provider,
   }: {
     ensRegistryAddress: string;
-    provider: providers.Provider;
+    provider: Provider;
   }) {
     this._provider = provider;
     this._ensRegistry = ENSRegistry__factory.connect(

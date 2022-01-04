@@ -41,7 +41,8 @@
     "build:typechain:revocationregistryonchain": "typechain --target ethers-v5 --out-dir ethers './build/contracts/RevocationRegistryOnChain.json'",
     "deploy:stakingpoolfactory": "node -r ts-node/register ./scripts/deploy_staking_pool_factory",
     "deploy:revocationregistryfactory": "node -r ts-node/register ./scripts/deploy_revocationRegistry",
-    "deploy:roleDefResolver": "node -r ts-node/register ./scripts/deploy_roleDefResolver"
+    "deploy:roleDefResolver": "node -r ts-node/register ./scripts/deploy_roleDefResolver",
+    "preinstall": "npx npm-force-resolutions"
   },
   "homepage": "https://github.com/energywebfoundation/iam-contracts/#readme",
   "repository": {
@@ -80,7 +81,7 @@
     "@typescript-eslint/parser": "^4.22.0",
     "@truffle/deployer": "3.2.49",
     "@truffle/contract": "4.3.38",
-    "@truffle/hdwallet-provider": "1.7.0",
+    "@truffle/hdwallet-provider": "2.0.0",
     "bili": "^5.0.5",
     "chai": "4.2.0",
     "chai-arrays": "2.2.0",
@@ -99,7 +100,8 @@
     "truffle": "5.4.18",
     "ts-node": "9.1.1",
     "typechain": "5.2.0",
-    "typescript": "^4.2.3"
+    "typescript": "^4.2.3",
+    "npm-force-resolutions": "0.0.10"
   },
   "release": {
     "branches": "master",
@@ -140,5 +142,22 @@
       "prettier --write",
       "eslint --fix"
     ]
+  },
+  "resolutions": {
+    "axios": "0.24.0",
+    "ansi-regex": "5.0.1",
+    "highlight.js": "11.3.1",
+    "@ethersproject/bignumber": "5.5.0",
+    "minimist": "1.2.5",
+    "json-schema": "0.4.0",
+    "tar": "6.1.11",
+    "elliptic": "6.5.4",
+    "y18n": "5.0.8",
+    "ws": "8.4.0",
+    "nth-check": "2.0.1",
+    "yargs-parser": "20.2.9",
+    "node-fetch": "3.1.0",
+    "underscore": "^1.13.2",
+    "@zondax/filecoin-signing-tools": "0.15.0"
   }
 }
