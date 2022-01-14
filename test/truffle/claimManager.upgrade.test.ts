@@ -1,5 +1,6 @@
-import { deployProxy, upgradeProxy } from '@openzeppelin/truffle-upgrades';
-import { assert } from 'chai';
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { deployProxy, upgradeProxy } = require('@openzeppelin/truffle-upgrades');
+const { assert } = require('chai');
 
 const ClaimManager = artifacts.require('ClaimManager');
 const ClaimManagerUpgradeTest = artifacts.require('ClaimManagerUpgradeTest');
