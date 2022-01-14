@@ -59,7 +59,7 @@
   "dependencies": {
     "@ensdomains/buffer": "0.0.13",
     "@ensdomains/ens-contracts": "0.0.4",
-    "@openzeppelin/contracts": "4.3.3",
+    "@openzeppelin/contracts": "4.4.2",
     "@openzeppelin/contracts-upgradeable": "4.3.3",
     "ethers": "5.4.7"
   },
