@@ -1,6 +1,6 @@
-import chai from "chai";
-import chaiAsPromised from "chai-as-promised";
-import { ContractFactory, utils, providers } from "ethers";
+import chai from 'chai';
+import chaiAsPromised from 'chai-as-promised';
+import { ContractFactory, utils, providers } from 'ethers';
 import {
   DomainReader,
   DomainTransactionFactoryV2,
@@ -8,31 +8,31 @@ import {
   IOrganizationDefinition,
   IRoleDefinitionV2,
   ResolverContractType,
-} from "../src/index";
-import { PreconditionType } from "../src/types/DomainDefinitions";
-import { ERROR_MESSAGES } from "../src/types/ErrorMessages";
-import { ENSRegistry } from "../ethers/ENSRegistry";
-import { DomainNotifier } from "../ethers/DomainNotifier";
-import { PublicResolver } from "../ethers/PublicResolver";
-import { hashLabel } from "./iam-contracts.test";
-import { RoleDefinitionResolverV2__factory } from "../ethers/factories/RoleDefinitionResolverV2__factory";
-import { DomainNotifier__factory } from "../ethers/factories/DomainNotifier__factory";
-import { RoleDefinitionResolverV2 } from "../ethers/RoleDefinitionResolverV2";
-import { ENSRegistry__factory } from "../ethers/factories/ENSRegistry__factory";
+} from '../src/index';
+import { PreconditionType } from '../src/types/DomainDefinitions';
+import { ERROR_MESSAGES } from '../src/types/ErrorMessages';
+import { ENSRegistry } from '../ethers/ENSRegistry';
+import { DomainNotifier } from '../ethers/DomainNotifier';
+import { PublicResolver } from '../ethers/PublicResolver';
+import { hashLabel } from './iam-contracts.test';
+import { RoleDefinitionResolverV2__factory } from '../ethers/factories/RoleDefinitionResolverV2__factory';
+import { DomainNotifier__factory } from '../ethers/factories/DomainNotifier__factory';
+import { RoleDefinitionResolverV2 } from '../ethers/RoleDefinitionResolverV2';
+import { ENSRegistry__factory } from '../ethers/factories/ENSRegistry__factory';
 
 chai.use(chaiAsPromised);
 const expect = chai.expect;
 
 export const rpcUrl = `http://localhost:8544`;
 
-const domain2 = "mydomain2";
+const domain2 = 'mydomain2';
 const node2 = utils.namehash(domain2);
 
 const role2: IRoleDefinitionV2 = {
   fields: [
     {
-      fieldType: "myFieldType",
-      label: "myLabel",
+      fieldType: 'myFieldType',
+      label: 'myLabel',
       required: true,
       minLength: 5,
       minDate: new Date(),
@@ -40,11 +40,11 @@ const role2: IRoleDefinitionV2 = {
     },
   ],
   issuer: {
-    issuerType: "DID",
+    issuerType: 'DID',
     did: [`did:ethr:volta:0x7aA65E31d404A8857BA083f6195757a730b51CFe`],
   },
   revoker: {
-    revokerType: "DID",
+    revokerType: 'DID',
     did: [`did:ethr:volta:0x7aA65E31d404A8857BA083f6195757a730b51CFe`],
   },
   metadata: [
@@ -52,8 +52,8 @@ const role2: IRoleDefinitionV2 = {
       myProperty: 42,
     },
   ],
-  roleName: "myRole1",
-  roleType: "test1",
+  roleName: 'myRole1',
+  roleType: 'test1',
   version: 10,
   enrolmentPreconditions: [
     {
@@ -67,7 +67,7 @@ const getDomainUpdatedLogs = async () => {
   const eventFilter = domainNotifier.filters.DomainUpdated(node2);
   const filter = {
     fromBlock: 0,
-    toBlock: "latest",
+    toBlock: 'latest',
     address: domainNotifier.address,
     topics: eventFilter.topics,
   };
@@ -86,7 +86,7 @@ let chainId: number;
 let domainReader: DomainReader;
 
 export function domainCrudTestSuiteWithRevocation(): void {
-  describe("Domain CRUD tests for RoleDefinitionResolverV2", () => {
+  describe('Domain CRUD tests for RoleDefinitionResolverV2', () => {
     before(async function () {
       ({ publicResolverFactory, provider, owner, chainId } = this);
     });
@@ -95,15 +95,15 @@ export function domainCrudTestSuiteWithRevocation(): void {
       ensRegistry = await new ENSRegistry__factory(owner).deploy();
       await ensRegistry.deployed();
       domainNotifier = await new DomainNotifier__factory(owner).deploy(
-        ensRegistry.address,
+        ensRegistry.address
       );
       await domainNotifier.deployed();
       ensRoleDefResolverV2 = await new RoleDefinitionResolverV2__factory(
-        owner,
+        owner
       ).deploy(ensRegistry.address, domainNotifier.address);
       await ensRoleDefResolverV2.deployed();
       ensPublicResolver = (await publicResolverFactory.deploy(
-        ensRegistry.address,
+        ensRegistry.address
       )) as PublicResolver;
       await ensPublicResolver.deployed();
       domainReader = new DomainReader({
@@ -122,16 +122,16 @@ export function domainCrudTestSuiteWithRevocation(): void {
       });
 
       const rootNameHash =
-        "0x0000000000000000000000000000000000000000000000000000000000000000";
+        '0x0000000000000000000000000000000000000000000000000000000000000000';
       await ensRegistry.setSubnodeOwner(
         rootNameHash,
         hashLabel(domain2),
-        await owner.getAddress(),
+        await owner.getAddress()
       );
       expect(await ensRegistry.owner(node2)).to.equal(await owner.getAddress());
     });
 
-    describe("Role can be created, read and updated", () => {
+    describe('Role can be created, read and updated', () => {
       const roleCRUDtests = async (role: IRoleDefinitionV2) => {
         await ensRegistry.setResolver(node2, ensRoleDefResolverV2.address);
         const domainDefTxFactoryV2 = new DomainTransactionFactoryV2({
@@ -169,14 +169,14 @@ export function domainCrudTestSuiteWithRevocation(): void {
       it('issuer of type "ROLE"', async () => {
         await roleCRUDtests({
           ...role2,
-          issuer: { issuerType: "ROLE", roleName: domain2 },
+          issuer: { issuerType: 'ROLE', roleName: domain2 },
         });
       });
     });
 
-    it("app can be created and read", async () => {
+    it('app can be created and read', async () => {
       const app: IAppDefinition = {
-        appName: "myApp",
+        appName: 'myApp',
       };
       await ensRegistry.setResolver(node2, ensRoleDefResolverV2.address);
       const domainDefTxFactoryV2 = new DomainTransactionFactoryV2({
@@ -199,9 +199,9 @@ export function domainCrudTestSuiteWithRevocation(): void {
       expect(logs.length).to.equal(1);
     });
 
-    it("org can be created and read", async () => {
+    it('org can be created and read', async () => {
       const org: IOrganizationDefinition = {
-        orgName: "myOrg",
+        orgName: 'myOrg',
       };
       await ensRegistry.setResolver(node2, ensRoleDefResolverV2.address);
       const domainDefTxFactoryV2 = new DomainTransactionFactoryV2({
@@ -224,32 +224,32 @@ export function domainCrudTestSuiteWithRevocation(): void {
       expect(logs.length).to.equal(1);
     });
 
-    it("domain with unknown resolver type throws error", async () => {
+    it('domain with unknown resolver type throws error', async () => {
       await ensRegistry.setResolver(
         node2,
-        "0x0000000000000000000000000000000000000123",
+        '0x0000000000000000000000000000000000000123'
       );
       await expect(
-        domainReader.read({ node: node2 }),
+        domainReader.read({ node: node2 })
       ).to.eventually.rejectedWith(ERROR_MESSAGES.RESOLVER_NOT_KNOWN);
     });
 
-    it("domain with not supported resolver throws error", async () => {
-      const resolverAddress = "0x0000000000000000000000000000000000000123";
+    it('domain with not supported resolver throws error', async () => {
+      const resolverAddress = '0x0000000000000000000000000000000000000123';
       const chainId = await (await provider.getNetwork()).chainId;
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
-      domainReader.addKnownResolver(chainId, resolverAddress, "999");
+      domainReader.addKnownResolver(chainId, resolverAddress, '999');
       await ensRegistry.setResolver(node2, resolverAddress);
       await expect(
-        domainReader.read({ node: node2 }),
+        domainReader.read({ node: node2 })
       ).to.eventually.rejectedWith(ERROR_MESSAGES.RESOLVER_NOT_KNOWN);
     });
 
-    it("domain which has not been registered throws error", async () => {
-      const unregisteredRole = utils.namehash("notregistered.iam");
+    it('domain which has not been registered throws error', async () => {
+      const unregisteredRole = utils.namehash('notregistered.iam');
       await expect(
-        domainReader.read({ node: unregisteredRole }),
+        domainReader.read({ node: unregisteredRole })
       ).to.eventually.rejectedWith(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED);
     });
   });

@@ -6,6 +6,7 @@
     ".eslintrc.js",
     ".prettierrc.js",
     "test/**/*.ts",
-    "scripts/**/*.ts"
+    "scripts/**/*.ts",
+    "bili.config.ts"
   ]
 }

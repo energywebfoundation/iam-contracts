@@ -61,14 +61,15 @@
     "@energyweb/prettier-config": "^0.0.0",
     "@ensdomains/buffer": "0.0.13",
     "@ensdomains/ens-contracts": "0.0.4",
+    "@ethersproject/abstract-signer": "^5.4.1",
     "@openzeppelin/contracts": "4.3.3",
     "@openzeppelin/contracts-upgradeable": "4.3.3",
     "ethers": "5.4.7"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.4.0",
-    "@openzeppelin/truffle-upgrades": "1.12.0",
     "@ew-did-registry/proxyidentity": "0.6.2",
+    "@openzeppelin/truffle-upgrades": "1.12.0",
     "@semantic-release/changelog": "^5.0.1",
     "@semantic-release/commit-analyzer": "^8.0.1",
     "@semantic-release/git": "^9.0.0",

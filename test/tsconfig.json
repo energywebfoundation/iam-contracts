@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "module": "es6",
+    "esModuleInterop": true
+  },
+  "include": ["**/*.test.ts"]
+}

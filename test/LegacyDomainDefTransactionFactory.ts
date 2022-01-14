@@ -1,6 +1,6 @@
-import { utils } from "ethers";
-import { PublicResolver } from "../ethers/PublicResolver";
-import { EncodedCall, IRoleDefinition } from "../src/index";
+import { utils } from 'ethers';
+import { PublicResolver } from '../ethers/PublicResolver';
+import { EncodedCall, IRoleDefinition } from '../src/index';
 
 /**
  * Initially, Switchboard role data was only maintained in the text resolver
@@ -29,7 +29,7 @@ export class LegacyDomainDefTransactionFactory {
     const namespaceHash = utils.namehash(domain) as string;
     return {
       to: this.publicResolver.address,
-      data: this.publicResolver.interface.encodeFunctionData("setName", [
+      data: this.publicResolver.interface.encodeFunctionData('setName', [
         namespaceHash,
         domain,
       ]),
@@ -43,7 +43,7 @@ export class LegacyDomainDefTransactionFactory {
   }): EncodedCall {
     return {
       to: this.publicResolver.address,
-      data: this.publicResolver.interface.encodeFunctionData("multicall", [
+      data: this.publicResolver.interface.encodeFunctionData('multicall', [
         transactionsToCombine.map((t) => t.data),
       ]),
     };
@@ -58,9 +58,9 @@ export class LegacyDomainDefTransactionFactory {
   }): EncodedCall {
     return {
       to: this.publicResolver.address,
-      data: this.publicResolver.interface.encodeFunctionData("setText", [
+      data: this.publicResolver.interface.encodeFunctionData('setText', [
         utils.namehash(domain),
-        "metadata",
+        'metadata',
         JSON.stringify(data),
       ]),
     };

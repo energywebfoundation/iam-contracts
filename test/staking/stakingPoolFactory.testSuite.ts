@@ -1,5 +1,5 @@
-import { expect } from "chai";
-import { utils } from "ethers";
+import { expect } from 'chai';
+import { utils } from 'ethers';
 import {
   patronRole,
   stakingPoolFactory,
@@ -8,14 +8,14 @@ import {
   org,
   getSigner,
   defaultMinStakingPeriod,
-} from "./staking.testSuite";
+} from './staking.testSuite';
 
 const { namehash } = utils;
 
 export function stakingPoolFactoryTests(): void {
   const patronRewardPortion = 80;
 
-  it("service owner can launch staking pool", async () => {
+  it('service owner can launch staking pool', async () => {
     expect(await stakingPoolFactory.orgsList()).is.empty;
 
     await stakingPoolFactory
@@ -25,13 +25,13 @@ export function stakingPoolFactoryTests(): void {
         defaultMinStakingPeriod,
         patronRewardPortion,
         [namehash(patronRole)],
-        { value: principalThreshold.mul(2) },
+        { value: principalThreshold.mul(2) }
       );
 
     expect(await stakingPoolFactory.orgsList()).to.deep.equal([namehash(org)]);
   });
 
-  it("non owner of service should not be able to launch pool", async () => {
+  it('non owner of service should not be able to launch pool', async () => {
     const nonOwner = await getSigner();
 
     return expect(
@@ -42,10 +42,10 @@ export function stakingPoolFactoryTests(): void {
           defaultMinStakingPeriod,
           patronRewardPortion,
           [namehash(patronRole)],
-          { value: principalThreshold },
-        ),
+          { value: principalThreshold }
+        )
     ).rejectedWith(
-      "StakingPoolFactory: Not authorized to create pool for this organization",
+      'StakingPoolFactory: Not authorized to create pool for this organization'
     );
   });
 
@@ -58,9 +58,9 @@ export function stakingPoolFactoryTests(): void {
           defaultMinStakingPeriod,
           patronRewardPortion,
           [namehash(patronRole)],
-          { value: principalThreshold.div(2) },
-        ),
-    ).rejectedWith("StakingPoolFactory: principal less than threshold");
+          { value: principalThreshold.div(2) }
+        )
+    ).rejectedWith('StakingPoolFactory: principal less than threshold');
   });
 
   it("can't launch several pools for service", async () => {
@@ -71,7 +71,7 @@ export function stakingPoolFactoryTests(): void {
         defaultMinStakingPeriod,
         patronRewardPortion,
         [namehash(patronRole)],
-        { value: principalThreshold.mul(2) },
+        { value: principalThreshold.mul(2) }
       );
 
     return expect(
@@ -82,10 +82,10 @@ export function stakingPoolFactoryTests(): void {
           defaultMinStakingPeriod,
           patronRewardPortion,
           [namehash(patronRole)],
-          { value: principalThreshold.mul(2) },
-        ),
+          { value: principalThreshold.mul(2) }
+        )
     ).rejectedWith(
-      "StakingPoolFactory: pool for organization already launched",
+      'StakingPoolFactory: pool for organization already launched'
     );
   });
 }
