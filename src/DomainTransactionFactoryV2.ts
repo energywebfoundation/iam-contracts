@@ -1,5 +1,5 @@
-import { utils } from "ethers";
-import { DomainReader } from "./DomainReader";
+import { utils } from 'ethers';
+import { DomainReader } from './DomainReader';
 import {
   IAppDefinition,
   IIssuerDefinition,
@@ -8,11 +8,11 @@ import {
   IRoleDefinitionV2,
   IRoleDefinitionText,
   PreconditionType,
-} from "./types/DomainDefinitions";
-import { DID } from "./types/DID";
-import { EncodedCall } from "./types/Transaction";
-import { VOLTA_RESOLVER_V2_ADDRESS } from "./chainConstants";
-import { abi } from "../build/contracts/RoleDefinitionResolverV2.json";
+} from './types/DomainDefinitions';
+import { DID } from './types/DID';
+import { EncodedCall } from './types/Transaction';
+import { VOLTA_RESOLVER_V2_ADDRESS } from './chainConstants';
+import { abi } from '../build/contracts/RoleDefinitionResolverV2.json';
 
 const { namehash } = utils;
 
@@ -105,7 +105,7 @@ export class DomainTransactionFactoryV2 {
     const namespaceHash = utils.namehash(domain) as string;
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.encodeFunctionData("setName", [
+      data: this._roleDefResolverInterface.encodeFunctionData('setName', [
         namespaceHash,
         domain,
       ]),
@@ -124,7 +124,7 @@ export class DomainTransactionFactoryV2 {
   }): EncodedCall {
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.encodeFunctionData("multicall", [
+      data: this._roleDefResolverInterface.encodeFunctionData('multicall', [
         transactionsToCombine.map((t) => t.data),
       ]),
     };
@@ -155,7 +155,7 @@ export class DomainTransactionFactoryV2 {
 
     let prerequisiteRolesTx;
     const roleConditiions = data?.enrolmentPreconditions?.filter(
-      (condition) => condition.type === PreconditionType.Role,
+      (condition) => condition.type === PreconditionType.Role
     );
     if (!roleConditiions || roleConditiions.length < 1) {
       prerequisiteRolesTx = this.setPrerequisiteRolesTx({
@@ -170,10 +170,10 @@ export class DomainTransactionFactoryV2 {
       });
     } else if (roleConditiions.length > 1) {
       throw Error(
-        "only one set of enrolment role preconditions should be provided",
+        'only one set of enrolment role preconditions should be provided'
       );
     } else {
-      throw Error("error setting role preconditions");
+      throw Error('error setting role preconditions');
     }
 
     const textProps = ((roleDef: IRoleDefinitionV2) => {
@@ -212,9 +212,9 @@ export class DomainTransactionFactoryV2 {
   }): EncodedCall {
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.encodeFunctionData("setText", [
+      data: this._roleDefResolverInterface.encodeFunctionData('setText', [
         utils.namehash(domain),
-        "metadata",
+        'metadata',
         JSON.stringify(data),
       ]),
     };
@@ -223,7 +223,7 @@ export class DomainTransactionFactoryV2 {
   protected domainUpdated({ domain }: { domain: string }): EncodedCall {
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.encodeFunctionData("domainUpdated", [
+      data: this._roleDefResolverInterface.encodeFunctionData('domainUpdated', [
         utils.namehash(domain),
       ]),
     };
@@ -239,8 +239,8 @@ export class DomainTransactionFactoryV2 {
     return {
       to: this._resolverAddress,
       data: this._roleDefResolverInterface.encodeFunctionData(
-        "setVersionNumber",
-        [utils.namehash(domain), versionNumber],
+        'setVersionNumber',
+        [utils.namehash(domain), versionNumber]
       ),
     };
   }
@@ -254,27 +254,27 @@ export class DomainTransactionFactoryV2 {
   }): EncodedCall {
     // First, try to determine which to set from issueType possiblities:
     // https://github.com/energywebfoundation/switchboard-dapp/blob/8776624832e68d2965f5a0b27ddb58f1907b0a33/src/app/routes/applications/new-role/new-role.component.ts#L56
-    if (issuers.issuerType?.toUpperCase() === "DID") {
+    if (issuers.issuerType?.toUpperCase() === 'DID') {
       if (!issuers.did) {
-        throw Error("IssuerType set to DID but no DIDs provided");
+        throw Error('IssuerType set to DID but no DIDs provided');
       }
       const addresses = issuers.did.map((didString) => new DID(didString).id);
       return {
         to: this._resolverAddress,
         data: this._roleDefResolverInterface.encodeFunctionData(
-          "setIssuerDids",
-          [utils.namehash(domain), addresses],
+          'setIssuerDids',
+          [utils.namehash(domain), addresses]
         ),
       };
-    } else if (issuers.issuerType?.toUpperCase() === "ROLE") {
+    } else if (issuers.issuerType?.toUpperCase() === 'ROLE') {
       if (!issuers.roleName) {
-        throw Error("IssuerType set to roleName but no roleName provided");
+        throw Error('IssuerType set to roleName but no roleName provided');
       }
       return {
         to: this._resolverAddress,
         data: this._roleDefResolverInterface.encodeFunctionData(
-          "setIssuerRole",
-          [utils.namehash(domain), namehash(issuers.roleName)],
+          'setIssuerRole',
+          [utils.namehash(domain), namehash(issuers.roleName)]
         ),
       };
     }
@@ -288,27 +288,27 @@ export class DomainTransactionFactoryV2 {
     domain: string;
     revokers: IRevokerDefinition;
   }): EncodedCall {
-    if (revokers.revokerType?.toUpperCase() === "DID") {
+    if (revokers.revokerType?.toUpperCase() === 'DID') {
       if (!revokers.did) {
-        throw Error("RevokerType set to DID but no DIDs provided");
+        throw Error('RevokerType set to DID but no DIDs provided');
       }
       const addresses = revokers.did.map((didString) => new DID(didString).id);
       return {
         to: this._resolverAddress,
         data: this._roleDefResolverInterface.encodeFunctionData(
-          "setRevokerDids",
-          [utils.namehash(domain), addresses],
+          'setRevokerDids',
+          [utils.namehash(domain), addresses]
         ),
       };
-    } else if (revokers.revokerType?.toUpperCase() === "ROLE") {
+    } else if (revokers.revokerType?.toUpperCase() === 'ROLE') {
       if (!revokers.roleName) {
-        throw Error("RevokerType set to roleName but no roleName provided");
+        throw Error('RevokerType set to roleName but no roleName provided');
       }
       return {
         to: this._resolverAddress,
         data: this._roleDefResolverInterface.encodeFunctionData(
-          "setRevokerRole",
-          [utils.namehash(domain), namehash(revokers.roleName)],
+          'setRevokerRole',
+          [utils.namehash(domain), namehash(revokers.roleName)]
         ),
       };
     }
@@ -324,7 +324,7 @@ export class DomainTransactionFactoryV2 {
   }): EncodedCall {
     return {
       to: this._resolverAddress,
-      data: this._roleDefResolverInterface.encodeFunctionData("setIssuerType", [
+      data: this._roleDefResolverInterface.encodeFunctionData('setIssuerType', [
         utils.namehash(domain),
         issuerType,
       ]),
@@ -341,8 +341,8 @@ export class DomainTransactionFactoryV2 {
     return {
       to: this._resolverAddress,
       data: this._roleDefResolverInterface.encodeFunctionData(
-        "setRevokerType",
-        [utils.namehash(domain), revokerType],
+        'setRevokerType',
+        [utils.namehash(domain), revokerType]
       ),
     };
   }
@@ -355,17 +355,17 @@ export class DomainTransactionFactoryV2 {
     prerequisiteRoles: string[];
   }): EncodedCall {
     const prequisiteRoleDomains = prerequisiteRoles.map((role) =>
-      utils.namehash(role),
+      utils.namehash(role)
     );
     return {
       to: this._resolverAddress,
       data: this._roleDefResolverInterface.encodeFunctionData(
-        "setPrerequisiteRoles",
+        'setPrerequisiteRoles',
         [
           utils.namehash(domain),
           prequisiteRoleDomains,
           false, // mustHaveAll = false so only need to have one of the set
-        ],
+        ]
       ),
     };
   }

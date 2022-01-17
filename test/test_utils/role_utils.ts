@@ -1,6 +1,6 @@
-import { Signer, utils } from "ethers";
-import { ClaimManager } from "../../ethers/ClaimManager";
-import { RevocationRegistryOnChain as RevocationRegistry } from "../../ethers/RevocationRegistryOnChain";
+import { Signer, utils } from 'ethers';
+import { ClaimManager } from '../../ethers/ClaimManager';
+import { RevocationRegistryOnChain as RevocationRegistry } from '../../ethers/RevocationRegistryOnChain';
 
 const { solidityKeccak256, defaultAbiCoder, arrayify } = utils;
 
@@ -11,10 +11,10 @@ const chainId = 73799;
 
 function canonizeSig(sig: string) {
   let suffix = sig.substr(130);
-  if (suffix === "00") {
-    suffix = "1b";
-  } else if (suffix === "01") {
-    suffix = "1c";
+  if (suffix === '00') {
+    suffix = '1b';
+  } else if (suffix === '01') {
+    suffix = '1c';
   }
   return sig.substr(0, 130) + suffix;
 }
@@ -48,54 +48,54 @@ export async function requestRole({
   const subjectAddr = subjectAddress ?? (await subject.getAddress());
 
   const erc712_type_hash = utils.id(
-    "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)",
+    'EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)'
   );
   const agreement_type_hash = utils.id(
-    "Agreement(address subject,bytes32 role,uint256 version)",
+    'Agreement(address subject,bytes32 role,uint256 version)'
   );
   const proof_type_hash = utils.id(
-    "Proof(address subject,bytes32 role,uint256 version,uint256 expiry,address issuer)",
+    'Proof(address subject,bytes32 role,uint256 version,uint256 expiry,address issuer)'
   );
 
   const domainSeparator = utils.keccak256(
     defaultAbiCoder.encode(
-      ["bytes32", "bytes32", "bytes32", "uint256", "address"],
+      ['bytes32', 'bytes32', 'bytes32', 'uint256', 'address'],
       [
         erc712_type_hash,
-        utils.id("Claim Manager"),
-        utils.id("1.0"),
+        utils.id('Claim Manager'),
+        utils.id('1.0'),
         chainId,
         claimManager.address,
-      ],
-    ),
+      ]
+    )
   );
 
-  const messageId = Buffer.from("1901", "hex");
+  const messageId = Buffer.from('1901', 'hex');
 
   const agreementHash = solidityKeccak256(
-    ["bytes", "bytes32", "bytes32"],
+    ['bytes', 'bytes32', 'bytes32'],
     [
       messageId,
       domainSeparator,
       utils.keccak256(
         defaultAbiCoder.encode(
-          ["bytes32", "address", "bytes32", "uint256"],
-          [agreement_type_hash, subjectAddr, utils.namehash(roleName), version],
-        ),
+          ['bytes32', 'address', 'bytes32', 'uint256'],
+          [agreement_type_hash, subjectAddr, utils.namehash(roleName), version]
+        )
       ),
-    ],
+    ]
   );
 
   const agreement = await agreementSigner.signMessage(arrayify(agreementHash));
 
   const proofHash = solidityKeccak256(
-    ["bytes", "bytes32", "bytes32"],
+    ['bytes', 'bytes32', 'bytes32'],
     [
       messageId,
       domainSeparator,
       utils.keccak256(
         defaultAbiCoder.encode(
-          ["bytes32", "address", "bytes32", "uint", "uint", "address"],
+          ['bytes32', 'address', 'bytes32', 'uint', 'uint', 'address'],
           [
             proof_type_hash,
             subjectAddr,
@@ -103,10 +103,10 @@ export async function requestRole({
             version,
             expiry,
             issuerAddr,
-          ],
-        ),
+          ]
+        )
       ),
-    ],
+    ]
   );
 
   const proof = await proofSigner.signMessage(arrayify(proofHash));
@@ -119,7 +119,7 @@ export async function requestRole({
       expiry,
       issuerAddr,
       canonizeSig(agreement),
-      canonizeSig(proof),
+      canonizeSig(proof)
     )
   ).wait(); // testing on Volta needs at least 2 confirmation
 }
@@ -142,7 +142,7 @@ export async function revokeRole({
     await revocationRegistry.revokeClaim(
       utils.namehash(subjectRole),
       subjectAddr,
-      revokerAddr,
+      revokerAddr
     )
   ).wait();
 }
@@ -158,7 +158,7 @@ export async function revokeRoles({
   subjects: Signer[];
   subjectRole: string;
 }): Promise<void> {
-  const revocationSubjects = [""];
+  const revocationSubjects = [''];
   const revokerAddr = await revoker.getAddress();
   for (const i in subjects) {
     const subjectAddr = await subjects[i].getAddress();
@@ -169,7 +169,7 @@ export async function revokeRoles({
     await revocationRegistry.revokeClaimsInList(
       utils.namehash(subjectRole),
       revocationSubjects,
-      revokerAddr,
+      revokerAddr
     )
   ).wait();
 }

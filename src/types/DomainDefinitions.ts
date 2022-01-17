@@ -28,7 +28,7 @@ export interface IRoleDefinitionV2 extends IRoleDefinitionText {
 }
 
 export enum PreconditionType {
-  Role = "role",
+  Role = 'role',
 }
 
 export interface IFieldDefinition {

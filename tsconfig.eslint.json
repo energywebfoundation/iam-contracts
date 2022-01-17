@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true
+  },
+  "include": [
+    ".eslintrc.js",
+    ".prettierrc.js",
+    "test/**/*.ts",
+    "scripts/**/*.ts",
+    "bili.config.ts"
+  ]
+}

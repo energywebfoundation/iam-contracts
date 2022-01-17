@@ -1,0 +1,11 @@
+{
+  "typeRoots": ["node_modules/@types", "truffle.test.d.ts"],
+  "compilerOptions": {
+    "target": "ESNEXT",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "include": ["**/*"]
+}

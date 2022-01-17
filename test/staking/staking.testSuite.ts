@@ -6,29 +6,29 @@ import {
   Wallet,
   providers,
   utils,
-} from "ethers";
-import { ClaimManager } from "../../ethers/ClaimManager";
-import { ENSRegistry } from "../../ethers/ENSRegistry";
-import { ENSRegistry__factory } from "../../ethers/factories/ENSRegistry__factory";
-import { DomainNotifier__factory } from "../../ethers/factories/DomainNotifier__factory";
-import { RoleDefinitionResolverV2__factory } from "../../ethers/factories/RoleDefinitionResolverV2__factory";
-import { ClaimManager__factory } from "../../ethers/factories/ClaimManager__factory";
-import { StakingPoolFactory__factory } from "../../ethers/factories/StakingPoolFactory__factory";
-import { DomainTransactionFactoryV2 } from "../../src";
+} from 'ethers';
+import { ClaimManager } from '../../ethers/ClaimManager';
+import { ENSRegistry } from '../../ethers/ENSRegistry';
+import { ENSRegistry__factory } from '../../ethers/factories/ENSRegistry__factory';
+import { DomainNotifier__factory } from '../../ethers/factories/DomainNotifier__factory';
+import { RoleDefinitionResolverV2__factory } from '../../ethers/factories/RoleDefinitionResolverV2__factory';
+import { ClaimManager__factory } from '../../ethers/factories/ClaimManager__factory';
+import { StakingPoolFactory__factory } from '../../ethers/factories/StakingPoolFactory__factory';
+import { DomainTransactionFactoryV2 } from '../../src';
 import {
   abi as erc1056Abi,
   bytecode as erc1056Bytecode,
-} from "../test_utils/ERC1056.json";
-import { hashLabel } from "../iam-contracts.test";
-import { stakingPoolTests } from "./StakingPool.testSuite";
-import { stakingPoolFactoryTests } from "./stakingPoolFactory.testSuite";
-import { RoleDefinitionResolverV2 } from "../../ethers/RoleDefinitionResolverV2";
-import { StakingPoolFactory } from "../../ethers/StakingPoolFactory";
-import { rewardPoolTests } from "./RewardPool.testSuite";
+} from '../test_utils/ERC1056.json';
+import { hashLabel } from '../iam-contracts.test';
+import { stakingPoolTests } from './StakingPool.testSuite';
+import { stakingPoolFactoryTests } from './stakingPoolFactory.testSuite';
+import { RoleDefinitionResolverV2 } from '../../ethers/RoleDefinitionResolverV2';
+import { StakingPoolFactory } from '../../ethers/StakingPoolFactory';
+import { rewardPoolTests } from './RewardPool.testSuite';
 
 const { JsonRpcProvider } = providers;
 
-export const provider = new JsonRpcProvider("http://localhost:8544");
+export const provider = new JsonRpcProvider('http://localhost:8544');
 export const deployer = provider.getSigner(1);
 export const ewc = provider.getSigner(2);
 const faucet = provider.getSigner(9);
@@ -41,12 +41,12 @@ export let roleFactory: DomainTransactionFactoryV2;
 export let roleResolver: RoleDefinitionResolverV2;
 export let ensRegistry: ENSRegistry;
 
-export const root = `0x${"0".repeat(64)}`;
-export const patronRole = "patron";
+export const root = `0x${'0'.repeat(64)}`;
+export const patronRole = 'patron';
 
 export const waitFor = (
   filter: EventFilter,
-  contract: Contract,
+  contract: Contract
 ): Promise<void> =>
   new Promise((resolve) => {
     contract.on(filter, resolve);
@@ -58,7 +58,7 @@ export const getSigner = async (): Promise<Signer> => {
   const signer = Wallet.createRandom().connect(provider);
   await faucet.sendTransaction({
     to: await signer.getAddress(),
-    value: parseEther("1"),
+    value: parseEther('1'),
   });
   return signer;
 };
@@ -68,7 +68,7 @@ async function setupContracts(): Promise<void> {
   const erc1056Factory = new ContractFactory(
     erc1056Abi,
     erc1056Bytecode,
-    deployer,
+    deployer
   );
   const erc1056 = await (await erc1056Factory.deploy()).deployed();
   ensRegistry = await (
@@ -80,7 +80,7 @@ async function setupContracts(): Promise<void> {
   roleResolver = await (
     await new RoleDefinitionResolverV2__factory(deployer).deploy(
       ensRegistry.address,
-      notifier.address,
+      notifier.address
     )
   ).deployed();
   claimManager = await (
@@ -107,15 +107,15 @@ async function setupContracts(): Promise<void> {
           enrolmentPreconditions: [],
           fields: [],
           issuer: {
-            issuerType: "DID",
+            issuerType: 'DID',
             did: [`did:ethr:volta:${await ewc.getAddress()}`],
           },
           revoker: {
-            revokerType: "DID",
+            revokerType: 'DID',
             did: [`did:ethr:volta:${await ewc.getAddress()}`],
           },
           metadata: [],
-          roleType: "",
+          roleType: '',
           version: 1,
         },
       }),
@@ -126,8 +126,8 @@ const { namehash, parseEther } = utils;
 
 export let stakingPoolFactory: StakingPoolFactory;
 export let serviceProvider: Signer;
-export const principalThreshold = parseEther("0.1");
-export const org = "orgname";
+export const principalThreshold = parseEther('0.1');
+export const org = 'orgname';
 
 export function stakingTests(): void {
   async function setupStakingPoolFactory() {
@@ -136,7 +136,7 @@ export function stakingTests(): void {
         principalThreshold,
         defaultWithdrawDelay,
         claimManager.address,
-        ensRegistry.address,
+        ensRegistry.address
       )
     ).deployed();
   }
@@ -146,7 +146,7 @@ export function stakingTests(): void {
       await ensRegistry.setSubnodeOwner(
         root,
         hashLabel(org),
-        await serviceProvider.getAddress(),
+        await serviceProvider.getAddress()
       )
     ).wait();
     await (
@@ -163,7 +163,7 @@ export function stakingTests(): void {
     await registerServiceWithProvider();
   });
 
-  describe("Staking pool tests", stakingPoolTests);
-  describe("Staking pool factory tests", stakingPoolFactoryTests);
-  describe("Reward pool tests", rewardPoolTests);
+  describe('Staking pool tests', stakingPoolTests);
+  describe('Staking pool factory tests', stakingPoolFactoryTests);
+  describe('Reward pool tests', rewardPoolTests);
 }

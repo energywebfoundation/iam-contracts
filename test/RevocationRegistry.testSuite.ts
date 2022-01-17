@@ -1,36 +1,29 @@
-import {
-  utils,
-  ContractFactory,
-  Signer,
-  Contract,
-  Wallet,
-  providers,
-} from "ethers";
-import { expect } from "chai";
+import { utils, ContractFactory, Signer, Contract, providers } from 'ethers';
+import { expect } from 'chai';
 import {
   abi as erc1056Abi,
   bytecode as erc1056Bytecode,
-} from "./test_utils/ERC1056.json";
-import { ClaimManager__factory as ClaimManagerFactory } from "../ethers/factories/ClaimManager__factory";
-import { ClaimManager } from "../ethers/ClaimManager";
-import { RevocationRegistryOnChain__factory as RevocationRegistryOnChainFactory } from "../ethers/factories/RevocationRegistryOnChain__factory";
-import { RevocationRegistryOnChain } from "../ethers/RevocationRegistryOnChain";
-import { DomainTransactionFactoryV2 } from "../src";
-import { ENSRegistry } from "../ethers/ENSRegistry";
-import { RoleDefinitionResolverV2 } from "../ethers/RoleDefinitionResolverV2";
-import { RoleDefinitionResolverV2__factory } from "../ethers/factories/RoleDefinitionResolverV2__factory";
+} from './test_utils/ERC1056.json';
+import { ClaimManager__factory as ClaimManagerFactory } from '../ethers/factories/ClaimManager__factory';
+import { ClaimManager } from '../ethers/ClaimManager';
+import { RevocationRegistryOnChain__factory as RevocationRegistryOnChainFactory } from '../ethers/factories/RevocationRegistryOnChain__factory';
+import { RevocationRegistryOnChain } from '../ethers/RevocationRegistryOnChain';
+import { DomainTransactionFactoryV2 } from '../src';
+import { ENSRegistry } from '../ethers/ENSRegistry';
+import { RoleDefinitionResolverV2 } from '../ethers/RoleDefinitionResolverV2';
+import { RoleDefinitionResolverV2__factory } from '../ethers/factories/RoleDefinitionResolverV2__factory';
 import {
   defaultVersion,
   requestRole,
   revokeRole,
   revokeRoles,
-} from "./test_utils/role_utils";
+} from './test_utils/role_utils';
 
-const root = `0x${"0".repeat(64)}`;
-const authorityRole = "authority";
-const deviceRole = "device";
-const adminRole = "admin-role";
-const installerRole = "installer";
+const root = `0x${'0'.repeat(64)}`;
+const authorityRole = 'authority';
+const deviceRole = 'device';
+const adminRole = 'admin-role';
+const installerRole = 'installer';
 
 const hashLabel = (label: string): string =>
   utils.keccak256(utils.toUtf8Bytes(label));
@@ -57,7 +50,7 @@ let admin: Signer;
 let adminAddr: string;
 
 export function revocationRegistryTests(): void {
-  describe("Tests on ganache", testsOnGanache);
+  describe('Tests on ganache', testsOnGanache);
 }
 
 export function testsOnGanache(): void {
@@ -85,10 +78,10 @@ function testSuite() {
     const erc1056Factory = new ContractFactory(
       erc1056Abi,
       erc1056Bytecode,
-      deployer,
+      deployer
     );
     erc1056 = await (await erc1056Factory.deploy()).deployed();
-    const { ensFactory, domainNotifierFactory, roleDefResolverFactory } = this;
+    const { ensFactory, domainNotifierFactory } = this;
     ensRegistry = await (
       await ensFactory.connect(deployer).deploy()
     ).deployed();
@@ -99,7 +92,7 @@ function testSuite() {
     roleResolver = await (
       await new RoleDefinitionResolverV2__factory(deployer).deploy(
         ensRegistry.address,
-        notifier.address,
+        notifier.address
       )
     ).deployed();
 
@@ -115,7 +108,7 @@ function testSuite() {
       await new RevocationRegistryOnChainFactory(authority).deploy(
         erc1056.address,
         ensRegistry.address,
-        claimManager.address,
+        claimManager.address
       )
     ).deployed();
 
@@ -123,53 +116,53 @@ function testSuite() {
       await ensRegistry.setSubnodeOwner(
         root,
         hashLabel(authorityRole),
-        deployerAddr,
+        deployerAddr
       )
     ).wait();
     await (
       await ensRegistry.setSubnodeOwner(
         root,
         hashLabel(deviceRole),
-        deployerAddr,
+        deployerAddr
       )
     ).wait();
     await (
       await ensRegistry.setSubnodeOwner(
         root,
         hashLabel(installerRole),
-        deployerAddr,
+        deployerAddr
       )
     ).wait();
     await (
       await ensRegistry.setSubnodeOwner(
         root,
         hashLabel(adminRole),
-        deployerAddr,
+        deployerAddr
       )
     ).wait();
 
     await (
       await ensRegistry.setResolver(
         utils.namehash(authorityRole),
-        roleResolver.address,
+        roleResolver.address
       )
     ).wait();
     await (
       await ensRegistry.setResolver(
         utils.namehash(deviceRole),
-        roleResolver.address,
+        roleResolver.address
       )
     ).wait();
     await (
       await ensRegistry.setResolver(
         utils.namehash(installerRole),
-        roleResolver.address,
+        roleResolver.address
       )
     ).wait();
     await (
       await ensRegistry.setResolver(
         utils.namehash(adminRole),
-        roleResolver.address,
+        roleResolver.address
       )
     ).wait();
 
@@ -182,15 +175,15 @@ function testSuite() {
             enrolmentPreconditions: [],
             fields: [],
             issuer: {
-              issuerType: "DID",
+              issuerType: 'DID',
               did: [`did:ethr:${await authority.getAddress()}`],
             },
             revoker: {
-              revokerType: "DID",
+              revokerType: 'DID',
               did: [`did:ethr:${await authority.getAddress()}`],
             },
             metadata: [],
-            roleType: "",
+            roleType: '',
             version: defaultVersion,
           },
         }),
@@ -206,12 +199,12 @@ function testSuite() {
             enrolmentPreconditions: [],
             fields: [],
             issuer: {
-              issuerType: "DID",
+              issuerType: 'DID',
               did: [`did:ethr:${await authority.getAddress()}`],
             },
-            revoker: { revokerType: "ROLE", roleName: installerRole },
+            revoker: { revokerType: 'ROLE', roleName: installerRole },
             metadata: [],
-            roleType: "",
+            roleType: '',
             version: defaultVersion,
           },
         }),
@@ -226,10 +219,10 @@ function testSuite() {
             roleName: installerRole,
             enrolmentPreconditions: [],
             fields: [],
-            issuer: { issuerType: "ROLE", roleName: authorityRole },
-            revoker: { revokerType: "ROLE", roleName: authorityRole },
+            issuer: { issuerType: 'ROLE', roleName: authorityRole },
+            revoker: { revokerType: 'ROLE', roleName: authorityRole },
             metadata: [],
-            roleType: "",
+            roleType: '',
             version: defaultVersion,
           },
         }),
@@ -244,10 +237,10 @@ function testSuite() {
             roleName: adminRole,
             enrolmentPreconditions: [],
             fields: [],
-            issuer: { issuerType: "ROLE", roleName: authorityRole },
-            revoker: { revokerType: "DID", did: [] },
+            issuer: { issuerType: 'ROLE', roleName: authorityRole },
+            revoker: { revokerType: 'DID', did: [] },
             metadata: [],
-            roleType: "",
+            roleType: '',
             version: defaultVersion,
           },
         }),
@@ -255,7 +248,7 @@ function testSuite() {
     ).wait();
   });
 
-  it("Role can be revoked only if the revokers are specified", async () => {
+  it('Role can be revoked only if the revokers are specified', async () => {
     await requestRole({
       claimManager,
       roleName: authorityRole,
@@ -275,11 +268,11 @@ function testSuite() {
         revoker: authority,
         subject: admin,
         subjectRole: adminRole,
-      }),
-    ).rejectedWith("Revocation Registry: Role revokers are not specified");
+      })
+    ).rejectedWith('Revocation Registry: Role revokers are not specified');
   });
 
-  it("Role can be revoked only by authorised revoker", async () => {
+  it('Role can be revoked only by authorised revoker', async () => {
     await requestRole({
       claimManager,
       roleName: authorityRole,
@@ -299,9 +292,9 @@ function testSuite() {
         revoker: provider.getSigner(13),
         subject: authority,
         subjectRole: authorityRole,
-      }),
+      })
     ).rejectedWith(
-      "Revocation Registry: Revoker is not listed in role revokers list",
+      'Revocation Registry: Revoker is not listed in role revokers list'
     );
 
     expect(
@@ -310,11 +303,11 @@ function testSuite() {
         revoker: provider.getSigner(13),
         subject: installer,
         subjectRole: installerRole,
-      }),
-    ).rejectedWith("Revocation Registry: Revoker does not have required role");
+      })
+    ).rejectedWith('Revocation Registry: Revoker does not have required role');
   });
 
-  it("Role can be revoked where revokerType is DID", async () => {
+  it('Role can be revoked where revokerType is DID', async () => {
     await requestRole({
       claimManager,
       roleName: authorityRole,
@@ -325,8 +318,8 @@ function testSuite() {
       await claimManager.hasRole(
         authorityAddr,
         utils.namehash(authorityRole),
-        defaultVersion,
-      ),
+        defaultVersion
+      )
     ).true;
 
     await revokeRole({
@@ -338,12 +331,12 @@ function testSuite() {
     expect(
       await revocationRegistry.isRevoked(
         utils.namehash(authorityRole),
-        authorityAddr,
-      ),
+        authorityAddr
+      )
     ).true;
   });
 
-  it("Role can be revoked where revokerType is Role ", async () => {
+  it('Role can be revoked where revokerType is Role ', async () => {
     await requestRole({
       claimManager,
       roleName: authorityRole,
@@ -360,8 +353,8 @@ function testSuite() {
       await claimManager.hasRole(
         installerAddr,
         utils.namehash(installerRole),
-        defaultVersion,
-      ),
+        defaultVersion
+      )
     ).true;
 
     await revokeRole({
@@ -373,8 +366,8 @@ function testSuite() {
     expect(
       await revocationRegistry.isRevoked(
         utils.namehash(installerRole),
-        installerAddr,
-      ),
+        installerAddr
+      )
     ).true;
   });
 
@@ -405,14 +398,11 @@ function testSuite() {
       subjectRole: deviceRole,
     });
     expect(
-      await revocationRegistry.isRevoked(
-        utils.namehash(deviceRole),
-        deviceAddr,
-      ),
+      await revocationRegistry.isRevoked(utils.namehash(deviceRole), deviceAddr)
     ).true;
   });
 
-  it("Revoker can revoke his/her own role", async () => {
+  it('Revoker can revoke his/her own role', async () => {
     await requestRole({
       claimManager,
       roleName: authorityRole,
@@ -423,8 +413,8 @@ function testSuite() {
       await claimManager.hasRole(
         authorityAddr,
         utils.namehash(authorityRole),
-        defaultVersion,
-      ),
+        defaultVersion
+      )
     ).true;
 
     await revokeRole({
@@ -436,12 +426,12 @@ function testSuite() {
     expect(
       await revocationRegistry.isRevoked(
         utils.namehash(authorityRole),
-        authorityAddr,
-      ),
+        authorityAddr
+      )
     ).true;
   });
 
-  it("Revoker can revoke role issued by other authorities", async () => {
+  it('Revoker can revoke role issued by other authorities', async () => {
     await requestRole({
       claimManager,
       roleName: authorityRole,
@@ -468,14 +458,11 @@ function testSuite() {
       subjectRole: deviceRole,
     });
     expect(
-      await revocationRegistry.isRevoked(
-        utils.namehash(deviceRole),
-        deviceAddr,
-      ),
+      await revocationRegistry.isRevoked(utils.namehash(deviceRole), deviceAddr)
     ).true;
   });
 
-  it("Revoker can revoke role issued by him/her", async () => {
+  it('Revoker can revoke role issued by him/her', async () => {
     await requestRole({
       claimManager,
       roleName: authorityRole,
@@ -492,8 +479,8 @@ function testSuite() {
       await claimManager.hasRole(
         installerAddr,
         utils.namehash(installerRole),
-        defaultVersion,
-      ),
+        defaultVersion
+      )
     ).true;
 
     await revokeRole({
@@ -505,12 +492,12 @@ function testSuite() {
     expect(
       await revocationRegistry.isRevoked(
         utils.namehash(installerRole),
-        installerAddr,
-      ),
+        installerAddr
+      )
     ).true;
   });
 
-  it("Role cannot be revoked if the revokers role has been revoked", async () => {
+  it('Role cannot be revoked if the revokers role has been revoked', async () => {
     await requestRole({
       claimManager,
       roleName: authorityRole,
@@ -533,8 +520,8 @@ function testSuite() {
     expect(
       await revocationRegistry.isRevoked(
         utils.namehash(authorityRole),
-        authorityAddr,
-      ),
+        authorityAddr
+      )
     ).true;
 
     expect(
@@ -543,11 +530,11 @@ function testSuite() {
         revoker: authority,
         subject: installer,
         subjectRole: installerRole,
-      }),
+      })
     ).rejectedWith("Revocation Registry: Revoker's role has been revoked");
   });
 
-  it("A revoked role cannot be revoked again", async () => {
+  it('A revoked role cannot be revoked again', async () => {
     await requestRole({
       claimManager,
       roleName: authorityRole,
@@ -564,8 +551,8 @@ function testSuite() {
     expect(
       await revocationRegistry.isRevoked(
         utils.namehash(authorityRole),
-        authorityAddr,
-      ),
+        authorityAddr
+      )
     ).true;
 
     expect(
@@ -574,15 +561,15 @@ function testSuite() {
         revoker: authority,
         subject: authority,
         subjectRole: authorityRole,
-      }),
-    ).rejectedWith("The claim is already revoked");
+      })
+    ).rejectedWith('The claim is already revoked');
   });
 
-  it("Role can be revoked by revokers delegate", async () => {
+  it('Role can be revoked by revokers delegate', async () => {
     const delegate = provider.getSigner(6);
     const delegateAddr = await delegate.getAddress();
     const veriKey =
-      "0x766572694b657900000000000000000000000000000000000000000000000000";
+      '0x766572694b657900000000000000000000000000000000000000000000000000';
 
     await erc1056
       .connect(authority)
@@ -598,7 +585,7 @@ function testSuite() {
       await new RevocationRegistryOnChainFactory(delegate).deploy(
         erc1056.address,
         ensRegistry.address,
-        claimManager.address,
+        claimManager.address
       )
     ).deployed();
     await revokeRole({
@@ -610,12 +597,12 @@ function testSuite() {
     expect(
       await revocationRegistry.isRevoked(
         utils.namehash(authorityRole),
-        authorityAddr,
-      ),
+        authorityAddr
+      )
     ).true;
   });
 
-  it("Role can be revoked for multiple DIDs by authorised revoker, bulk revocation ", async () => {
+  it('Role can be revoked for multiple DIDs by authorised revoker, bulk revocation ', async () => {
     await requestRole({
       claimManager,
       roleName: authorityRole,
@@ -638,15 +625,15 @@ function testSuite() {
       await claimManager.hasRole(
         installerAddr,
         utils.namehash(installerRole),
-        defaultVersion,
-      ),
+        defaultVersion
+      )
     ).true;
     expect(
       await claimManager.hasRole(
         installer1Addr,
         utils.namehash(installerRole),
-        defaultVersion,
-      ),
+        defaultVersion
+      )
     ).true;
 
     await revokeRoles({
@@ -658,18 +645,18 @@ function testSuite() {
     expect(
       await revocationRegistry.isRevoked(
         utils.namehash(installerRole),
-        installerAddr,
-      ),
+        installerAddr
+      )
     ).true;
     expect(
       await revocationRegistry.isRevoked(
         utils.namehash(installerRole),
-        installer1Addr,
-      ),
+        installer1Addr
+      )
     ).true;
   });
 
-  it("Role details can be fetched based on role and subject address", async () => {
+  it('Role details can be fetched based on role and subject address', async () => {
     await requestRole({
       claimManager,
       roleName: authorityRole,
@@ -686,8 +673,8 @@ function testSuite() {
       await claimManager.hasRole(
         installerAddr,
         utils.namehash(installerRole),
-        defaultVersion,
-      ),
+        defaultVersion
+      )
     ).true;
 
     await revokeRole({
@@ -699,19 +686,19 @@ function testSuite() {
     expect(
       await revocationRegistry.isRevoked(
         utils.namehash(installerRole),
-        installerAddr,
-      ),
+        installerAddr
+      )
     ).true;
 
     const result = await revocationRegistry.getRevocationDetail(
       utils.namehash(installerRole),
-      installerAddr,
+      installerAddr
     );
     expect(result.length).to.equal(2);
     expect(result[0]).equal(authorityAddr);
   });
 
-  it("Revocation status should be false if role is not revoked", async () => {
+  it('Revocation status should be false if role is not revoked', async () => {
     await requestRole({
       claimManager,
       roleName: authorityRole,
@@ -726,7 +713,7 @@ function testSuite() {
     });
 
     expect(
-      await revocationRegistry.isRevoked(utils.namehash(adminRole), adminAddr),
+      await revocationRegistry.isRevoked(utils.namehash(adminRole), adminAddr)
     ).false;
   });
 }

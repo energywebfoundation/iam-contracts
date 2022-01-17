@@ -1,8 +1,8 @@
-import fs from "fs";
+import fs from 'fs';
 
 const claimManagerContract = fs.readFileSync(
-  "./contracts/roles/ClaimManager.sol",
-  "utf8",
+  './contracts/roles/ClaimManager.sol',
+  'utf8'
 );
 
 // Creates a v0.2 of the ClaimManager contract so that it can be used as an input to the upgrade test
@@ -12,6 +12,6 @@ const upgradedClaimManagerContract = claimManagerContract
   .replace(`return "v0.1";`, `return "v0.2";`);
 
 fs.writeFileSync(
-  "./contracts/roles/ClaimManagerUpgradeTest.sol",
-  upgradedClaimManagerContract,
+  './contracts/roles/ClaimManagerUpgradeTest.sol',
+  upgradedClaimManagerContract
 );

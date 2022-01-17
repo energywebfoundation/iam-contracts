@@ -1,4 +1,4 @@
-import { providers, utils } from "ethers";
+import { providers, utils } from 'ethers';
 import {
   IAppDefinition,
   IIssuerDefinition,
@@ -8,31 +8,31 @@ import {
   IRoleDefinitionV2,
   IRoleDefinitionText,
   PreconditionType,
-} from "./types/DomainDefinitions";
+} from './types/DomainDefinitions';
 import {
   VOLTA_CHAIN_ID,
   VOLTA_PUBLIC_RESOLVER_ADDRESS,
   VOLTA_RESOLVER_V1_ADDRESS,
   VOLTA_RESOLVER_V2_ADDRESS,
   EWC_CHAIN_ID,
-} from "./chainConstants";
-import { ENSRegistry__factory } from "../ethers/factories/ENSRegistry__factory";
-import { PublicResolver } from "../ethers/PublicResolver";
-import { PublicResolver__factory } from "../ethers/factories/PublicResolver__factory";
-import { RoleDefinitionResolver } from "../ethers/RoleDefinitionResolver";
-import { RoleDefinitionResolver__factory } from "../ethers/factories/RoleDefinitionResolver__factory";
-import { RoleDefinitionResolverV2 } from "../ethers/RoleDefinitionResolverV2";
-import { RoleDefinitionResolverV2__factory } from "../ethers/factories/RoleDefinitionResolverV2__factory";
-import { ResolverContractType } from "./types/ResolverContractType";
-import { ERROR_MESSAGES } from "./types/ErrorMessages";
-import { ENSRegistry } from "../ethers/ENSRegistry";
+} from './chainConstants';
+import { ENSRegistry__factory } from '../ethers/factories/ENSRegistry__factory';
+import { PublicResolver } from '../ethers/PublicResolver';
+import { PublicResolver__factory } from '../ethers/factories/PublicResolver__factory';
+import { RoleDefinitionResolver } from '../ethers/RoleDefinitionResolver';
+import { RoleDefinitionResolver__factory } from '../ethers/factories/RoleDefinitionResolver__factory';
+import { RoleDefinitionResolverV2 } from '../ethers/RoleDefinitionResolverV2';
+import { RoleDefinitionResolverV2__factory } from '../ethers/factories/RoleDefinitionResolverV2__factory';
+import { ResolverContractType } from './types/ResolverContractType';
+import { ERROR_MESSAGES } from './types/ErrorMessages';
+import { ENSRegistry } from '../ethers/ENSRegistry';
 
 export class DomainReader {
   public static isOrgDefinition = (
     domainDefinition:
       | IRoleDefinitionText
       | IOrganizationDefinition
-      | IAppDefinition,
+      | IAppDefinition
   ): domainDefinition is IOrganizationDefinition =>
     (domainDefinition as IOrganizationDefinition).orgName !== undefined;
 
@@ -40,7 +40,7 @@ export class DomainReader {
     domainDefinition:
       | IRoleDefinitionText
       | IOrganizationDefinition
-      | IAppDefinition,
+      | IAppDefinition
   ): domainDefinition is IAppDefinition =>
     (domainDefinition as IAppDefinition).appName !== undefined;
 
@@ -48,7 +48,7 @@ export class DomainReader {
     domainDefinition:
       | IRoleDefinitionText
       | IOrganizationDefinition
-      | IAppDefinition,
+      | IAppDefinition
   ): domainDefinition is IRoleDefinition =>
     (domainDefinition as IRoleDefinition).roleName !== undefined;
 
@@ -72,8 +72,8 @@ export class DomainReader {
    *
    */
   private readonly _knownDidEthrNetworkNames: Record<number, string> = {
-    [VOLTA_CHAIN_ID]: "volta",
-    [EWC_CHAIN_ID]: "ewc",
+    [VOLTA_CHAIN_ID]: 'volta',
+    [EWC_CHAIN_ID]: 'ewc',
   };
 
   constructor({
@@ -86,7 +86,7 @@ export class DomainReader {
     this._provider = provider;
     this._ensRegistry = ENSRegistry__factory.connect(
       ensRegistryAddress,
-      this._provider,
+      this._provider
     );
   }
 
@@ -122,7 +122,7 @@ export class DomainReader {
     if (resolverType === ResolverContractType.PublicResolver) {
       const ensResolver = PublicResolver__factory.connect(
         resolverAddress,
-        this._provider,
+        this._provider
       );
       const name = await ensResolver.name(node);
       return checkName(name);
@@ -130,7 +130,7 @@ export class DomainReader {
     if (resolverType === ResolverContractType.RoleDefinitionResolver_v1) {
       const ensResolver = RoleDefinitionResolver__factory.connect(
         resolverAddress,
-        this._provider,
+        this._provider
       );
       const name = await ensResolver.name(node);
       return checkName(name);
@@ -138,7 +138,7 @@ export class DomainReader {
     if (resolverType === ResolverContractType.RoleDefinitionResolver_v2) {
       const ensResolver = RoleDefinitionResolverV2__factory.connect(
         resolverAddress,
-        this._provider,
+        this._provider
       );
       const name = await ensResolver.name(node);
       return checkName(name);
@@ -166,9 +166,9 @@ export class DomainReader {
     if (resolverType === ResolverContractType.PublicResolver) {
       const ensResolver: PublicResolver = PublicResolver__factory.connect(
         resolverAddress,
-        this._provider,
+        this._provider
       );
-      const textData = await ensResolver.text(node, "metadata");
+      const textData = await ensResolver.text(node, 'metadata');
       let definition;
       try {
         definition = JSON.parse(textData, this.reviveDates) as
@@ -178,8 +178,8 @@ export class DomainReader {
       } catch (err) {
         throw Error(
           `unable to parse resolved textData for node: ${node}. textData: ${textData}. error: ${JSON.stringify(
-            err,
-          )}`,
+            err
+          )}`
         );
       }
       return definition;
@@ -189,9 +189,9 @@ export class DomainReader {
       const ensResolver: RoleDefinitionResolver =
         RoleDefinitionResolver__factory.connect(
           resolverAddress,
-          this._provider,
+          this._provider
         );
-      const textData = await ensResolver.text(node, "metadata");
+      const textData = await ensResolver.text(node, 'metadata');
       let textProps;
       try {
         textProps = JSON.parse(textData, this.reviveDates) as
@@ -201,8 +201,8 @@ export class DomainReader {
       } catch (err) {
         throw Error(
           `unable to parse resolved textData for node: ${node}. textData: ${textData}. error: ${JSON.stringify(
-            err,
-          )}`,
+            err
+          )}`
         );
       }
 
@@ -222,9 +222,9 @@ export class DomainReader {
       const ensResolver: RoleDefinitionResolverV2 =
         RoleDefinitionResolverV2__factory.connect(
           resolverAddress,
-          this._provider,
+          this._provider
         );
-      const textData = await ensResolver.text(node, "metadata");
+      const textData = await ensResolver.text(node, 'metadata');
       let textProps;
       try {
         textProps = JSON.parse(textData, this.reviveDates) as
@@ -234,8 +234,8 @@ export class DomainReader {
       } catch (err) {
         throw Error(
           `unable to parse resolved textData for node: ${node}. textData: ${textData}. error: ${JSON.stringify(
-            err,
-          )}`,
+            err
+          )}`
         );
       }
 
@@ -254,13 +254,13 @@ export class DomainReader {
   }
 
   protected async getResolverInfo(
-    node: string,
+    node: string
   ): Promise<{ resolverAddress: string; resolverType: ResolverContractType }> {
     const network = await this._provider.getNetwork();
     const chainId = network.chainId;
     // Get resolver from registry
     const resolverAddress = await this._ensRegistry.resolver(node);
-    if (resolverAddress === "0x0000000000000000000000000000000000000000") {
+    if (resolverAddress === '0x0000000000000000000000000000000000000000') {
       throw Error(ERROR_MESSAGES.DOMAIN_NOT_REGISTERED);
     }
 
@@ -285,11 +285,11 @@ export class DomainReader {
    * @returns The network name that should be used for DID stored by this resolver
    */
   protected async getNetworkNameFromResolver(
-    ensResolver: RoleDefinitionResolver | RoleDefinitionResolverV2,
+    ensResolver: RoleDefinitionResolver | RoleDefinitionResolverV2
   ): Promise<string> {
     const { chainId } = await ensResolver.provider.getNetwork();
     if (!chainId) {
-      throw new Error("Unable to read chainId from ensResolver provider");
+      throw new Error('Unable to read chainId from ensResolver provider');
     }
     const networkName = this._knownDidEthrNetworkNames[chainId];
     if (!networkName) {
@@ -302,7 +302,7 @@ export class DomainReader {
   protected async readRoleDefResolver_v1(
     node: string,
     roleDefinitionText: IRoleDefinitionText,
-    ensResolver: RoleDefinitionResolver,
+    ensResolver: RoleDefinitionResolver
   ): Promise<IRoleDefinition> {
     const issuersData = await ensResolver.issuers(node);
     let issuer: IIssuerDefinition;
@@ -310,14 +310,14 @@ export class DomainReader {
     if (issuersData.dids.length > 0) {
       const networkName = await this.getNetworkNameFromResolver(ensResolver);
       issuer = {
-        issuerType: "DID",
+        issuerType: 'DID',
         did: issuersData.dids.map(
-          (address) => `did:ethr:${networkName}:${address}`,
+          (address) => `did:ethr:${networkName}:${address}`
         ),
       };
-    } else if (issuersData.role != "") {
+    } else if (issuersData.role != '') {
       issuer = {
-        issuerType: "ROLE",
+        issuerType: 'ROLE',
         roleName: await this.readName(issuersData.role),
       };
     } else {
@@ -326,7 +326,7 @@ export class DomainReader {
 
     const prerequisiteRolesNodes = await ensResolver.prerequisiteRoles(node);
     const prerequisiteRoles = await Promise.all(
-      prerequisiteRolesNodes[0].map((node) => this.readName(node)),
+      prerequisiteRolesNodes[0].map((node) => this.readName(node))
     );
 
     const enrolmentPreconditions =
@@ -348,7 +348,7 @@ export class DomainReader {
   protected async readRoleDefResolver_v2(
     node: string,
     roleDefinitionText: IRoleDefinitionText,
-    ensResolver: RoleDefinitionResolverV2,
+    ensResolver: RoleDefinitionResolverV2
   ): Promise<IRoleDefinitionV2> {
     const issuersData = await ensResolver.issuers(node);
     const revokersData = await ensResolver.revokers(node);
@@ -359,14 +359,14 @@ export class DomainReader {
 
     if (issuersData.dids.length > 0) {
       issuer = {
-        issuerType: "DID",
+        issuerType: 'DID',
         did: issuersData.dids.map(
-          (address) => `did:ethr:${networkName}:${address}`,
+          (address) => `did:ethr:${networkName}:${address}`
         ),
       };
-    } else if (issuersData.role != "") {
+    } else if (issuersData.role != '') {
       issuer = {
-        issuerType: "ROLE",
+        issuerType: 'ROLE',
         roleName: await this.readName(issuersData.role),
       };
     } else {
@@ -374,14 +374,14 @@ export class DomainReader {
     }
     if (revokersData.dids.length > 0) {
       revoker = {
-        revokerType: "DID",
+        revokerType: 'DID',
         did: revokersData.dids.map(
-          (address) => `did:ethr:${networkName}:${address}`,
+          (address) => `did:ethr:${networkName}:${address}`
         ),
       };
-    } else if (revokersData.role != "") {
+    } else if (revokersData.role != '') {
       revoker = {
-        revokerType: "ROLE",
+        revokerType: 'ROLE',
         roleName: await this.readName(revokersData.role),
       };
     } else {
@@ -390,7 +390,7 @@ export class DomainReader {
 
     const prerequisiteRolesNodes = await ensResolver.prerequisiteRoles(node);
     const prerequisiteRoles = await Promise.all(
-      prerequisiteRolesNodes[0].map((node) => ensResolver.name(node)),
+      prerequisiteRolesNodes[0].map((node) => ensResolver.name(node))
     );
     const enrolmentPreconditions =
       prerequisiteRoles.length >= 1
@@ -410,9 +410,9 @@ export class DomainReader {
 
   protected reviveDates(
     key: string,
-    value: string | number | Date,
+    value: string | number | Date
   ): string | number | Date {
-    if ((key === "minDate" || key === "maxDate") && value !== null) {
+    if ((key === 'minDate' || key === 'maxDate') && value !== null) {
       return new Date(value);
     }
     return value;

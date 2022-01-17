@@ -8,16 +8,16 @@ export class DID {
    */
   readonly did: string;
 
-  readonly method: "ethr" | string;
+  readonly method: 'ethr' | string;
 
   readonly id: string;
 
   readonly chain?: string;
 
   constructor(did: string) {
-    const idParts = did.split(":");
+    const idParts = did.split(':');
     if (idParts.length < 3) {
-      throw new Error("DID should consists of at least 3 components");
+      throw new Error('DID should consists of at least 3 components');
     }
 
     let didMethod: string;
@@ -34,7 +34,7 @@ export class DID {
       didChain = idParts[2];
       didId = idParts[3];
     } else {
-      throw new Error("Unsupported DID format");
+      throw new Error('Unsupported DID format');
     }
 
     this.did = did;
