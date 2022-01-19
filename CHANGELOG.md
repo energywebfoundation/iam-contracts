@@ -1,3 +1,10 @@
+# [3.7.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.6.0...v3.7.0) (2022-01-19)
+
+
+### Features
+
+* **staking:** remove staking contracts ([2648df0](https://github.com/energywebfoundation/iam-contracts/commit/2648df07c6d3ce0e6cbb228efa4c162a14f8cf47))
+
 # [3.6.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.5.0...v3.6.0) (2021-12-01)
 
 
