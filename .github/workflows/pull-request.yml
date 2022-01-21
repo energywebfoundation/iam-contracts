@@ -15,7 +15,8 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        run: npm install
+        # Using --no-optional to reduce vulnerabilities
+        run: npm ci --no-optional
 
       - name: Build packages (Compile contracts, generate contract types and compile typescript)
         run: npm run build
