@@ -1,3 +1,10 @@
+## [3.7.1](https://github.com/energywebfoundation/iam-contracts/compare/v3.7.0...v3.7.1) (2022-01-21)
+
+
+### Bug Fixes
+
+* move packages to dev ([e4743bb](https://github.com/energywebfoundation/iam-contracts/commit/e4743bb27331254a99df13ff8acf3cc5e895089d))
+
 # [3.7.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.6.0...v3.7.0) (2022-01-19)
 
 
