@@ -11,11 +11,12 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@v2-beta
         with:
-          node-version: "12"
+          node-version: "16.10.0"
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        run: npm install
+        # Using --no-optional to reduce vulnerabilities
+        run: npm ci --no-optional
 
       - name: Build packages (Compile contracts, generate contract types and compile typescript)
         run: npm run build
