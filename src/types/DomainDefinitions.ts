@@ -46,7 +46,8 @@ export interface IFieldDefinition {
 export interface IRoleDefinitionText {
   roleType: string;
   roleName: string;
-  fields: IFieldDefinition[];
+  fields?: IFieldDefinition[];
+  requestorFields?: IFieldDefinition[];
   issuerFields?: IFieldDefinition[];
   metadata: Record<string, unknown> | Record<string, unknown>[];
 }
