@@ -120,7 +120,7 @@
               "release": "minor"
             },
             {
-              "scope": "build",
+              "type": "build",
               "release": "patch"
             }
           ]
