@@ -1,3 +1,10 @@
+## [4.0.1](https://github.com/energywebfoundation/iam-contracts/compare/v4.0.0...v4.0.1) (2022-02-10)
+
+
+### Bug Fixes
+
+* build release rule ([69e6ffc](https://github.com/energywebfoundation/iam-contracts/commit/69e6ffc3bafe1c7daafc26355c95e8319d4cdf24))
+
 # [4.0.0](https://github.com/energywebfoundation/iam-contracts/compare/v3.8.0...v4.0.0) (2022-01-28)
 
 
