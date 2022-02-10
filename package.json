@@ -63,7 +63,7 @@
     "@ethersproject/abi": "^5.4.0",
     "@ethersproject/abstract-signer": "^5.4.1",
     "@ew-did-registry/proxyidentity": "0.6.2",
-    "@openzeppelin/contracts": "4.3.3",
+    "@openzeppelin/contracts": "4.4.2",
     "@openzeppelin/contracts-upgradeable": "4.3.3",
     "@openzeppelin/truffle-upgrades": "1.12.0",
     "@semantic-release/changelog": "^5.0.1",
