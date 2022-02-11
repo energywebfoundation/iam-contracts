@@ -173,6 +173,7 @@ export class DomainTransactionFactory {
         roleName: roleDef.roleName,
         roleType: roleDef.roleType,
         fields: roleDef.fields,
+        requstorFields: roleDef.requestorFields,
         issuerFields: roleDef.issuerFields,
         metadata: roleDef.metadata,
       };
