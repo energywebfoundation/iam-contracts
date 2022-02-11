@@ -1,3 +1,10 @@
+## [4.2.1](https://github.com/energywebfoundation/iam-contracts/compare/v4.2.0...v4.2.1) (2022-02-11)
+
+
+### Bug Fixes
+
+* ewc claim manager ([e44488d](https://github.com/energywebfoundation/iam-contracts/commit/e44488da095ff69b952d6e9d2d00caca2287de02))
+
 # [4.2.0](https://github.com/energywebfoundation/iam-contracts/compare/v4.1.0...v4.2.0) (2022-02-11)
 
 
