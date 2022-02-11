@@ -1,3 +1,11 @@
+# [4.2.0](https://github.com/energywebfoundation/iam-contracts/compare/v4.1.0...v4.2.0) (2022-02-11)
+
+
+### Features
+
+* add EWC chain constants ([2594d90](https://github.com/energywebfoundation/iam-contracts/commit/2594d901337f784c043a7a267ea5718da45643bb))
+* update volta claim manager address ([f75b92b](https://github.com/energywebfoundation/iam-contracts/commit/f75b92bfdb884ba2cb26571c023d778abbd3b0eb))
+
 # [4.1.0](https://github.com/energywebfoundation/iam-contracts/compare/v4.0.1...v4.1.0) (2022-02-11)
 
 
