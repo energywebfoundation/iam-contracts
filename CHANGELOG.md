@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/energywebfoundation/iam-contracts/compare/v4.0.1...v4.1.0) (2022-02-11)
+
+
+### Features
+
+* **roles:** change fields to requestorFields ([070b84c](https://github.com/energywebfoundation/iam-contracts/commit/070b84ca51e8c326d95a0a2ab8e32069bf98e751))
+
 ## [4.0.1](https://github.com/energywebfoundation/iam-contracts/compare/v4.0.0...v4.0.1) (2022-02-10)
 
 
