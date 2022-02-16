@@ -1,3 +1,10 @@
+## [4.3.1](https://github.com/energywebfoundation/iam-contracts/compare/v4.3.0...v4.3.1) (2022-02-16)
+
+
+### Bug Fixes
+
+* **core:** requestor fields typo fix ([986c3cc](https://github.com/energywebfoundation/iam-contracts/commit/986c3cc5887be841913af9fa6b2677b7d4c035e8))
+
 # [4.3.0](https://github.com/energywebfoundation/iam-contracts/compare/v4.2.1...v4.3.0) (2022-02-15)
 
 
