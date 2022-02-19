@@ -1,3 +1,10 @@
+# [4.4.0](https://github.com/energywebfoundation/iam-contracts/compare/v4.3.1...v4.4.0) (2022-02-19)
+
+
+### Features
+
+* export domain definitions types ([20951e9](https://github.com/energywebfoundation/iam-contracts/commit/20951e99fd2d1b718c85f95410b8a675dda8b1a4))
+
 ## [4.3.1](https://github.com/energywebfoundation/iam-contracts/compare/v4.3.0...v4.3.1) (2022-02-16)
 
 
