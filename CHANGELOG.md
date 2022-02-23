@@ -1,3 +1,10 @@
+## [4.5.1](https://github.com/energywebfoundation/iam-contracts/compare/v4.5.0...v4.5.1) (2022-02-23)
+
+
+### Bug Fixes
+
+* set ewc resolverv2 ([7308915](https://github.com/energywebfoundation/iam-contracts/commit/7308915470417894a2d7013a42284153da8875d4))
+
 # [4.5.0](https://github.com/energywebfoundation/iam-contracts/compare/v4.4.0...v4.5.0) (2022-02-23)
 
 
