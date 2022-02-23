@@ -1,3 +1,10 @@
+# [4.5.0](https://github.com/energywebfoundation/iam-contracts/compare/v4.4.0...v4.5.0) (2022-02-23)
+
+
+### Features
+
+* export resolver v2 address ([665a312](https://github.com/energywebfoundation/iam-contracts/commit/665a3120a3f0b4a1cb43ef366418ad99baa4d362))
+
 # [4.4.0](https://github.com/energywebfoundation/iam-contracts/compare/v4.3.1...v4.4.0) (2022-02-19)
 
 
