@@ -29,7 +29,7 @@ const domain2 = 'mydomain2';
 const node2 = utils.namehash(domain2);
 
 const role2: IRoleDefinitionV2 = {
-  fields: [
+  issuerFields: [
     {
       fieldType: 'myFieldType',
       label: 'myLabel',

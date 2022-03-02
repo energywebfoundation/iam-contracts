@@ -180,7 +180,6 @@ export class DomainTransactionFactoryV2 {
       return {
         roleName: roleDef.roleName,
         roleType: roleDef.roleType,
-        fields: roleDef.fields,
         requestorFields: roleDef.requestorFields,
         issuerFields: roleDef.issuerFields,
         metadata: roleDef.metadata,

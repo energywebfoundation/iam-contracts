@@ -27,7 +27,7 @@ const domain = 'mydomain';
 const node = utils.namehash(domain);
 
 const role: IRoleDefinition = {
-  fields: [
+  requestorFields: [
     {
       fieldType: 'myFieldType',
       label: 'myLabel',

@@ -70,7 +70,8 @@ const addSubdomain = async (
 };
 
 const role: IRoleDefinitionV2 = {
-  fields: [],
+  requestorFields: [],
+  issuerFields: [],
   issuer: {
     issuerType: 'DID',
     did: [`did:ethr:volta:0x7aA65E31d404A8857BA083f6195757a730b51CFe`],
