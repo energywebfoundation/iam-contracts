@@ -1,3 +1,7 @@
+# DEPRECATED
+
+The code has been migrated to [EW-CREDNTIALS](https://github.com/energywebfoundation/ew-credentials) and new changes would be introduced on the same. Kindly use it!
+
 ## Overview
 
 This package consists of EVM smart contracts related to EnergyWeb IAM.
